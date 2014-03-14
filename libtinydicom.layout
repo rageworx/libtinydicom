@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="src\dicomdecoder.h" open="1" top="0" tabpos="4">
+		<Cursor position="1" topLine="0" />
+	</File>
+	<File name="src\dicomdictionary.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="161" topLine="6" />
+	</File>
+	<File name="src\dicomdictionary.h" open="1" top="0" tabpos="5">
+		<Cursor position="79" topLine="0" />
+	</File>
+	<File name="src\dicomtagconfig.h" open="1" top="0" tabpos="7">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="src\dicomtagelement.h" open="1" top="0" tabpos="8">
+		<Cursor position="386" topLine="0" />
+	</File>
+	<File name="src\dicomtagreader.cpp" open="1" top="0" tabpos="10">
+		<Cursor position="6980" topLine="292" />
+	</File>
+	<File name="src\dicomtagreader.h" open="1" top="0" tabpos="9">
+		<Cursor position="1365" topLine="12" />
+	</File>
+	<File name="src\dicomtagstore.cpp" open="1" top="0" tabpos="11">
+		<Cursor position="1269" topLine="46" />
+	</File>
+	<File name="src\dicomtagstore.h" open="1" top="0" tabpos="3">
+		<Cursor position="29" topLine="0" />
+	</File>
+	<File name="src\dicomtagwriter.cpp" open="1" top="1" tabpos="12">
+		<Cursor position="5207" topLine="254" />
+	</File>
+	<File name="src\dicomtagwriter.h" open="1" top="0" tabpos="2">
+		<Cursor position="1499" topLine="20" />
+	</File>
+	<File name="src\stdunicode.cpp" open="1" top="0" tabpos="13">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="src\stdunicode.h" open="1" top="0" tabpos="1">
+		<Cursor position="440" topLine="0" />
+	</File>
+	<File name="src\swap.cpp" open="1" top="0" tabpos="15">
+		<Cursor position="257" topLine="0" />
+	</File>
+	<File name="src\swap.h" open="1" top="0" tabpos="14">
+		<Cursor position="40" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>
