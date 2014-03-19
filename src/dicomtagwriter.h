@@ -25,7 +25,7 @@ namespace TinyDicom
     {
         private:
             fstream     fileStream;
-            unsigned    fileLength;     // up to 3.2GB (32bit)
+            unsigned    fileLength;     /// up to 3.2GB (32bit)
             bool        bFileCreated;
             bool        bLittleEndian;
 

@@ -17,7 +17,7 @@
 
 #include "dicomtagelement.h"
 
-// fstream requires "std" namespace.
+// fstream, list requires "std" namespace.
 using namespace std;
 
 namespace TinyDicom
@@ -35,12 +35,13 @@ namespace TinyDicom
             TagElement*     FindTagElement(unsigned long TagID);
             TagElement*     GetTagElement(unsigned long nIndex);
 
-            unsigned long   AddTagElement(unsigned long TagID,unsigned short wVR, char* data, unsigned long size);
+            unsigned long   AddTagElement(unsigned long TagID,unsigned short wVR, const char* data, unsigned long size);
             int             AddTagElement(TagElement *pTag);
 
+            void            Sort();
+
         private:
-            // private function methods -----------------------------------
-            bool            IsCreated();
+            bool            isCreated();
 
         protected:
             bool                bLittleEndian;

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _DICOMDICTIONARY_H_
 #define _DICOMDICTIONARY_H_
 

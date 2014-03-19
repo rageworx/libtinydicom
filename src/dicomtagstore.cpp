@@ -8,7 +8,15 @@
 #include "stdunicode.h"
 #include "swap.h"
 
+#include <algorithm>
+
 using namespace TinyDicom;
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool tagSortProc( const TagElement* first, const TagElement* second );
+
+////////////////////////////////////////////////////////////////////////////////
 
 TagStore::TagStore()
  : bLittleEndian(DATA_ARRANGE_LITTLE_ENDIAN)
@@ -51,7 +59,7 @@ void TagStore::ClearTags()
     }
 }
 
-bool TagStore::IsCreated()
+bool TagStore::isCreated()
 {
     return true;
 }
@@ -81,7 +89,7 @@ TagElement* TagStore::FindTagElement(unsigned long TagID)
     return NULL;
 }
 
-unsigned long TagStore::AddTagElement(unsigned long TagID, unsigned short wVR, char* data, unsigned long size)
+unsigned long TagStore::AddTagElement(unsigned long TagID, unsigned short wVR, const char* data, unsigned long size)
 {
     TagElement *pNewTag = new TagElement;
 
@@ -183,6 +191,11 @@ int  TagStore::AddTagElement(TagElement *pTag)
     return TagElements.size();
 }
 
+void TagStore::Sort()
+{
+    TagElements.sort( tagSortProc );
+}
+
 TagElement* TagStore::GetTagElement(unsigned long nIndex)
 {
     if (nIndex > TagElements.size())
@@ -202,4 +215,14 @@ TagElement* TagStore::GetTagElement(unsigned long nIndex)
     }
 
     return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool tagSortProc( const TagElement* first, const TagElement* second )
+{
+    if ( second->id > first->id )
+        return true;
+
+    return false;
 }
