@@ -1,37 +1,34 @@
-#ifdef _WIN32
-    #include <tchar.h>
-#else
-    #include "tchar.h"
-#endif
+#include <windows.h>
+#include <tchar.h>
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
 #include "dicomdecoder.h"
 #include "dicomtagreader.h"
-#include "stdunicode.h"
+#include "stools.h"
 
-using namespace TinyDicom;
+using namespace DicomImageViewer;
 
-TagReader::TagReader(wstring &fileName)
+TagReader::TagReader( wstring &fileName )
 {
     createInstance(fileName);
 }
 
-TagReader::TagReader(wchar_t *fileName)
+TagReader::TagReader( const wchar_t* fileName )
 {
     wstring fn = fileName;
     createInstance(fn);
 }
 
-TagReader::TagReader(char *fileName)
+TagReader::TagReader( const char* fileName )
 {
-    wstring fn = convertM2W(fileName);
+    wstring fn = ConvertFromMBCS(fileName);
     createInstance(fn);
 }
 
 TagReader::~TagReader()
 {
-    ClearTags();
+    clearTags();
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -45,13 +42,13 @@ void    TagReader::createInstance(wstring &fileName)
     // file open --
 #ifdef  __GNUC__
     wchar_t *pWC = (wchar_t*)fileName.c_str();
-    char *pFn    = convertW2M(pWC);
-    fileStream.open(pFn, ios::binary | ios::in | ios::app );
+    char *pFn    = ConvertFromUnicode(pWC);
+    fileStream.open(pFn, ios::binary | ios::in );
 #else
-    fileStream.open(fileName.c_str(), ios::binary | ios::in | ios::app );
+    fileStream.open(fileName.c_str(), ios::binary | ios::in );
 #endif
 
-    if(!fileStream)
+    if( fileStream.is_open() == false )
     {
         bFileLoaded = false;
         fileStream.close();
@@ -59,9 +56,9 @@ void    TagReader::createInstance(wstring &fileName)
     }
 
     // get file size .
-    fileStream.seekg(0,ios::end);
+    fileStream.seekg(0,fstream::end);
     fileLength = fileStream.tellg();
-    fileStream.seekg(0,ios::beg);
+    fileStream.seekg(0,fstream::beg);
 
     // if file size smaller than 128 byte, it is error!
     if(fileLength < ID_OFFSET)
@@ -92,12 +89,12 @@ void    TagReader::createInstance(wstring &fileName)
     }
 }
 
-int     TagReader::readString(char *pBuf, unsigned long nLength)
+int     TagReader::readString(char *pBuf, DWORD nLength)
 {
-    unsigned long   nCurPos = fileStream.tellg();
+    DWORD   nCurPos = fileStream.tellg();
 
     if(nCurPos + nLength > fileLength)
-        return 0;
+        return NULL;
 
     if(pBuf)
     {
@@ -114,7 +111,7 @@ int     TagReader::readString(char *pBuf, unsigned long nLength)
 BYTE    TagReader::readBYTE()
 {
     BYTE    aByte   = 0;
-    unsigned long   nCurPos = fileStream.tellg();
+    DWORD   nCurPos = fileStream.tellg();
 
     if(nCurPos + 1 < fileLength)
         fileStream.read((char*)&aByte,1);
@@ -122,37 +119,37 @@ BYTE    TagReader::readBYTE()
     return aByte;
 }
 
-unsigned short TagReader::readWORD()
+WORD    TagReader::readWORD()
 {
-    unsigned short  aWORD   = 0;
-    unsigned long   nCurPos = fileStream.tellg();
+    WORD    aWord   = 0;
+    DWORD   nCurPos = fileStream.tellg();
 
     if(nCurPos + 2 < fileLength)
-        fileStream.read((char*)&aWORD,2);
+        fileStream.read((char*)&aWord,2);
 
-    return aWORD;
+    return aWord;
 }
 
-unsigned long TagReader::readDWORD()
+DWORD   TagReader::readDWORD()
 {
-    unsigned long   aDWORD  = 0;
-    unsigned long   nCurPos = fileStream.tellg();
+    DWORD   aDWord  = 0;
+    DWORD   nCurPos = fileStream.tellg();
 
     if(nCurPos + 4 < fileLength)
-        fileStream.read((char*)&aDWORD,4);
+        fileStream.read((char*)&aDWord,4);
 
-    return aDWORD;
+    return aDWord;
 }
 
-unsigned long TagReader::getLength(unsigned short nVR,unsigned short nCarrier)
+DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
 {
-    unsigned short cVR = nVR;
+    WORD cVR = nVR;
 
     if(bLittleEndian)
     {
         // Swap it !!
-        unsigned char *pA1 = (unsigned char*)&nVR;
-        unsigned char *pA2 = pA1+1;
+        BYTE *pA1 = (BYTE*)&nVR;
+        BYTE *pA2 = pA1+1;
         cVR = (*pA1 << 8 ) + *pA2;
     }
 
@@ -203,16 +200,17 @@ unsigned long TagReader::getLength(unsigned short nVR,unsigned short nCarrier)
 
 bool    TagReader::readNextTag(TagElement *pTagElem)
 {
-    unsigned long   aTag    = 0;
-    unsigned long   nTemp   = readDWORD();
+    DWORD   aTag    = 0;
+    bool    bDone   = false;
+    DWORD   nTemp   = readDWORD();
 
     if(bLittleEndian)
     {
         // Swap it !!
-        unsigned char *pA1 = (unsigned char*)&nTemp;
-        unsigned char *pA2 = pA1+1;
-        unsigned char *pA3 = pA1+2;
-        unsigned char *pA4 = pA1+3;
+        BYTE *pA1 = (BYTE*)&nTemp;
+        BYTE *pA2 = pA1+1;
+        BYTE *pA3 = pA1+2;
+        BYTE *pA4 = pA1+3;
         aTag = (*pA2 << 24 ) +
                (*pA1 << 16 ) +
                (*pA4 << 8  ) +
@@ -229,12 +227,12 @@ bool    TagReader::readNextTag(TagElement *pTagElem)
         strncpy(aSubTag,pRead,4);
         delete pRead;
 
-        unsigned short nVR = 0;
-        unsigned short nCarrier = 0;
+        WORD nVR = 0;
+        WORD nCarrier = 0;
         memcpy(&nVR,aSubTag,2);
         memcpy(&nCarrier,&aSubTag[2],2);
 
-        unsigned long nLen = getLength(nVR,nCarrier);
+        DWORD nLen = getLength(nVR,nCarrier);
 
         if(nLen>0)
         {
@@ -250,7 +248,7 @@ bool    TagReader::readNextTag(TagElement *pTagElem)
                 readString(pRead,nLen);
                 if(nLen > MAX_STATICBUFFER_LENGTH)
                 {
-                    pTagElem->dynamicbuffer = (void*)pRead;
+                    pTagElem->dynamicbuffer = pRead;
                     pTagElem->alloced = TRUE;
                 }else{
                     memset(pTagElem->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
@@ -280,7 +278,7 @@ bool    TagReader::readNextTag(TagElement *pTagElem)
     return false;
 }
 
-void    TagReader::readTags()
+void TagReader::readTags()
 {
     TagElement *pTagElem = NULL;
     bool        bRepeat = true;
@@ -298,7 +296,7 @@ void    TagReader::readTags()
                 TagElements.push_back(pTagElem);
             }
 
-            unsigned long fPos = fileStream.tellg();
+            DWORD fPos = fileStream.tellg();
             if(fPos < fileLength)
             {
                 bRepeat = true;
@@ -308,17 +306,17 @@ void    TagReader::readTags()
     }
 }
 
-///////////////////////////////////////////////////////////////////
-
-bool        TagReader::IsLoaded()
+bool TagReader::IsLoaded()
 {
     return bFileLoaded;
 }
 
-TagElement* TagReader::GetTagElementByID(unsigned long TagID)
+TagElement* TagReader::GetTagElementByID(DWORD TagID)
 {
     if (TagID == 0)
         return NULL;
+
+    DWORD nCnt = 0;
 
     list<TagElement*>::iterator  it;
 

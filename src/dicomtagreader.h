@@ -3,7 +3,8 @@
 *                                                    last revision : 2011-09-05
 * =============================================================================
 *
-* * Programmed by Raphael Kim (rageworx@gmail.com)
+* * (C)Copyright 2011-2014 Raphael Kim (rage.kim)
+* *
 * * Unicode Model.
 *
 *******************************************************************************/
@@ -19,42 +20,42 @@
 
 using namespace std;
 
-namespace TinyDicom
+namespace DicomImageViewer
 {
     class TagReader: public TagStore
     {
-        public:
-            // public function methods ------------------------------------
-            bool            IsLoaded();
+        private:
+            fstream     fileStream;
+            DWORD       fileLength;     // DICOM limited to 3.2GB.
+            bool        bFileLoaded;
+            bool        bLittleEndian;
 
-            TagElement*     GetTagElementByID(unsigned long TagID);
+            // private function methods -----------------------------------
+            void        createInstance( wstring &fileName );
+
+            int         readString(char *pBuf, DWORD nLength);
+            BYTE        readBYTE();
+            WORD        readWORD();
+            DWORD       readDWORD();
+
+            DWORD       getLength(WORD nVR,WORD nCarrier);
+            bool        readNextTag(TagElement *pTagElem);
+            void        readTags();
+
+        public:
+
+            // public function methods ------------------------------------
+            bool        IsLoaded();
+
+            TagElement* GetTagElementByID(DWORD TagID);
 
             // constructor
-            TagReader(wstring &fileName);
-            TagReader(wchar_t *fileName);
-            TagReader(char *fileName);
+            TagReader( wstring &fileName );
+            TagReader( const wchar_t *fileName );
+            TagReader( const char *fileName );
 
             // destructor
             ~TagReader();
-
-        private:
-            fstream             fileStream;
-            unsigned            fileLength;     // DICOM limited to 3.2GB.
-            bool                bFileLoaded;
-            bool                bLittleEndian;
-
-        private:
-            // private function methods -----------------------------------
-            void            createInstance(wstring &fileName);
-            int             readString(char *pBuf, unsigned long nLength);
-            BYTE            readBYTE();
-            unsigned short  readWORD();
-            unsigned long   readDWORD();
-
-            unsigned long   getLength(unsigned short nVR,unsigned short nCarrier);
-            bool            readNextTag(TagElement *pTagElem);
-            void            readTags();
-
     };
 };
 

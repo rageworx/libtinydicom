@@ -3,7 +3,7 @@
 *                                                    last revision : 2011-09-05
 * =============================================================================
 *
-* * Programmed by Raphael Kim (rageworx@gmail.com)
+* * (C)Copyright 2011-2014 Raphael Kim (rage.kim)
 * * Unicode Model.
 *
 *******************************************************************************/
@@ -19,24 +19,24 @@
 
 using namespace std;
 
-namespace TinyDicom
+namespace DicomImageViewer
 {
     class TagWriter: public TagStore
     {
         private:
             fstream     fileStream;
-            unsigned    fileLength;     /// up to 3.2GB (32bit)
+            DWORD       fileLength;     // up to 3.2GB (32bit)
             bool        bFileCreated;
             bool        bLittleEndian;
 
             // private function methods -----------------------------------
-            void        createInstance(wstring &fileName);
+            void        createInstance( wstring &fileName );
 
-            bool        writeData(char* pData, unsigned long nLen);
+            bool        writeData( const char* pData, DWORD nLen );
             bool        writeString(string &str);
-            bool        writeBYTE(unsigned char aByte);
-            bool        writeWORD(unsigned short aWord);
-            bool        writeDWORD(unsigned long aDWrod);
+            bool        writeBYTE(BYTE aByte);
+            bool        writeWORD(WORD aWord);
+            bool        writeDWORD(DWORD aDWord);
 
             void        clearTags();
             bool        writeNextTag(TagElement *pTagElem);
@@ -48,13 +48,13 @@ namespace TinyDicom
             bool        IsCreated();
             bool        Write();
 
-            TagElement* FindTagElement(unsigned long TagID);
-            TagElement* GetTagElement(unsigned long nIndex);
+            TagElement* FindTagElement(DWORD TagID);
+            TagElement* GetTagElement(DWORD nIndex);
 
             // constructor
-            TagWriter(wstring &fileName);
-            TagWriter(wchar_t *fileName);
-            TagWriter(char *fileName);
+            TagWriter( wstring &fileName );
+            TagWriter( const wchar_t *fileName );
+            TagWriter( const char *fileName );
 
             // destructor
             ~TagWriter();

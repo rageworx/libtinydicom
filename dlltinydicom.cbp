@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="tinydicom(DLL)" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\tinydicom_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
+					<Add option="-DDEBUG" />
+					<Add option="-D_DEBUG" />
+				</Compiler>
+				<Linker>
+					<Add library="user32" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\tinydicom" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-march=core2" />
+					<Add option="-march=i686" />
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-DBUILD_DLL" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="user32" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DNOMFC" />
+			<Add option="-DUNICODE" />
+			<Add option="-D_UNICODE" />
+			<Add directory="src" />
+			<Add directory="src_dll" />
+		</Compiler>
+		<Unit filename="res\winres.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="src\dicomdecoder.h" />
+		<Unit filename="src\dicomdictionary.cpp" />
+		<Unit filename="src\dicomdictionary.h" />
+		<Unit filename="src\dicomtagconfig.h" />
+		<Unit filename="src\dicomtagelement.h" />
+		<Unit filename="src\dicomtagreader.cpp" />
+		<Unit filename="src\dicomtagreader.h" />
+		<Unit filename="src\dicomtagstore.cpp" />
+		<Unit filename="src\dicomtagstore.h" />
+		<Unit filename="src\dicomtagwriter.cpp" />
+		<Unit filename="src\dicomtagwriter.h" />
+		<Unit filename="src\stools.cpp" />
+		<Unit filename="src\stools.h" />
+		<Unit filename="src_dll\libdcm.cpp" />
+		<Unit filename="src_dll\libdcm.h" />
+		<Unit filename="src_test\testmain.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

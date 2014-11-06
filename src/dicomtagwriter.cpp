@@ -5,25 +5,24 @@
 #include "dicomdictionary.h"
 #include "dicomdecoder.h"
 #include "dicomtagwriter.h"
-#include "stdunicode.h"
-#include "swap.h"
+#include "stools.h"
 
-using namespace TinyDicom;
+using namespace DicomImageViewer;
 
-TagWriter::TagWriter(wstring &fileName)
+TagWriter::TagWriter( wstring &fileName )
 {
-    createInstance(fileName);
+    createInstance( fileName );
 }
 
-TagWriter::TagWriter(wchar_t *fileName)
+TagWriter::TagWriter( const wchar_t* fileName )
 {
     wstring convStr = fileName;
     createInstance(convStr);
 }
 
-TagWriter::TagWriter(char *fileName)
+TagWriter::TagWriter( const char* fileName)
 {
-    wstring convStr = convertM2W(fileName);
+    wstring convStr = ConvertFromMBCS(fileName);
     createInstance(convStr);
 }
 
@@ -41,7 +40,7 @@ void TagWriter::createInstance(wstring &fileName)
     // file open --
 
 #ifdef  __GNUC__
-    fileStream.open(convertW2M((wchar_t*)fileName.c_str()),
+    fileStream.open(ConvertFromUnicode((wchar_t*)fileName.c_str()),
                     ios::binary | ios::out | ios::app);
 #else
     fileStream.open(fileName.c_str(), ios::binary | ios::out | ios::app);
@@ -53,7 +52,7 @@ void TagWriter::createInstance(wstring &fileName)
         bFileCreated = true;
 }
 
-bool TagWriter::writeData(char* pData, unsigned long nLen)
+bool TagWriter::writeData( const char* pData, DWORD nLen )
 {
     if(!bFileCreated)
         return false;
@@ -75,18 +74,18 @@ bool TagWriter::writeString(string &str)
     return true;
 }
 
-bool TagWriter::writeBYTE(unsigned char aByte)
+bool TagWriter::writeBYTE(BYTE aByte)
 {
     if(!bFileCreated)
         return false;
 
-    fileStream.write((char*)&aByte,1);
+    fileStream.write((char*)aByte,1);
     fileLength = fileStream.tellg();
 
     return false;
 }
 
-bool TagWriter::writeWORD(unsigned short aWord)
+bool TagWriter::writeWORD(WORD aWord)
 {
     if(!bFileCreated)
         return false;
@@ -97,7 +96,7 @@ bool TagWriter::writeWORD(unsigned short aWord)
     return false;
 }
 
-bool TagWriter::writeDWORD(unsigned long aDWord)
+bool TagWriter::writeDWORD(DWORD aDWord)
 {
     if(!bFileCreated)
         return false;
@@ -126,7 +125,7 @@ void TagWriter::clearTags()
             if(pTE->alloced && (pTE->size > 0))
             {
                 if(pTE->dynamicbuffer)
-                    delete[] (char*)pTE->dynamicbuffer;
+                    delete[] pTE->dynamicbuffer;
 
                 pTE->alloced = FALSE;
             }
@@ -146,7 +145,7 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
         return false;
 
     // check ID
-    unsigned long nID = pTagElem->id;
+    DWORD nID = pTagElem->id;
     if(bLittleEndian)
     {
         nID = SwapDWORD(pTagElem->id);
@@ -154,13 +153,13 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
     writeDWORD(nID);
 
     // check VR
-    unsigned short  nVR = 0;
+    WORD  nVR = 0;
     memcpy(&nVR,pTagElem->VRtype,2);
 
     // check size
-    unsigned long nSz = pTagElem->size;
+    DWORD nSz = pTagElem->size;
 
-    unsigned short nCVR = nVR;
+    WORD nCVR = nVR;
     if(bLittleEndian)
     {
         nCVR = SwapWORD(nVR);
@@ -174,7 +173,7 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
         case UN:
         case UT:
             {
-                // Write unsigned long
+                // Write DWORD
                 writeWORD(nVR);
                 writeWORD(0);
                 writeDWORD(nSz);
@@ -205,22 +204,20 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
         case QQ:
         default:
             {
-                // Write unsigned short;
+                // Write WORD;
                 writeWORD(nVR);
-                writeWORD((unsigned short)nSz);
+                writeWORD((WORD)nSz);
             }
             break;
     }
 
-    if( nSz > 0 )
-    {
+    if(nSz)
         if(pTagElem->alloced)
         {
             writeData((char*)pTagElem->dynamicbuffer, nSz);
         } else {
             writeData((char*)pTagElem->staticbuffer, nSz);
         }
-    }
 
     return true;
 }
@@ -228,7 +225,7 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
 void TagWriter::writeTags()
 {
     // check file position.
-    unsigned long nFpos = fileStream.tellg();
+    DWORD nFpos = fileStream.tellg();
     if(nFpos != 0)
     {
         fileStream.seekg(0,ios::beg);
@@ -252,7 +249,8 @@ void TagWriter::writeTags()
 
     for(it=TagElements.begin(); it!=TagElements.end(); advance(it,1))
     {
-        writeNextTag((TagElement* )*it);
+        TagElement* pTE = *it;
+        writeNextTag(*it);
     }
 
 }
@@ -269,10 +267,12 @@ bool TagWriter::Write()
     return true;
 }
 
-TagElement* TagWriter::FindTagElement(unsigned long TagID)
+TagElement* TagWriter::FindTagElement(DWORD TagID)
 {
     if (TagID == 0)
         return NULL;
+
+    DWORD nCnt = 0;
 
     list<TagElement*>::iterator  it;
 
@@ -289,12 +289,12 @@ TagElement* TagWriter::FindTagElement(unsigned long TagID)
     return NULL;
 }
 
-TagElement* TagWriter::GetTagElement(unsigned long nIndex)
+TagElement* TagWriter::GetTagElement(DWORD nIndex)
 {
     if (nIndex > TagElements.size())
         return NULL;
 
-    unsigned long nCnt = 0;
+    DWORD nCnt = 0;
 
     list<TagElement*>::iterator  it;
 

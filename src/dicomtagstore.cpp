@@ -5,12 +5,9 @@
 #include "dicomdictionary.h"
 #include "dicomdecoder.h"
 #include "dicomtagstore.h"
-#include "stdunicode.h"
-#include "swap.h"
+#include "stools.h"
 
-#include <algorithm>
-
-using namespace TinyDicom;
+using namespace DicomImageViewer;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -19,17 +16,17 @@ bool tagSortProc( const TagElement* first, const TagElement* second );
 ////////////////////////////////////////////////////////////////////////////////
 
 TagStore::TagStore()
- : bLittleEndian(DATA_ARRANGE_LITTLE_ENDIAN)
+:bLittleEndian(DATA_ARRANGE_LITTLE_ENDIAN)
 {
     // configure me --
 }
 
 TagStore::~TagStore()
 {
-    ClearTags();
+    clearTags();
 }
 
-void TagStore::ClearTags()
+void TagStore::clearTags()
 {
     int nTagCount = TagElements.size();
     if( nTagCount == 0)
@@ -46,7 +43,7 @@ void TagStore::ClearTags()
         {
             if(pTE->size && pTE->dynamicbuffer && pTE->alloced)
             {
-                delete[] (char*)pTE->dynamicbuffer;
+                delete[] pTE->dynamicbuffer;
                 pTE->alloced = FALSE;
             }
         }
@@ -59,20 +56,22 @@ void TagStore::ClearTags()
     }
 }
 
-bool TagStore::isCreated()
+bool TagStore::IsCreated()
 {
     return true;
 }
 
-unsigned long TagStore::GetTagCount()
+DWORD TagStore::GetTagCount()
 {
     return TagElements.size();
 }
 
-TagElement* TagStore::FindTagElement(unsigned long TagID)
+TagElement* TagStore::FindTagElement(DWORD TagID)
 {
     if (TagID == 0)
         return NULL;
+
+    DWORD nCnt = 0;
 
     list<TagElement*>::iterator  it;
 
@@ -89,7 +88,7 @@ TagElement* TagStore::FindTagElement(unsigned long TagID)
     return NULL;
 }
 
-unsigned long TagStore::AddTagElement(unsigned long TagID, unsigned short wVR, const char* data, unsigned long size)
+DWORD TagStore::AddTagElement(DWORD TagID,WORD wVR, char* data, DWORD size)
 {
     TagElement *pNewTag = new TagElement;
 
@@ -97,79 +96,20 @@ unsigned long TagStore::AddTagElement(unsigned long TagID, unsigned short wVR, c
     memset(pNewTag,0,sizeof(TagElement));
 
     pNewTag->id = TagID;
-    memcpy(pNewTag->VRtype, &wVR, 2);
-
-    int i;
-    unsigned short ush;
-    unsigned int ulo;
-
-    unsigned short nCVR = wVR;
-    if ( bLittleEndian )
-    {
-        nCVR = SwapWORD(wVR);
-    }
-
-    char* dataBuffer = NULL;
-
-    switch ( nCVR )
-    {
-        case UI:
-        case IS:
-        case DS:
-        case CS:
-            dataBuffer = new char[size+1];
-            memset(dataBuffer, 0, size+1);
-            memcpy(dataBuffer, data, size);
-            if (( size % 2 ) != 0 )
-            {
-                dataBuffer[size] = '\0';
-                size++;
-            }
-            break;
-
-        case UL:
-            dataBuffer = new char[sizeof(unsigned int)];
-
-            sscanf(data, "%d", &i);
-            size = sizeof(unsigned int);
-            ulo = (unsigned int)i;
-            memcpy(dataBuffer, &ulo, sizeof(unsigned int));
-            break;
-
-        case US:
-            dataBuffer = new char[sizeof(unsigned short)];
-            sscanf(data, "%d", &i);
-            size = sizeof(unsigned short);
-            ush = (unsigned short)i;
-            memcpy(dataBuffer, &ush, sizeof(unsigned short));
-            break;
-
-        default:
-            dataBuffer = new char[size];
-            memcpy(dataBuffer, data, size);
-            break;
-    }
-
+    memcpy(pNewTag->VRtype,&wVR,2);
     pNewTag->size = size;
-    if ( pNewTag->size )
+    if(size)
     {
-        if( pNewTag->size > MAX_STATICBUFFER_LENGTH )
+        if(size > MAX_STATICBUFFER_LENGTH)
         {
-            pNewTag->dynamicbuffer = new char[pNewTag->size];
+            pNewTag->dynamicbuffer = new char[size];
             pNewTag->alloced = true;
-            memcpy(pNewTag->dynamicbuffer, dataBuffer, pNewTag->size);
-        }
-        else
-        {
-            memset(pNewTag->staticbuffer, 0, MAX_STATICBUFFER_LENGTH);
-            memcpy(pNewTag->staticbuffer, dataBuffer, pNewTag->size);
+            memcpy(pNewTag->dynamicbuffer,data,size);
+        }else{
+            memset(pNewTag->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
+            memcpy(pNewTag->staticbuffer,data,size);
 			pNewTag->alloced = false;
         }
-    }
-
-    if ( dataBuffer == NULL )
-    {
-        delete[] dataBuffer;
     }
 
     TagElements.push_back(pNewTag);
@@ -191,17 +131,12 @@ int  TagStore::AddTagElement(TagElement *pTag)
     return TagElements.size();
 }
 
-void TagStore::Sort()
-{
-    TagElements.sort( tagSortProc );
-}
-
-TagElement* TagStore::GetTagElement(unsigned long nIndex)
+TagElement* TagStore::GetTagElement(DWORD nIndex)
 {
     if (nIndex > TagElements.size())
         return NULL;
 
-    unsigned long nCnt = 0;
+    DWORD nCnt = 0;
 
     list<TagElement*>::iterator  it;
 
@@ -215,6 +150,11 @@ TagElement* TagStore::GetTagElement(unsigned long nIndex)
     }
 
     return NULL;
+}
+
+void TagStore::Sort()
+{
+    TagElements.sort( tagSortProc );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

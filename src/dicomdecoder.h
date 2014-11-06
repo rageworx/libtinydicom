@@ -1,11 +1,10 @@
 /*******************************************************************************
 * STL , DicomImageViewer::DicomDecoder
 *
-* * Programmed by Raphael Kim (rageworx@gmail.com)
+* * (C)Copyright 2011-2014 Raphael Kim (rage.kim)
 * * Unicode Model.
 *
 *******************************************************************************/
-#pragma once
 #ifndef _DICOMDECODER_H_
 #define _DICOMDECODER_H_
 
@@ -15,7 +14,7 @@
 // fstream requires "std" namespace.
 using namespace std;
 
-namespace TinyDicom
+namespace DicomImageViewer
 {
 
     #define PIXEL_REPRESENTATION        0x00280103
@@ -41,14 +40,14 @@ namespace TinyDicom
     #define ICON_IMAGE_SEQUENCE         0x00880200
     #define PIXEL_DATA                  0x7FE00010
 
-    #define SOPCLASS_UID                0x00020002
-    #define SOPINSTANCE_UID             0x00180008
+    // additional TAG ID for VATECH.
+    #define SOPCLASS_UID                0x00020002  // added by rage.kim
+    #define SOPINSTANCE_UID             0x00180008  // added by rage.kim
 
     #define ITEM                        0xFFFEE000
     #define ITEM_DELIMITATION           0xFFFEE00D
     #define SEQUENCE_DELIMITATION       0xFFFEE0DD
 
-    // Word VR -----------------------------------------------------------------
     #define AE                          0x4145
     #define AS                          0x4153
     #define AT                          0x4154
@@ -76,11 +75,10 @@ namespace TinyDicom
     #define SQ                          0x5351
     #define UN                          0x554E
     #define QQ                          0x3F3F
-    // ----------------------------------------------------------------- Word VR
 
-    #define ID_OFFSET                   0x80        /// = 128
+    #define ID_OFFSET                   0x80        // = 128
     #define DICM                        "DICM"
-    #define IMPLICIT_VR                 0x2D2D      /// "--"
+    #define IMPLICIT_VR                 0x2D2D      // "--"
 
     #define CHARMIN                     -128
     #define SHORTMIN                    -32768

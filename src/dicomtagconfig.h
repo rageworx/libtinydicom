@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __DICOMTAGCONFIG_H__
 #define __DICOMTAGCONFIG_H__
 
@@ -28,7 +27,7 @@
 #endif
 
 #if (USING_DCM_ISE_DLL == 1)
-    #define DICOMTAG_OPT_USING_DCMISE
+    #define DICOMTAG_OPT_USING_DCMISE    
 #else
     #define DICOMTAG_OPT_USING_INTERNALVOLUMEENGINE
 #endif

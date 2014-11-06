@@ -1,22 +1,20 @@
-#pragma once
 #ifndef _DICOMTAGELEMENT_H_
 #define _DICOMTAGELEMENT_H_
 
-#include <windows.h>
 using namespace std;
 
-namespace TinyDicom
-{
-    #define MAX_STATICBUFFER_LENGTH          64
+#define MAX_STATICBUFFER_LENGTH          64
 
+namespace DicomImageViewer
+{
     typedef struct _TagElement
     {
-        unsigned long   id;
-        char            VRtype[2];
-        unsigned long   size;
-        BOOL            alloced;
-        char            staticbuffer[MAX_STATICBUFFER_LENGTH];
-        void*           dynamicbuffer;
+        DWORD   id;
+        char    VRtype[2];
+        DWORD   size;
+        bool    alloced;
+        char    staticbuffer[MAX_STATICBUFFER_LENGTH];
+        void*   dynamicbuffer;
     }TagElement;
 };
 

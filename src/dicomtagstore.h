@@ -4,7 +4,7 @@
 *                                                    last revision : 2011-09-05
 * =============================================================================
 *
-* * Programmed by Raphael Kim (rageworx@gmail.com)
+* * (C)Copyright 2011-2014 Raphael Kim (rage.kim)
 * * Unicode Model.
 *
 *******************************************************************************/
@@ -17,36 +17,39 @@
 
 #include "dicomtagelement.h"
 
-// fstream, list requires "std" namespace.
+// fstream requires "std" namespace.
 using namespace std;
 
-namespace TinyDicom
+namespace DicomImageViewer
 {
     class TagStore
     {
-        public:
-            TagStore();
-            virtual ~TagStore();
-
-        public:
-            void            ClearTags();
-
-            unsigned long   GetTagCount();
-            TagElement*     FindTagElement(unsigned long TagID);
-            TagElement*     GetTagElement(unsigned long nIndex);
-
-            unsigned long   AddTagElement(unsigned long TagID,unsigned short wVR, const char* data, unsigned long size);
-            int             AddTagElement(TagElement *pTag);
-
-            void            Sort();
-
-        private:
-            bool            isCreated();
-
         protected:
             bool                bLittleEndian;
             list<TagElement*>   TagElements;
 
+            // private function methods -----------------------------------
+            bool        IsCreated();
+
+        public:
+
+            // public function methods ------------------------------------
+            void        clearTags();
+
+            DWORD       GetTagCount();
+            TagElement* FindTagElement(DWORD TagID);
+            TagElement* GetTagElement(DWORD nIndex);
+
+            DWORD       AddTagElement(DWORD TagID,WORD wVR, char* data, DWORD size);
+            int         AddTagElement(TagElement *pTag);
+
+            void        Sort();
+
+            // constructor
+            TagStore();
+
+            // destructor
+            ~TagStore();
     };
 };
 
