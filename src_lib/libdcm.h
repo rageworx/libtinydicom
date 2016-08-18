@@ -65,12 +65,8 @@ LIB_EXPORT int          WriteWideString( TagElement* pElem, const wchar_t* ws );
 // -- related in images.
 LIB_EXPORT bool         AddImage( ImageInformation* pII );
 
-////////////////////////////////////////////////////////////////////////////////
-// -- DLL MAIN
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif // __MAIN_H__
+#endif // __LIBDCM_H__
