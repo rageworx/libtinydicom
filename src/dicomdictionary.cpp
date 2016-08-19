@@ -1,16 +1,17 @@
-#include <windows.h>
+#ifdef _WIN32
+    #include <windows.h>
+#endif /// of _WIN32
 #include "dicomdictionary.h"
 
-#define DIC_VERSION     0x0102      /// 1.2
-#define DIC_DATE        "20140915"
+#define DIC_VERSION     0x0200      /// 2.0
+#define DIC_DATE        "20160819"  /// followed to 2016c
 
 using namespace DicomImageViewer;
 
 static const
 TDicomDictionary dict[]=
 {
-    // dummy => {0x, "", ""},
-
+    // -------------------------------------------------------------------------
     // Group tag 0002 ----------------------------------------------------------
     {0x00020000, "UL", "File Meta Elements Group Len"},
     {0x00020002, "UI", "Media Storage SOP Class UID"},
@@ -20,15 +21,17 @@ TDicomDictionary dict[]=
     {0x00020013, "SH", "Implementation Version Name"},
     {0x00020016, "AE", "Source Application Entity Title"},
 
+    // -------------------------------------------------------------------------
     // Group tag 0008 ----------------------------------------------------------
     {0x00080001, "UL", "Length to End"},
     {0x00080005, "CS", "Specific Character Set"},
     {0x00080006, "SQ", "Language Code Sequence"},
     {0x00080008, "CS", "Image Type"},
-    {0x00080010, "CS", "Recognition Code"},
+    {0x00080010, "SH", "Recognition Code"}, /// was VR == CS
     {0x00080012, "DA", "Instance Creation Date"},
     {0x00080013, "TM", "Instance Creation Time"},
     {0x00080014, "UI", "Instance Creator UID"},
+    {0x00080015, "DT", "Instance Create UID"},
     {0x00080016, "UI", "SOP Class UID"},
     {0x00080018, "UI", "SOP Instance UID"},
     {0x0008001A, "UI", "Related General SOP Class UID"},
@@ -52,8 +55,11 @@ TDicomDictionary dict[]=
     {0x00080050, "SH", "Accession Number"},
     {0x00080051, "SQ", "Issuer of Accession Number Sequence"},
     {0x00080052, "CS", "Query/Retrieve Level"},
+    {0x00080053, "CS", "Query/Retrieve View"},
     {0x00080054, "AE", "Retrieve AE Title"},
-    {0x00080058, "AE", "Failed SOP Instance UID List"},
+    {0x00080055, "AE", "Station AE Title"},
+    {0x00080056, "CS", "Instance Availability"},
+    {0x00080058, "UI", "Failed SOP Instance UID List"}, /// was VR==AE
     {0x00080060, "CS", "Modality"},
     {0x00080061, "CS", "Modalities in Study"},
     {0x00080062, "UI", "SOP Classes in Study"},
@@ -66,22 +72,64 @@ TDicomDictionary dict[]=
     {0x00080090, "PN", "Referring Physician's Name"},
     {0x00080092, "ST", "Referring Physician's Address"},
     {0x00080094, "SH", "Referring Physician's Telephone Numbers"},
+    {0x00080096, "SQ", "Referring Physician Identification Sequence"},
+    {0x0008009C, "PN", "Consulting Physician's Name"},
+    {0x0008009D, "SQ", "Consulting Physician Identification Sequence"},
+
     {0x00080100, "SH", "Code Value"},
     {0x00080102, "SH", "Coding Scheme Designator"},
     {0x00080104, "LO", "Code Meaning"},
+    {0x00080105, "CS", "Mapping Resource"},
+    {0x00080106, "DT", "Context Group Version"},
+    {0x00080107, "DT", "Context Group Local Version"},
+    {0x00080108, "LT", "Extended Code Meaning"},
+    {0x0008010C, "UI", "Coding Scheme UID"},
+    {0x0008010D, "UI", "Context Group Extension Creator UID"},
+    {0x0008010F, "CS", "Context Identifier"},
+    {0x00080110, "SQ", "Coding Scheme Identification Sequence"},
+    {0x00080112, "LO", "Coding Scheme Registry"},
+    {0x00080114, "ST", "Coding Scheme External ID"},
+    {0x00080115, "ST", "Coding Scheme Name"},
+    {0x00080116, "ST", "Coding Scheme Responsible Organization"},
+    {0x00080117, "UI", "Context UID"},
+    {0x00080118, "UI", "Mapping Resource UID"},
+    {0x00080119, "UC", "Long Code Value"},
+    {0x00080120, "UR", "URN Code Value"},
+    {0x00080121, "SQ", "Equivalent Code Sequence"},
+    {0x00080122, "LO", "Mapping Resource Name"},
+    {0x00080123, "SQ", "Context Group Identification Sequence"},
+    {0x00080124, "SQ", "Mapping Resource Identification Sequence"},
+
     {0x00080201, "SH", "Timezone Offset From UTC"},
+
+    {0x00080300, "SQ", "Private Data Element Characteristics Sequence"},
+    {0x00080301, "US", "Private Group Reference"},
+    {0x00080302, "LO", "Private Creator Reference"},
+    {0x00080303, "CS", "Block Identifying Information Status"},
+    {0x00080304, "US", "Nonidentifying PrivateElements"},
+    {0x00080305, "SQ", "Deidentification ActionSequence"},
+    {0x00080306, "US", "Identifying PrivateElements"},
+    {0x00080307, "CS", "Deidentification Action"},
+
+    {0x00081000, "AE", "Network ID"},
     {0x00081010, "SH", "Station Name"},
     {0x00081030, "LO", "Study Description"},
     {0x00081032, "SQ", "Procedure Code Sequence"},
     {0x0008103E, "LO", "Series Description"},
+    {0x0008103F, "SQ", "Series Description CodeSequence"},
     {0x00081040, "LO", "Institutional Department Name"},
     {0x00081048, "PN", "Physician(s) of Record"},
+    {0x00081049, "SQ", "Physician(s) of Record Identification Sequence"},
     {0x00081050, "PN", "Attending Physician's Name"},
+    {0x00081052, "SQ", "Performing Physician Identification Sequence"},
     {0x00081060, "PN", "Name of Physician(s) Reading Study"},
+    {0x00081062, "SQ", "Physician(s) ReadingStudy Identification Sequenc"},
     {0x00081070, "PN", "Operator's Name"},
+    {0x00081072, "SQ", "Operator Identification Sequence"},
     {0x00081080, "LO", "Admitting Diagnosis Description"},
     {0x00081084, "SQ", "Admitting Diagnosis Code Sequence"},
     {0x00081090, "LO", "Manufacturer's Model Name"},
+
     {0x00081100, "SQ", "Referenced Results Sequence"},
     {0x00081110, "SQ", "Referenced Study Sequence"},
     {0x00081111, "SQ", "Referenced Study Component Sequence"},
@@ -89,56 +137,411 @@ TDicomDictionary dict[]=
     {0x00081120, "SQ", "Referenced Patient Sequence"},
     {0x00081125, "SQ", "Referenced Visit Sequence"},
     {0x00081130, "SQ", "Referenced Overlay Sequence"},
+    {0x00081134, "SQ", "Referenced Stereometric Instance Sequence"},
+    {0x0008113A, "SQ", "Referenced Waveform Sequence"},
     {0x00081140, "SQ", "Referenced Image Sequence"},
     {0x00081145, "SQ", "Referenced Curve Sequence"},
+    {0x0008114A, "SQ", "Referenced InstanceSequence"},
+    {0x0008114B, "SQ", "Referenced Real World Value Mapping InstanceSequence"},
     {0x00081150, "UI", "Referenced SOP Class UID"},
     {0x00081155, "UI", "Referenced SOP Instance UID"},
+    {0x0008115A, "UI", "SOP Classes Supported"},
+    {0x00081160, "IS", "Referenced Frame Number"},
+    {0x00081161, "UL", "Simple Frame List"},
+    {0x00081162, "UL", "Calculated Frame List"},
+    {0x00081163, "FD", "Time Range"},
+    {0x00081164, "SQ", "Frame Extraction Sequence"},
+    {0x00081167, "UI", "Multi-frame Source SOP Instance UID"},
+    {0x00081190, "UR", "Retrieve URL"},
+    {0x00081195, "UI", "Transaction UID"},
+    {0x00081196, "US", "Warning Reason"},
+    {0x00081197, "US", "Failure Reason"},
+    {0x00081198, "SQ", "Failed SOP Sequence"},
+    {0x00081199, "SQ", "Referenced SOP Sequence"},
+    {0x0008119A, "SQ", "Other Failures Sequence"},
+
+    {0x00081200, "SQ", "Studies Containing OtherReferenced InstancesSequence"},
+    {0x00081250, "SQ", "Related Series Sequence"},
+
+    {0x00082110, "CS", "Lossy Image Compression(Retired)"},
     {0x00082111, "ST", "Derivation Description"},
     {0x00082112, "SQ", "Source Image Sequence"},
     {0x00082120, "SH", "Stage Name"},
     {0x00082122, "IS", "Stage Number"},
     {0x00082124, "IS", "Number of Stages"},
-    {0x00082129, "IS", "Number of Event Timers"},
+    {0x00082127, "SH", "View Name"},
     {0x00082128, "IS", "View Number"},
+    {0x00082129, "IS", "Number of Event Timers"},
     {0x0008212A, "IS", "Number of Views in Stage"},
     {0x00082130, "DS", "Event Elapsed Time(s)"},
     {0x00082132, "LO", "Event Timer Name(s)"},
+    {0x00082133, "SQ", "Event Timer Sequence"},
+    {0x00082134, "FD", "Event Time Offset"},
+    {0x00082135, "SQ", "Event Code Sequence"},
     {0x00082142, "IS", "Start Trim"},
     {0x00082143, "IS", "Stop Trim"},
     {0x00082144, "IS", "Recommended Display Frame Rate"},
+
     {0x00082200, "CS", "Transducer Position"},
     {0x00082204, "CS", "Transducer Orientation"},
     {0x00082208, "CS", "Anatomic Structure"},
+    {0x00082218, "SQ", "Anatomic RegionSequence"},
+    {0x00082220, "SQ", "Anatomic Region ModifierSequence"},
+    {0x00082228, "SQ", "Primary Anatomic Structure Sequence"},
+    {0x00082229, "SQ", "Anatomic Structure, Spaceor Region Sequence"},
+    {0x00082230, "SQ", "Primary Anatomic Structure ModifierSequence"},
+    {0x00082240, "SQ", "Transducer Position Sequence"},
+    {0x00082242, "SQ", "Transducer Position Modifier Sequence"},
+    {0x00082244, "SQ", "Transducer Orientation Sequence"},
+    {0x00082246, "SQ", "Transducer Orientation Modifier Sequence"},
+    {0x00082251, "SQ", "Anatomic Structure SpaceOr Region Code Sequence(Trial)"},
+    {0x00082253, "SQ", "Anatomic Portal Of Entrance Code Sequence(Trial)"},
+    {0x00082255, "SQ", "Anatomic ApproachDirection Code Sequence(Trial)"},
+    {0x00082256, "ST", "Anatomic Perspective Description (Trial)"},
+    {0x00082257, "SQ", "Anatomic Perspective Code Sequence (Trial)"},
+    {0x00082258, "ST", "Anatomic Location Of Examining InstrumentDescription (Trial)"},
+    {0x00082259, "SQ", "Anatomic Location Of Examining InstrumentCode Sequence (Trial)"},
+    {0x0008225A, "SQ", "Anatomic Structure SpaceOr Region Modifier CodeSequence (Trial)"},
+    {0x0008225C, "SQ", "On Axis Background Anatomic Structure CodeSequence (Trial)"},
 
+    {0x00083001, "SQ", "Alternate Representation Sequence"},
+    {0x00083010, "UI", "Irradiation Event UID"},
+    {0x00083011, "SQ", "Source Irradiation Event Sequence"},
+    {0x00082012, "UI", "Radiopharmaceutical Administration Event UID"},
+
+    {0x00084000, "LT", "Identifying Comments"},
+
+    {0x00089007, "CS", "Frame Type"},
+    {0x00089092, "SQ", "Referenced ImageEvidence Sequence"},
+
+    {0x00089121, "SQ", "Referenced Raw DataSequence"},
+    {0x00089123, "UI", "Creator-Version UID"},
+    {0x00089124, "SQ", "Derivation ImageSequence"},
+    {0x00089154, "SQ", "Source Image EvidenceSequence"},
+
+    {0x00089205, "CS", "Pixel Presentation"},
+    {0x00089206, "CS", "Volumetric Properties"},
+    {0x00089207, "CS", "Volume Based Calculation Technique"},
+    {0x00089208, "CS", "Complex Image Component"},
+    {0x00089209, "CS", "Acquisition Contrast"},
+    {0x00089215, "SQ", "Derivation Code Sequence"},
+    {0x00089237, "SQ", "Referenced Presentation State Sequence"},
+
+    {0x00089410, "SQ", "Referenced Other Plane Sequence"},
+    {0x00089458, "SQ", "Frame Display Sequence"},
+    {0x00089459, "FL", "Recommended DisplayFrame Rate in Float"},
+    {0x00089460, "CS", "Skip Frame Range Flag"},
+
+    // -------------------------------------------------------------------------
     // Group tag 0010 ----------------------------------------------------------
     {0x00100010, "PN", "Patient's Name"},
     {0x00100020, "LO", "Patient ID"},
     {0x00100021, "LO", "Issuer of Patient ID"},
-    {0x00100030, "DA", "Patient's Birth Date"},
+    {0x00100022, "CS", "Type of Patient ID"},
+    {0x00100024, "SQ", "Issuer of Patient ID Qualifiers Sequence"},
+    {0x00100026, "SQ", "Source Patient Group Identification Sequence"},
+    {0x00100027, "SQ", "Group of Patients Identification Sequence"},
+    {0x00100028, "US", "Subject Relative Position in Image"},
+    {0x00100038, "DA", "Patient's Birth Date"},
     {0x00100032, "TM", "Patient's Birth Time"},
+    {0x00100033, "LO", "Patient's Birth Date in Alternative Calendar"},
+    {0x00100034, "LO", "Patient's Death Date in Alternative Calendar"},
+    {0x00100035, "CS", "Patient's Alternative Calendar"},
     {0x00100040, "CS", "Patient's Sex"},
+    {0x00100050, "SQ", "Patient's Insurance PlanCode Sequence"},
+
+    {0x00100101, "SQ", "Patient's Primary Language Code Sequence"},
+    {0x00100101, "SQ", "Patient's Primary Language Modifier CodeSequence"},
+
+    {0x00100200, "CS", "Quality Control Subject"},
+    {0x00100201, "SQ", "Quality Control Subject Type Code Sequence"},
+    {0x00100212, "UC", "Strain Description"},
+    {0x00100213, "LO", "Strain Nomenclature"},
+    {0x00100214, "LO", "Strain Stock Number"},
+    {0x00100215, "SQ", "Strain Source RegistryCode Sequence"},
+    {0x00100216, "SQ", "Strain Stock Sequence"},
+    {0x00100217, "LO", "Strain Source"},
+    {0x00100218, "UT", "Strain Additional Information"},
+    {0x00100219, "SQ", "Strain Code Sequence"},
+
     {0x00101000, "LO", "Other Patient IDs"},
     {0x00101001, "PN", "Other Patient Names"},
+    {0x00101002, "SQ", "Other Patient IDs Sequence"},
     {0x00101005, "PN", "Patient's Maiden Name"},
     {0x00101010, "AS", "Patient's Age"},
     {0x00101020, "DS", "Patient's Size"},
+    {0x00101021, "SQ", "Patient's Size Code Sequence"},
     {0x00101030, "DS", "Patient's Weight"},
     {0x00101040, "LO", "Patient's Address"},
+    {0x00101050, "LO", "Insurance Plan Identification"},
+    {0x00101060, "PN", "Patient's Mother's Birth Name"},
+    {0x00101080, "LO", "Military Rank"},
+    {0x00101081, "LO", "Branch of Service"},
+    {0x00101090, "LO", "Medical Record Locator"},
+
+    {0x00101100, "SQ", "Referenced Patient Photo Sequence"},
+
+    {0x00102000, "LO", "Medical Alerts"},
+
+    {0x00102110, "LO", "Allergies"},
     {0x00102150, "LO", "Country of Residence"},
     {0x00102152, "LO", "Region of Residence"},
+    {0x00102154, "SH", "Patient's TelephoneNumbers"},
+    {0x00102155, "LT", "Patient's Telecom Information"},
+    {0x00102160, "SH", "Ethnic Group"},
     {0x00102180, "SH", "Occupation"},
     {0x001021A0, "CS", "Smoking Status"},
     {0x001021B0, "LT", "Additional Patient History"},
+    {0x001021C0, "US", "Pregnancy Status"},
+    {0x001021D0, "DA", "Last Menstrual Date"},
+    {0x001021F0, "LO", "Patient's ReligiousPreference"},
+
     {0x00102201, "LO", "Patient Species Description"},
+    {0x00102202, "SQ", "Patient Species CodeSequence"},
     {0x00102203, "CS", "Patient Sex Neutered"},
+    {0x00102210, "CS", "Anatomical Orientation Type"},
     {0x00102292, "LO", "Patient Breed Description"},
+    {0x00102293, "SQ", "Patient Breed Code Sequence"},
     {0x00102297, "PN", "Responsible Person"},
     {0x00102298, "CS", "Responsible Person Role"},
     {0x00102299, "CS", "Responsible Organization"},
+
     {0x00104000, "LT", "Patient Comments"},
 
-    // Group tag 0180 ----------------------------------------------------------
+    {0x00109431, "FL", "Examined Body Thickness"},
+
+    // -------------------------------------------------------------------------
+    // Group tag 0012 ----------------------------------------------------------
+    {0x00120020, "LO", "Clinical Trial Protocol ID"},
+    {0x00120021, "LO", "Clinical Trial Protocol Name"},
+    {0x00120030, "LO", "Clinical Trial Site ID"},
+    {0x00120031, "LO", "Clinical Trial Site Name"},
+    {0x00120040, "LO", "Clinical Trial Subject ID"},
+    {0x00120042, "LO", "Clinical Trial SubjectReading ID"},
+    {0x00120050, "LO", "Clinical Trial Time Point ID"},
+    {0x00120051, "ST", "Clinical Trial Time Point Description"},
+    {0x00120060, "LO", "Clinical Trial Coordinating Center Name"},
+    {0x00120062, "CS", "Patient Identity Removed"},
+    {0x00120063, "LO", "De-identification Method"},
+    {0x00120064, "SQ", "De-identification MethodCode Sequence"},
+    {0x00120071, "LO", "Clinical Trial Series ID"},
+    {0x00120072, "LO", "Clinical Trial Series Description"},
+    {0x00120081, "LO", "Clinical Trial Protocol Ethics Committee Name"},
+    {0x00120082, "LO", "Clinical Trial Protocol Ethics Committee ApprovalNumber"},
+    {0x00120083, "SQ", "Consent for Clinical TrialUse Sequence"},
+    {0x00120084, "CS", "Distribution Type"},
+    {0x00120085, "CS", "Consent for Distribution Flag"},
+
+    // -------------------------------------------------------------------------
+    // Group tag 0014 ----------------------------------------------------------
+    {0x00140023, "ST", "CAD File Format"},
+    {0x00140024, "ST", "Component Reference System"},
+    {0x00140025, "ST", "Component Manufacturing Procedure"},
+    {0x00140028, "ST", "Component Manufacturer"},
+    {0x00140030, "DS", "Material Thickness"},
+    {0x00140032, "DS", "Material Pipe Diameter"},
+    {0x00140034, "DS", "Material Isolation Diameter"},
+    {0x00140042, "ST", "Material Grade"},
+    {0x00140044, "ST", "Material Properties Description"},
+    {0x00140045, "ST", "Material Properties FileFormat (Retired)"},
+    {0x00140046, "LT", "Material Notes"},
+    {0x00140050, "CS", "Component Shape"},
+    {0x00140052, "CS", "Curvature Type"},
+    {0x00140054, "DS", "Outer Diameter"},
+    {0x00140056, "DS", "Inner Diameter"},
+
+    {0x00140100, "LO", "Component Welder IDs"},
+    {0x00140101, "CS", "Secondary Approval Status"},
+    {0x00140102, "DA", "Secondary Review Date"},
+    {0x00140103, "TM", "Secondary Review Time"},
+    {0x00140104, "PN", "Secondary Reviewer Name"},
+    {0x00140105, "ST", "Repair ID"},
+    {0x00140106, "SQ", "Multiple ComponentApproval Sequence"},
+    {0x00140107, "CS", "Other Approval Status"},
+    {0x00140108, "CS", "Other Secondary ApprovalStatus"},
+
+    {0x00141010, "ST", "Actual Environmental Conditions"},
+    {0x00141020, "DA", "Expiry Date"},
+    {0x00141040, "ST", "Environmental Conditions"},
+
+    {0x00142002, "SQ", "Evaluator Sequence"},
+    {0x00142004, "IS", "Evaluator Number"},
+    {0x00142006, "PN", "Evaluator Name"},
+    {0x00142008, "IS", "Evaluation Attempt"},
+    {0x00142012, "SQ", "Indication Sequence"},
+    {0x00142014, "IS", "Indication Number"},
+    {0x00142016, "SH", "Indication Label"},
+    {0x00142018, "ST", "Indication Description"},
+    {0x0014201A, "CS", "Indication Type"},
+    {0x0014201C, "CS", "Indication Disposition"},
+    {0x0014201E, "SQ", "Indication ROI Sequence"},
+    {0x00142030, "SQ", "Indication PhysicalProperty Sequence"},
+    {0x00142032, "SH", "Property Label"},
+
+    {0x00142202, "IS", "Coordinate System Number of Axes"},
+    {0x00142204, "SQ", "Coordinate System Axes Sequence"},
+    {0x00142206, "ST", "Coordinate System AxisDescription"},
+    {0x00142208, "CS", "Coordinate System DataSet Mapping"},
+    {0x0014220A, "IS", "Coordinate System AxisNumber"},
+    {0x0014220C, "CS", "Coordinate System AxisType"},
+    {0x0014220E, "CS", "Coordinate System AxisUnits"},
+    {0x00142210, "OB", "Coordinate System AxisValues"},
+    {0x00142220, "SQ", "Coordinate SystemTransform Sequence"},
+    {0x00142222, "ST", "Transform Description"},
+    {0x00142224, "IS", "Transform Number of Axes"},
+    {0x00142226, "IS", "Transform Order of Axes"},
+    {0x00142228, "CS", "Transformed Axis Units"},
+    {0x0014222A, "DS", "Coordinate System Transform Rotation andScale Matrix"},
+    {0x0014222C, "DS", "Coordinate System Transform Translation Matrix"},
+
+    {0x00143011, "DS", "Internal Detector FrameTime"},
+    {0x00143012, "DS", "Number of Frames Integrated"},
+    {0x00143020, "SQ", "Detector Temperature Sequence"},
+    {0x00143022, "ST", "Sensor Name"},
+    {0x00143024, "DS", "Horizontal Offset of Sensor"},
+    {0x00143026, "DS", "Vertical Offset of Sensor"},
+    {0x00143028, "DS", "Sensor Temperature"},
+    {0x00143040, "SQ", "Dark Current Sequence"},
+    {0x00143050, "OB", "Dark Current Counts"}, /// check with below
+    {0x00143050, "OW", "Dark Current Counts"}, /// check with above
+    {0x00143060, "SQ", "Gain Correction ReferenceSequence"},
+    {0x00143070, "OB", "Air Counts"}, /// check with below
+    {0x00143070, "OW", "Air Counts"}, /// check with above
+    {0x00143071, "DS", "KV Used in GainCalibration"},
+    {0x00143072, "DS", "MA Used in GainCalibration"},
+    {0x00143073, "DS", "Number of Frames Usedfor Integration"},
+    {0x00143074, "LO", "Filter Material Used in Gain Calibration"},
+    {0x00143075, "DS", "Filter Thickness Used inGain Calibration"},
+    {0x00143076, "DA", "Date of Gain Calibration"},
+    {0x00143077, "TM", "Time of Gain Calibration"},
+    {0x00143080, "OB", "Bad Pixel Image"},
+    {0x00143099, "LT", "Calibration Notes"},
+
+    {0x00144002, "SQ", "Pulser EquipmentSequence"},
+    {0x00144004, "CS", "Pulser Type"},
+    {0x00144006, "LT", "Pulser Notes"},
+    {0x00144008, "SQ", "Receiver Equipment Sequence"},
+    {0x0014400A, "CS", "Amplifier Type"},
+    {0x0014400C, "LT", "Receiver Notes"},
+    {0x0014400E, "SQ", "Pre-Amplifier EquipmentSequence"},
+    {0x0014400F, "LT", "Pre-Amplifier Notes"},
+    {0x00144010, "SQ", "Transmit TransducerSequence"},
+    {0x00144011, "SQ", "Receive TransducerSequence"},
+    {0x00144012, "US", "Number of Elements"},
+    {0x00144013, "CS", "Element Shape"},
+    {0x00144014, "DS", "Element Dimension A"},
+    {0x00144015, "DS", "Element Dimension B"},
+    {0x00144016, "DS", "Element Pitch A"},
+    {0x00144017, "DS", "Measured BeamDimension A"},
+    {0x00144018, "DS", "Measured BeamDimension B"},
+    {0x00144019, "DS", "Location of MeasuredBeam Diameter"},
+    {0x0014401A, "DS", "Nominal Frequency"},
+    {0x0014401B, "DS", "Measured Center Frequency"},
+    {0x0014401C, "DS", "Measured Bandwidth"},
+    {0x0014401D, "DS", "Element Pitch B"},
+    {0x00144020, "SQ", "Pulser Settings Sequence"},
+    {0x00144022, "DS", "Pulse Width"},
+    {0x00144024, "DS", "Excitation Frequency"},
+    {0x00144026, "CS", "Modulation Type"},
+    {0x00144028, "DS", "Damping"},
+    {0x00144030, "SQ", "Receiver Settings Sequence"},
+    {0x00144031, "DS", "Acquired Soundpath Length"},
+    {0x00144032, "CS", "Acquisition Compression Type"},
+    {0x00144033, "IS", "Acquisition Sample Size"},
+    {0x00144034, "DS", "Rectifier Smoothing"},
+    {0x00144035, "SQ", "DAC Sequence"},
+    {0x00144036, "CS", "DAC Type"},
+    {0x00144038, "DS", "DAC Gain Points"},
+    {0x0014403A, "DS", "DAC Time Points"},
+    {0x0014403C, "DS", "DAC Amplitude"},
+    {0x00144040, "SQ", "Pre-Amplifier SettingsSequence"},
+    {0x00144050, "SQ", "Transmit Transducer Settings Sequence"},
+    {0x00144051, "SQ", "Receive Transducer Settings Sequence"},
+    {0x00144052, "DS", "Incident Angle"},
+    {0x00144054, "ST", "Coupling Technique"},
+    {0x00144056, "ST", "Coupling Medium"},
+    {0x00144057, "DS", "Coupling Velocity"},
+    {0x00144058, "DS", "Probe Center Location X"},
+    {0x00144059, "DS", "Probe Center Location Z"},
+    {0x0014405A, "DS", "Sound Path Length"},
+    {0x0014405C, "ST", "Delay Law Identifier"},
+    {0x00144060, "SQ", "Gate Settings Sequence"},
+    {0x00144062, "DS", "Gate Threshold"},
+    {0x00144064, "DS", "Velocity of Sound"},
+    {0x00144070, "SQ", "Calibration SettingsSequence"},
+    {0x00144072, "ST", "Calibration Procedure"},
+    {0x00144074, "SH", "Procedure Version"},
+    {0x00144076, "DA", "Procedure Creation Date"},
+    {0x00144078, "DA", "Procedure Expiration Date"},
+    {0x0014407A, "DA", "Procedure Last ModifiedDate"},
+    {0x0014407C, "TM", "Calibration Time"},
+    {0x0014407E, "DA", "Calibration Date"},
+    {0x00144080, "SQ", "Probe Drive EquipmentSequence"},
+    {0x00144081, "CS", "Drive Type"},
+    {0x00144082, "LT", "Probe Drive Notes"},
+    {0x00144083, "SQ", "Drive Probe Sequence"},
+    {0x00144084, "DS", "Probe Inductance"},
+    {0x00144085, "DS", "Probe Resistance"},
+    {0x00144086, "SQ", "Receive Probe Sequence"},
+    {0x00144087, "SQ", "Probe Drive SettingsSequence"},
+    {0x00144088, "DS", "Bridge Resistors"},
+    {0x00144089, "DS", "Probe Orientation Angle"},
+    {0x0014408B, "DS", "User Selected Gain Y"},
+    {0x0014408C, "DS", "User Selected Phase"},
+    {0x0014408D, "DS", "User Selected Offset X"},
+    {0x0014408E, "DS", "User Selected Offset Y"},
+    {0x00144091, "SQ", "Channel SettingsSequence"},
+    {0x00144092, "DS", "Channel Threshold"},
+    {0x0014409A, "SQ", "Scanner SettingsSequence"},
+    {0x0014409B, "ST", "Scan Procedure"},
+    {0x0014409C, "DS", "Translation Rate X"},
+    {0x0014409D, "DS", "Translation Rate Y"},
+    {0x0014409F, "DS", "Channel Overlap"},
+    {0x001440A0, "LO", "Image Quality Indicator Type"},
+    {0x001440A1, "LO", "Image Quality Indicator Material"},
+    {0x001440A2, "LO", "Image Quality Indicator Size"},
+
+    {0x00145002, "IS", "LINAC Energy"},
+    {0x00145004, "IS", "LINAC Output"},
+
+    {0x00145100, "US", "Active Aperture"},
+    {0x00145101, "DS", "Total Aperture"},
+    {0x00145102, "DS", "Aperture Elevation"},
+    {0x00145103, "DS", "Main Lobe Angle"},
+    {0x00145104, "DS", "Main Roof Angle"},
+    {0x00145105, "CS", "Connector Type"},
+    {0x00145106, "SH", "Wedge Model Number"},
+    {0x00145107, "DS", "Wedge Angle Float"},
+    {0x00145108, "DS", "Wedge Roof Angle"},
+    {0x00145109, "CS", "Wedge Element 1 Position"},
+    {0x0014510A, "DS", "Wedge Material Velocity"},
+    {0x0014510B, "SH", "Wedge Material"},
+    {0x0014510C, "DS", "Wedge Offset Z"},
+    {0x0014510D, "DS", "Wedge Origin Offset X"},
+    {0x0014510E, "DS", "Wedge Time Delay"},
+    {0x0014510F, "SH", "Wedge Name"},
+    {0x00145110, "SH", "Wedge Manufacturer Name"},
+    {0x00145111, "LO", "Wedge Description"},
+    {0x00145112, "DS", "Nominal Beam Angle"},
+    {0x00145113, "DS", "Wedge Offset X"},
+    {0x00145114, "DS", "Wedge Offset Y"},
+    {0x00145115, "DS", "Wedge Total Length"},
+    {0x00145116, "DS", "Wedge In Contact Length"},
+    {0x00145117, "DS", "Wedge Front Gap"},
+    {0x00145118, "DS", "Wedge Total Height"},
+    {0x00145119, "DS", "Wedge Front Height"},
+    {0x0014511A, "DS", "Wedge Rear Height"},
+    {0x0014511B, "DS", "Wedge Total Width"},
+    {0x0014511C, "DS", "Wedge In Contact Width"},
+    {0x0014511D, "DS", "Wedge Chamfer Height"},
+    {0x0014511E, "CS", "Wedge Curve"},
+    {0x0014511F, "DS", "Radius Along the Wedge"},
+
+    // -------------------------------------------------------------------------
+    // Group tag 0018 ----------------------------------------------------------
     {0x00180010, "LO", "Contrast/Bolus Agent"},
+    {0x00180013, "FL", "Contrast/Bolus T1 Relaxivity"},
+    {0x00180014, "SQ", "Contrast/Bolus Administration RouteSequence"},
     {0x00180015, "CS", "Body Part Examined"},
     {0x00180020, "CS", "Scanning Sequence"},
     {0x00180021, "CS", "Sequence Variant"},
@@ -146,15 +549,27 @@ TDicomDictionary dict[]=
     {0x00180023, "CS", "MR Acquisition Type"},
     {0x00180024, "SH", "Sequence Name"},
     {0x00180025, "CS", "Angio Flag"},
+    {0x00180026, "SQ", "Intervention Drug Information Sequence"},
+    {0x00180027, "TM", "Intervention Drug StopTime"},
+    {0x00180028, "DS", "Intervention Drug Dose"},
+    {0x00180029, "SQ", "Intervention Drug Code Sequence"},
+    {0x0018002A, "SQ", "Additional Drug Sequence"},
     {0x00180030, "LO", "Radionuclide"},
     {0x00180031, "LO", "Radiopharmaceutical"},
     {0x00180032, "DS", "Energy Window Centerline"},
     {0x00180033, "DS", "Energy Window Total Width"},
     {0x00180034, "LO", "Intervention Drug Name"},
     {0x00180035, "TM", "Intervention Drug Start Time"},
+    {0x00180036, "SQ", "Intervention Sequence"},
+    {0x00180037, "CS", "Therapy Type"},
+    {0x00180038, "CS", "Intervention Status"},
+    {0x00180039, "CS", "Therapy Description"},
+    {0x0018003A, "ST", "Intervention Description"},
     {0x00180040, "IS", "Cine Rate"},
+    {0x00180042, "CS", "Initial Cine Run State"},
     {0x00180050, "DS", "Slice Thickness"},
     {0x00180060, "DS", "kVp"},
+    {0x00180061, "DS", ""},     /// what is this ???
     {0x00180070, "IS", "Counts Accumulated"},
     {0x00180071, "CS", "Acquisition Termination Condition"},
     {0x00180072, "DS", "Effective Series Duration"},
@@ -176,15 +591,25 @@ TDicomDictionary dict[]=
     {0x00180093, "DS", "Percent Sampling"},
     {0x00180094, "DS", "Percent Phase Field of View"},
     {0x00180095, "DS", "Pixel Bandwidth"},
+
     {0x00181000, "LO", "Device Serial Number"},
+    {0x00181002, "UI", "Device UID"},
+    {0x00181003, "LO", "Device ID"},
     {0x00181004, "LO", "Plate ID"},
+    {0x00181005, "LO", "Generator ID"},
+    {0x00181006, "LO", "Grid ID"},
+    {0x00181007, "LO", "Cassette ID"},
+    {0x00181008, "LO", "Gantry ID"},
     {0x00181010, "LO", "Secondary Capture Device ID"},
     {0x00181012, "DA", "Date of Secondary Capture"},
     {0x00181014, "TM", "Time of Secondary Capture"},
     {0x00181016, "LO", "Secondary Capture Device Manufacturer"},
+    {0x00181017, "LO", "Hardcopy DeviceManufacturer"},
     {0x00181018, "LO", "Secondary Capture Device Manufacturer's Model Name"},
     {0x00181019, "LO", "Secondary Capture Device Software Version(s)"},
-    {0x00181020, "LO", "Software Versions(s)"},
+    {0x0018101A, "LO", "Hardcopy Device SoftwareVersion"},
+    {0x0018101B, "LO", "Hardcopy DeviceManufacturer's ModelName"},
+    {0x00181020, "LO", "Software Version(s)"},
     {0x00181022, "SH", "Video Image Format Acquired"},
     {0x00181023, "LO", "Digital Image Format Acquired"},
     {0x00181030, "LO", "Protocol Name"},
@@ -194,6 +619,10 @@ TDicomDictionary dict[]=
     {0x00181043, "TM", "Contrast/Bolus Stop Time"},
     {0x00181044, "DS", "Contrast/Bolus Total Dose"},
     {0x00181045, "IS", "Syringe Counts"},
+    {0x00181046, "DS", "Contrast Flow Rate"},
+    {0x00181047, "DS", "Contrast Flow Duration"},
+    {0x00181048, "CS", "Contrast/Bolus Ingredient"},
+    {0x00181049, "DS", "Contrast/Bolus IngredientConcentration"},
     {0x00181050, "DS", "Spatial Resolution"},
     {0x00181060, "DS", "Trigger Time"},
     {0x00181061, "LO", "Trigger Source or Type"},
@@ -202,6 +631,12 @@ TDicomDictionary dict[]=
     {0x00181064, "LO", "Framing Type"},
     {0x00181065, "DS", "Frame Time Vector"},
     {0x00181066, "DS", "Frame Delay"},
+    {0x00181067, "DS", "Image Trigger Delay"},
+    {0x00181068, "DS", "Multiplex Group Time Offset"},
+    {0x00181069, "DS", "Trigger Time Offset"},
+    {0x0018106A, "CS", "Synchronization Trigger"},
+    {0x0018106C, "US", "Synchronization Channel"},
+    {0x0018106E, "UL", "Trigger Sample Position"},
     {0x00181070, "LO", "Radionuclide Route"},
     {0x00181071, "DS", "Radionuclide Volume"},
     {0x00181072, "TM", "Radionuclide Start Time"},
@@ -209,6 +644,9 @@ TDicomDictionary dict[]=
     {0x00181074, "DS", "Radionuclide Total Dose"},
     {0x00181075, "DS", "Radionuclide Half Life"},
     {0x00181076, "DS", "Radionuclide Positron Fraction"},
+    {0x00181077, "DS", "Radiopharmaceutical Specific Activity"},
+    {0x00181078, "DT", "Radiopharmaceutical Start Date Time"},
+    {0x00181079, "DT", "Radiopharmaceutical Stop Date Time"},
     {0x00181080, "CS", "Beat Rejection Flag"},
     {0x00181081, "IS", "Low R-R Value"},
     {0x00181082, "IS", "High R-R Value"},
@@ -219,12 +657,21 @@ TDicomDictionary dict[]=
     {0x00181088, "IS", "Heart Rate"},
     {0x00181090, "IS", "Cardiac Number of Images"},
     {0x00181094, "IS", "Trigger Window"},
+
     {0x00181100, "DS", "Reconstruction Diameter"},
     {0x00181110, "DS", "Distance Source to Detector"},
     {0x00181111, "DS", "Distance Source to Patient"},
+    {0x00181114, "DS", "Estimated Radiographic Magnification Factor"},
     {0x00181120, "DS", "Gantry/Detector Tilt"},
+    {0x00181121, "DS", "Gantry/Detector Slew"},
     {0x00181130, "DS", "Table Height"},
     {0x00181131, "DS", "Table Traverse"},
+    {0x00181134, "CS", "Table Motion"},
+    {0x00181135, "DS", "Table Vertical Increment"},
+    {0x00181136, "DS", "Table Lateral Increment"},
+    {0x00181137, "DS", "Table LongitudinalIncrement"},
+    {0x00181138, "DS", "Table Angle"},
+    {0x0018113A, "CS", "Table Type"},
     {0x00181140, "CS", "Rotation Direction"},
     {0x00181141, "DS", "Angular Position"},
     {0x00181142, "DS", "Radial Position"},
@@ -258,15 +705,23 @@ TDicomDictionary dict[]=
     {0x00181191, "CS", "Anode Target Material"},
     {0x001811A0, "DS", "Body Part Thickness"},
     {0x001811A2, "DS", "Compression Force"},
+    {0x001811A4, "LO", "Paddle Description"},
+
     {0x00181200, "DA", "Date of Last Calibration"},
     {0x00181201, "TM", "Time of Last Calibration"},
+    {0x00181202, "DT", "DateTime of LastCalibration"},
     {0x00181210, "SH", "Convolution Kernel"},
+    {0x00181240, "IS", "Upper/Lower Pixel Values"},
     {0x00181242, "IS", "Actual Frame Duration"},
     {0x00181243, "IS", "Count Rate"},
+    {0x00181244, "US", "Preferred PlaybackSequencing"},
     {0x00181250, "SH", "Receiving Coil"},
     {0x00181251, "SH", "Transmitting Coil"},
     {0x00181260, "SH", "Plate Type"},
     {0x00181261, "LO", "Phosphor Type"},
+    {0x00181271, "FD", "Water Equivalent Diameter"},
+    {0x00181272, "SQ", "Water Equivalent DiameterCalculation Method CodeSequence"},
+
     {0x00181300, "IS", "Scan Velocity"},
     {0x00181301, "CS", "Whole Body Technique"},
     {0x00181302, "IS", "Scan Length"},
@@ -276,13 +731,25 @@ TDicomDictionary dict[]=
     {0x00181315, "CS", "Variable Flip Angle Flag"},
     {0x00181316, "DS", "SAR"},
     {0x00181318, "DS", "dB/dt"},
+    {0x00181320, "FL", "B1rms"},
+
     {0x00181400, "LO", "Acquisition Device Processing Description"},
     {0x00181401, "LO", "Acquisition Device Processing Code"},
     {0x00181402, "CS", "Cassette Orientation"},
     {0x00181403, "CS", "Cassette Size"},
     {0x00181404, "US", "Exposures on Plate"},
     {0x00181405, "IS", "Relative X-ray Exposure"},
-    {0x00181450, "CS", "Column Angulation"},
+    {0x00181411, "DS", "Exposure Index"},
+    {0x00181412, "DS", "Target Exposure Index"},
+    {0x00181413, "DS", "Deviation Index"},
+    {0x00181450, "DS", "Column Angulation"}, /// was VR == CS
+    {0x00181460, "DS", "Tomo Layer Height"},
+    {0x00181470, "DS", "Tomo Angle"},
+    {0x00181480, "DS", "Tomo Time"},
+    {0x00181490, "CS", "Tomo Type"},
+    {0x00181491, "CS", "Tomo Class"},
+    {0x00181495, "IS", "Number of Tomosynthesis Source Images"},
+
     {0x00181500, "CS", "Positioner Motion"},
     {0x00181508, "CS", "Positioner Type"},
     {0x00181510, "DS", "Positioner Primary Angle"},
@@ -291,6 +758,7 @@ TDicomDictionary dict[]=
     {0x00181521, "DS", "Positioner Secondary Angle Increment"},
     {0x00181530, "DS", "Detector Primary Angle"},
     {0x00181531, "DS", "Detector Secondary Angle"},
+
     {0x00181600, "CS", "Shutter Shape"},
     {0x00181602, "IS", "Shutter Left Vertical Edge"},
     {0x00181604, "IS", "Shutter Right Vertical Edge"},
@@ -299,6 +767,10 @@ TDicomDictionary dict[]=
     {0x00181610, "IS", "Center of Circular Shutter"},
     {0x00181612, "IS", "Radius of Circular Shutter"},
     {0x00181620, "IS", "Vertices of the Polygonal Shutter"},
+    {0x00181622, "US", "Shutter Presentation Value"},
+    {0x00181623, "US", "Shutter Overlay Group"},
+    {0x00181624, "US", "Shutter Presentation Color CIELab Value"},
+
     {0x00181700, "IS", "Collimator Shape"},
     {0x00181702, "IS", "Collimator Left Vertical Edge"},
     {0x00181704, "IS", "Collimator Right Vertical Edge"},
@@ -307,6 +779,37 @@ TDicomDictionary dict[]=
     {0x00181710, "IS", "Center of Circular Collimator"},
     {0x00181712, "IS", "Radius of Circular Collimator"},
     {0x00181720, "IS", "Vertices of the Polygonal Collimator"},
+
+    {0x00181800, "CS", "Acquisition Time Synchronized"},
+    {0x00181801, "SH", "Time Source"},
+    {0x00181802, "CS", "Time Distribution Protocol"},
+    {0x00181803, "LO", "NTP Source Address"},
+
+    {0x00182001, "IS", "Page Number Vector"},
+    {0x00182002, "SH", "Frame Label Vector"},
+    {0x00182003, "DS", "Frame Primary Angle Vector"},
+    {0x00182004, "DS", "Frame Secondary Angle Vector"},
+    {0x00182005, "DS", "Slice Location Vector"},
+    {0x00182006, "SH", "Display Window Label Vector"},
+    {0x00182010, "DS", "Nominal Scanned PixelSpacing"},
+    {0x00182020, "CS", "Digitizing Device Transport Direction"},
+    {0x00182030, "DS", "Rotation of Scanned Film"},
+    {0x00182041, "SQ", "Biopsy Target Sequence"},
+    {0x00182042, "UI", "Target UID"},
+    {0x00182043, "FL", "Localizing Cursor Position"},
+    {0x00182044, "FL", "Calculated Target Position"},
+    {0x00182045, "SH", "Target Label"},
+    {0x00182046, "FL", "Displayed Z Value"},
+
+    {0x00183100, "CS", "IVUS Acquisition"},
+    {0x00183101, "DS", "IVUS Pullback Rate"},
+    {0x00183102, "DS", "IVUS Gated Rate"},
+    {0x00183103, "IS", "IVUS Pullback Start FrameNumber"},
+    {0x00183104, "IS", "IVUS Pullback Stop FrameNumber"},
+    {0x00183105, "IS", "Lesion Number"},
+
+    {0x00184000, "LT", "Acquisition Comments"},
+
     {0x00185000, "SH", "Output Power"},
     {0x00185010, "LO", "Transducer Data"},
     {0x00185012, "DS", "Focus Depth"},
@@ -318,12 +821,17 @@ TDicomDictionary dict[]=
     {0x00185027, "DS", "Soft Tissue Thermal Index"},
     {0x00185028, "DS", "Soft Tissue-focus Thermal Index"},
     {0x00185029, "DS", "Soft Tissue-surface Thermal Index"},
+    {0x00185030, "DS", "Dynamic Range"},
+    {0x00185040, "DS", "Total Gain"},
     {0x00185050, "IS", "Depth of Scan Field"},
+
     {0x00185100, "CS", "Patient Position"},
     {0x00185101, "CS", "View Position"},
     {0x00185104, "SQ", "Projection Eponymous Name Code Sequence"},
+
     {0x00185210, "DS", "Image Transformation Matrix"},
     {0x00185212, "DS", "Image Translation Vector"},
+
     {0x00186000, "DS", "Sensitivity"},
     {0x00186011, "SQ", "Sequence of Ultrasound Regions"},
     {0x00186012, "US", "Region Spatial Format"},
@@ -346,12 +854,18 @@ TDicomDictionary dict[]=
     {0x00186032, "UL", "Pulse Repetition Frequency"},
     {0x00186034, "FD", "Doppler Correction Angle"},
     {0x00186036, "FD", "Sterring Angle"},
-    {0x00186038, "UL", "Doppler Sample Volume X Position"},
-    {0x0018603A, "UL", "Doppler Sample Volume Y Position"},
-    {0x0018603C, "UL", "TM-Line Position X0"},
-    {0x0018603E, "UL", "TM-Line Position Y0"},
-    {0x00186040, "UL", "TM-Line Position X1"},
-    {0x00186042, "UL", "TM-Line Position Y1"},
+    {0x00186038, "UL", "Doppler Sample Volume X Position (Retired)"},
+    {0x00186039, "SL", "Doppler Sample Volume X Position"},
+    {0x0018603A, "UL", "Doppler Sample Volume Y Position (Retired)"},
+    {0x0018603B, "SL", "Doppler Sample Volume Y Position"},
+    {0x0018603C, "UL", "TM-Line Position X0(Retired)"},
+    {0x0018603D, "SL", "TM-Line Position X0"},
+    {0x0018603E, "UL", "TM-Line Position Y0(Retired)"},
+    {0x0018603F, "SL", "TM-Line Position Y0"},
+    {0x00186040, "UL", "TM-Line Position X1(Retired)"},
+    {0x00186041, "SL", "TM-Line Position X1"},
+    {0x00186042, "UL", "TM-Line Position Y1(Retired)"},
+    {0x00186043, "SL", "TM-Line Position Y1"},
     {0x00186044, "US", "Pixel Component Organization"},
     {0x00186046, "UL", "Pixel Component Mask"},
     {0x00186048, "UL", "Pixel Component Range Start"},
@@ -363,7 +877,9 @@ TDicomDictionary dict[]=
     {0x00186054, "FD", "Table of Y Break Points"},
     {0x00186056, "UL", "Number of Table Entries"},
     {0x00186058, "UL", "Table of Pixel Values"},
-    {0x0018605A, "UL", "Table of Parameter Values"},
+    {0x0018605A, "FL", "Table of Parameter Values"}, /// was VR==FL
+    {0x00186060, "FL", "R Wave Time Vector"},
+
     {0x00187000, "CS", "Detector Conditions Nominal Flag"},
     {0x00187001, "DS", "Detector Temperature"},
     {0x00187004, "CS", "Detector Type"},
@@ -384,9 +900,13 @@ TDicomDictionary dict[]=
     {0x00187024, "CS", "Detector Active Shape"},
     {0x00187026, "DS", "Detector Active Dimension(s)"},
     {0x00187028, "DS", "Detector Active Origin"},
+    {0x0018702A, "LO", "Detector ManufacturerName"},
+    {0x0018702B, "LO", "Detector Manufacturer's Model Name"},
     {0x00187030, "DS", "Field of View Origin"},
     {0x00187032, "DS", "Field of View Rotation"},
     {0x00187034, "CS", "Field of View Horizontal Flip"},
+    {0x00187036, "FL", "Pixel Data Area Origin Relative To FOV"},
+    {0x00187038, "FL", "Pixel Data Area Rotation Angle Relative To FOV"},
     {0x00187040, "LT", "Grid Absorbing Material"},
     {0x00187041, "LT", "Grid Spacing Material"},
     {0x00187042, "DS", "Grid Thickness"},
@@ -397,12 +917,400 @@ TDicomDictionary dict[]=
     {0x00187050, "LT", "Filter Material LT"},
     {0x00187052, "DS", "Filter Thickness Minimum"},
     {0x00187054, "DS", "Filter Thickness Maximum"},
+    {0x00187056, "FL", "Filter Beam Path Length Minimum"},
+    {0x00187058, "FL", "Filter Beam Path Length Maximum"},
     {0x00187060, "CS", "Exposure Control Mode"},
     {0x00187062, "LT", "Exposure Control Mode Description"},
     {0x00187064, "CS", "Exposure Status"},
     {0x00187065, "DS", "Phototimer Setting"},
-    {0x00188151, "DS", "X-Ray Tube Current in uA"},
 
+    {0x00188150, "DS", "Exposure Time in μS"},
+    {0x00188151, "DS", "X-Ray Tube Current in μA"},
+
+    {0x00189004, "CS", "Content Qualification"},
+    {0x00189005, "SH", "Pulse Sequence Name"},
+    {0x00189006, "SQ", "MR Imaging Modifier Sequence"},
+    {0x00189008, "CS", "Echo Pulse Sequence"},
+    {0x00189009, "CS", "Inversion Recovery"},
+    {0x00189010, "CS", "Flow Compensation"},
+    {0x00189012, "CS", "Multiple Spin Echo"},
+    {0x00189014, "CS", "Multi-planar Excitation"},
+    {0x00189015, "CS", "Phase Contrast"},
+    {0x00189016, "CS", "Time of Flight Contrast"},
+    {0x00189017, "CS", "Spoiling"},
+    {0x00189018, "CS", "Echo Planar PulseSequence"},
+    {0x00189019, "FD", "Tag Angle First Axis"},
+    {0x00189020, "CS", "Magnetization Transfer"},
+    {0x00189021, "CS", "T2 Preparation"},
+    {0x00189022, "CS", "Blood Signal Nulling"},
+    {0x00189024, "CS", "Saturation Recovery"},
+    {0x00189025, "CS", "Spectrally SelectedSuppression"},
+    {0x00189026, "CS", "Spectrally SelectedExcitation"},
+    {0x00189027, "CS", "Spatial Pre-saturation"},
+    {0x00189028, "CS", "Tagging"},
+    {0x00189029, "CS", "Oversampling Phase"},
+    {0x00189030, "FD", "Tag Spacing FirstDimension"},
+    {0x00189032, "CS", "Geometry of k-SpaceTraversal"},
+    {0x00189033, "CS", "Segmented k-SpaceTraversal"},
+    {0x00189034, "CS", "Rectilinear Phase EncodeReordering"},
+    {0x00189035, "FD", "Tag Thickness"},
+    {0x00189036, "CS", "Partial Fourier Direction"},
+    {0x00189037, "CS", "Cardiac SynchronizationTechnique"},
+    {0x00189041, "LO", "Receive Coil ManufacturerName"},
+    {0x00189042, "SQ", "MR Receive CoilSequence"},
+    {0x00189043, "CS", "Receive Coil Type"},
+    {0x00189044, "CS", "Quadrature Receive Coil"},
+    {0x00189045, "SQ", "Multi-Coil DefinitionSequence"},
+    {0x00189046, "LO", "Multi-Coil Configuration"},
+    {0x00189047, "SH", "Multi-Coil Element Name"},
+    {0x00189048, "CS", "Multi-Coil Element Used"},
+    {0x00189049, "SQ", "MR Transmit CoilSequence"},
+    {0x00189050, "LO", "Transmit Coil ManufacturerName"},
+    {0x00189051, "CS", "Transmit Coil Type"},
+    {0x00189052, "FD", "Spectral Width"},
+    {0x00189053, "FD", "Chemical Shift Reference"},
+    {0x00189054, "CS", "Volume LocalizationTechnique"},
+    {0x00189058, "US", "MR Acquisition FrequencyEncoding Steps"},
+    {0x00189059, "CS", "De-coupling"},
+    {0x00189060, "CS", "De-coupled Nucleus"},
+    {0x00189061, "FD", "De-coupling Frequency"},
+    {0x00189062, "CS", "De-coupling Method"},
+    {0x00189063, "FD", "De-coupling Chemical Shift Reference"},
+    {0x00189064, "CS", "k-space Filtering"},
+    {0x00189065, "CS", "Time Domain Filtering"},
+    {0x00189066, "US", "Number of Zero Fills"},
+    {0x00189067, "CS", "Baseline Correction"},
+    {0x00189069, "FD", "Parallel Reduction Factor In-plane"},
+    {0x00189070, "FD", "Cardiac R-R Interval Specified"},
+    {0x00189073, "FD", "Acquisition Duration"},
+    {0x00189074, "DT", "Frame Acquisition Date Time"},
+    {0x00189075, "CS", "Diffusion Directionality"},
+    {0x00189076, "SQ", "Diffusion Gradient Direction Sequence"},
+    {0x00189077, "CS", "Parallel Acquisition"},
+    {0x00189078, "CS", "Parallel Acquisition Technique"},
+    {0x00189079, "FD", "Inversion Times"},
+    {0x00189080, "ST", "Metabolite Map Description"},
+    {0x00189081, "CS", "Partial Fourier"},
+    {0x00189082, "FD", "Effective Echo Time"},
+    {0x00189083, "SQ", "Metabolite Map CodeSequence"},
+    {0x00189084, "SQ", "Chemical Shift Sequence"},
+    {0x00189085, "CS", "Cardiac Signal Source"},
+    {0x00189087, "FD", "Diffusion b-value"},
+    {0x00189089, "FD", "Diffusion Gradient Orientation"},
+    {0x00189090, "FD", "Velocity Encoding Direction"},
+    {0x00189091, "FD", "Velocity Encoding Minimum Value"},
+    {0x00189092, "SQ", "Velocity Encoding Acquisition Sequence"},
+    {0x00189093, "US", "Number of k-Space Trajectories"},
+    {0x00189094, "CS", "Coverage of k-Space"},
+    {0x00189095, "UL", "Spectroscopy Acquisition Phase Rows"},
+    {0x00189096, "FD", "Parallel Reduction FactorIn-plane (Retired)"},
+    {0x00189098, "FD", "Transmitter Frequency"},
+
+    {0x00189100, "CS", "Resonant Nucleus"},
+    {0x00189101, "CS", "Frequency Correction"},
+    {0x00189103, "SQ", "MR Spectroscopy FOV/Geometry Sequence"},
+    {0x00189104, "FD", "Slab Thickness"},
+    {0x00189105, "FD", "Slab Orientation"},
+    {0x00189106, "FD", "Mid Slab Position"},
+    {0x00189107, "SQ", "MR Spatial SaturationSequence"},
+    {0x00189112, "SQ", "MR Timing and RelatedParameters Sequence"},
+    {0x00189114, "SQ", "MR Echo Sequence"},
+    {0x00189115, "SQ", "MR Modifier Sequence"},
+    {0x00189117, "SQ", "MR Diffusion Sequence"},
+    {0x00189118, "SQ", "Cardiac Synchronization Sequence"},
+    {0x00189119, "SQ", "MR Averages Sequence"},
+    {0x00189125, "SQ", "MR FOV/Geometry Sequence"},
+    {0x00189126, "SQ", "Volume Localization Sequence"},
+    {0x00189127, "UL", "Spectroscopy Acquisition Data Columns"},
+    {0x00189147, "CS", "Diffusion Anisotropy Type"},
+    {0x00189151, "DT", "Frame ReferenceDateTime"},
+    {0x00189152, "SQ", "MR Metabolite MapSequence"},
+    {0x00189155, "FD", "Parallel Reduction Factorout-of-plane"},
+    {0x00189159, "UL", "Spectroscopy AcquisitionOut-of-plane Phase Steps"},
+    {0x00189166, "CS", "Bulk Motion Status"},
+    {0x00189168, "FD", "Parallel Reduction FactorSecond In-plane"},
+    {0x00189169, "CS", "Cardiac Beat RejectionTechnique"},
+    {0x00189170, "CS", "Respiratory MotionCompensation Technique"},
+    {0x00189171, "CS", "Respiratory Signal Source"},
+    {0x00189172, "CS", "Bulk Motion CompensationTechnique"},
+    {0x00189173, "CS", "Bulk Motion Signal Source"},
+    {0x00189174, "CS", "Applicable Safety StandardAgency"},
+    {0x00189175, "LO", "Applicable Safety StandardDescription"},
+    {0x00189176, "SQ", "Operating Mode Sequence"},
+    {0x00189177, "CS", "Operating Mode Type"},
+    {0x00189178, "CS", "Operating Mode"},
+    {0x00189179, "CS", "Specific Absorption RateDefinition"},
+    {0x00189180, "CS", "Gradient Output Type"},
+    {0x00189181, "FD", "Specific Absorption RateValue"},
+    {0x00189182, "FD", "Gradient Output"},
+    {0x00189183, "CS", "Flow CompensationDirection"},
+    {0x00189184, "FD", "Tagging Delay"},
+    {0x00189185, "ST", "Respiratory Motion Compensation Technique Description"},
+    {0x00189186, "SH", "Respiratory Signal Source ID"},
+    {0x00189195, "FD", "Chemical Shift Minimum Integration Limit in Hz"},
+    {0x00189196, "FD", "Chemical Shift Maximum Integration Limit in Hz"},
+    {0x00189197, "SQ", "MR Velocity Encoding Sequence"},
+    {0x00189198, "CS", "First Order Phase Correction"},
+    {0x00189199, "CS", "Water Referenced Phase Correction"},
+
+    {0x00189200, "CS", "MR Spectroscopy Acquisition Type"},
+    {0x00189214, "CS", "Respiratory Cycle Position"},
+    {0x00189217, "CS", "Velocity Encoding Maximum Value"},
+    {0x00189218, "FD", "Tag Spacing Second Dimension"},
+    {0x00189219, "SS", "Tag Angle Second Axis"},
+    {0x00189220, "FD", "Frame Acquisition Duration"},
+    {0x00189226, "SQ", "MR Image Frame TypeSequence"},
+    {0x00189227, "SQ", "MR Spectroscopy FrameType Sequence"},
+    {0x00189231, "US", "MR Acquisition PhaseEncoding Steps in-plane"},
+    {0x00189232, "US", "MR Acquisition PhaseEncoding Stepsout-of-plane"},
+    {0x00189234, "UL", "Spectroscopy AcquisitionPhase Columns"},
+    {0x00189236, "CS", "Cardiac Cycle Position"},
+    {0x00189239, "SQ", "Specific Absorption RateSequence"},
+    {0x00189240, "US", "RF Echo Train Length"},
+    {0x00189241, "US", "Gradient Echo TrainLength"},
+    {0x00189250, "CS", "Arterial Spin LabelingContrast"},
+    {0x00189251, "SQ", "MR Arterial Spin LabelingSequence"},
+    {0x00189252, "LO", "ASL Technique Description"},
+    {0x00189253, "US", "ASL Slab Number"},
+    {0x00189254, "FD", "ASL Slab Thickness"},
+    {0x00189255, "FD", "ASL Slab Orientation"},
+    {0x00189256, "FD", "ASL Mid Slab Position"},
+    {0x00189257, "CS", "ASL Context"},
+    {0x00189258, "UL", "ASL Pulse Train Duration"},
+    {0x00189259, "CS", "ASL Crusher Flag"},
+    {0x0018925A, "FD", "ASL Crusher Flow Limit"},
+    {0x0018925B, "LO", "ASL Crusher Description"},
+    {0x0018925C, "CS", "ASL Bolus Cut-off Flag"},
+    {0x0018925D, "SQ", ""},
+    {0x0018925E, "LO", ""},
+    {0x0018925F, "UL", ""},
+    {0x00189260, "SQ", ""},
+    {0x00189295, "FD", ""},
+    {0x00189296, "FD", ""},
+    {0x00189297, "CS", ""},
+    {0x00189298, "IS", ""},
+
+    {0x00189301, "SQ", ""},
+    {0x00189302, "CS", ""},
+    {0x00189303, "FD", ""},
+    {0x00189304, "SQ", ""},
+    {0x00189305, "FD", ""},
+    {0x00189306, "FD", ""},
+    {0x00189307, "FD", ""},
+    {0x00189308, "SQ", ""},
+    {0x00189309, "FD", ""},
+    {0x00189310, "FD", ""},
+    {0x00189311, "FD", ""},
+    {0x00189312, "SQ", ""},
+    {0x00189313, "FD", ""},
+    {0x00189314, "SQ", ""},
+    {0x00189315, "CS", ""},
+    {0x00189316, "CS", ""},
+    {0x00189317, "FD", ""},
+    {0x00189318, "FD", ""},
+    {0x00189319, "FD", ""},
+    {0x00189320, "SH", ""},
+    {0x00189321, "SQ", ""},
+    {0x00189322, "FD", ""},
+    {0x00189323, "CS", ""},
+    {0x00189324, "FD", ""},
+    {0x00189325, "SQ", ""},
+    {0x00189326, "SQ", ""},
+    {0x00189327, "FD", ""},
+    {0x00189328, "FD", ""},
+    {0x00189329, "SQ", ""},
+    {0x00189330, "FD", ""},
+    {0x00189332, "FD", ""},
+    {0x00189333, "CS", ""},
+    {0x00189334, "CS", ""},
+    {0x00189335, "FD", ""},
+    {0x00189337, "US", ""},
+    {0x00189338, "SQ", ""},
+    {0x00189340, "SQ", ""},
+    {0x00189341, "SQ", ""},
+    {0x00189342, "CS", ""},
+    {0x00189343, "CS", ""},
+    {0x00189344, "CS", ""},
+    {0x00189345, "FD", ""},
+    {0x00189346, "SQ", ""},
+    {0x00189351, "FL", ""},
+    {0x00189352, "FL", ""},
+    {0x00189353, "FL", ""},
+    {0x00189360, "SQ", ""},
+    {0x00189361, "SQ", ""},
+    {0x00189362, "FL", ""},
+    {0x00189363, "FL", ""},
+
+    {0x00189404, "FL", ""},
+    {0x00189405, "SQ", ""},
+    {0x00189406, "SQ", ""},
+    {0x00189407, "SQ", ""},
+    {0x00189410, "CS", ""},
+    {0x00189412, "SQ", ""},
+    {0x00189417, "SQ", ""},
+    {0x00189420, "CS", ""},
+    {0x00189423, "LO", ""},
+    {0x00189424, "LT", ""},
+    {0x00189425, "CS", ""},
+    {0x00189426, "FL", ""},
+    {0x00189427, "CS", ""},
+    {0x00189428, "FL", ""},
+    {0x00189429, "FL", ""},
+    {0x00189430, "FL", ""},
+    {0x00189432, "SQ", ""},
+    {0x00189433, "LO", ""},
+    {0x00189434, "SQ", ""},
+    {0x00189435, "CS", ""},
+    {0x00189436, "SS", ""},
+    {0x00189437, "SS", ""},
+    {0x00189438, "SS", ""},
+    {0x00189439, "SS", ""},
+    {0x00189440, "SS", ""},
+    {0x00189441, "US", ""},
+    {0x00189442, "SS", ""},
+    /// retired, removed -- {0x00189445, "", ""},
+    {0x00189447, "FL", ""},
+    {0x00189449, "FL", ""},
+    {0x00189451, "SQ", ""},
+    {0x00189452, "FL", ""},
+    {0x00189455, "SQ", ""},
+    {0x00189456, "SQ", ""},
+    {0x00189457, "CS", ""},
+    {0x00189461, "FL", ""},
+    {0x00189462, "SQ", ""},
+    {0x00189463, "FL", ""},
+    {0x00189464, "FL", ""},
+    {0x00189465, "FL", ""},
+    {0x00189466, "FL", ""},
+    {0x00189467, "FL", ""},
+    {0x00189468, "FL", ""},
+    {0x00189469, "FL", ""},
+    {0x00189470, "FL", ""},
+    {0x00189471, "FL", ""},
+    {0x00189472, "SQ", ""},
+    {0x00189473, "FL", ""},
+    {0x00189474, "CS", ""},
+    {0x00189476, "SQ", ""},
+    {0x00189477, "SQ", ""},
+
+    {0x00189504, "SQ", ""},
+    {0x00189506, "SQ", ""},
+    {0x00189507, "SQ", ""},
+    {0x00189508, "FL", ""},
+    {0x00189509, "FL", ""},
+    {0x00189510, "FL", ""},
+    {0x00189511, "FL", ""},
+    {0x00189514, "FL", ""},
+    {0x00189515, "FL", ""},
+    {0x00189516, "DT", ""},
+    {0x00189517, "DT", ""},
+    {0x00189518, "SS", ""},
+    {0x00189519, "SS", ""},
+    {0x00189524, "LO", ""},
+    {0x00189525, "LO", ""},
+    {0x00189526, "LO", ""},
+    {0x00189527, "CS", ""},
+    {0x00189528, "LO", ""},
+    {0x00189530, "SQ", ""},
+    {0x00189531, "LO", ""},
+    {0x00189538, "SQ", ""},
+    {0x00189541, "SQ", ""},
+    {0x00189542, "SQ", ""},
+    {0x00189543, "FD", ""},
+    {0x00189544, "FD", ""},
+    {0x00189545, "FD", ""},
+    {0x00189546, "FD", ""},
+    {0x00189547, "FD", ""},
+    {0x00189548, "FD", ""},
+    {0x00189549, "FD", ""},
+    {0x00189550, "FD", ""},
+    {0x00189551, "FD", ""},
+    {0x00189552, "FD", ""},
+    {0x00189553, "FD", ""},
+    {0x00189554, "FD", ""},
+    {0x00189555, "SQ", ""},
+    {0x00189556, "SQ", ""},
+    {0x00189557, "FD", ""},
+    {0x00189558, "FD", ""},
+    {0x00189559, "CS", ""},
+
+    {0x00189601, "SQ", ""},
+    {0x00189602, "FD", ""},
+    {0x00189603, "FD", ""},
+    {0x00189604, "FD", ""},
+    {0x00189605, "FD", ""},
+    {0x00189606, "FD", ""},
+    {0x00189607, "FD", ""},
+    {0x00189621, "SQ", ""},
+    {0x00189622, "CS", ""},
+    {0x00189623, "DT", ""},
+    {0x00189624, "CS", ""},
+
+    {0x00189701, "DT", ""},
+    {0x00189715, "FD", ""},
+    {0x00189716, "FD", ""},
+    {0x00189717, "FD", ""},
+    {0x00189718, "FD", ""},
+    {0x00189719, "FD", ""},
+    {0x00189720, "FD", ""},
+    {0x00189721, "FD", ""},
+    {0x00189722, "FD", ""},
+    {0x00189723, "FD", ""},
+    {0x00189724, "FD", ""},
+    {0x00189725, "CS", ""},
+    {0x00189726, "FD", ""},
+    {0x00189727, "FD", ""},
+    {0x00189729, "US", ""},
+    {0x00189732, "SQ", ""},
+    {0x00189733, "SQ", ""},
+    {0x00189734, "SQ", ""},
+    {0x00189735, "SQ", ""},
+    {0x00189736, "SQ", ""},
+    {0x00189737, "SQ", ""},
+    {0x00189738, "CS", ""},
+    {0x00189739, "US", ""},
+    {0x00189740, "US", ""},
+    {0x00189749, "SQ", ""},
+    {0x00189751, "SQ", ""},
+    {0x00189755, "CS", ""},
+    {0x00189756, "CS", ""},
+    {0x00189758, "CS", ""},
+    {0x00189759, "CS", ""},
+    {0x00189760, "CS", ""},
+    {0x00189761, "CS", ""},
+    {0x00189762, "CS", ""},
+    {0x00189763, "CS", ""},
+    {0x00189764, "CS", ""},
+    {0x00189765, "CS", ""},
+    {0x00189766, "CS", ""},
+    {0x00189767, "CS", ""},
+    {0x00189768, "CS", ""},
+    {0x00189769, "CS", ""},
+    {0x00189770, "CS", ""},
+    {0x00189771, "SQ", ""},
+    {0x00189772, "SQ", ""},
+
+    {0x00189801, "FD", ""},
+    {0x00189803, "SQ", ""},
+    {0x00189804, "DT", ""},
+    {0x00189805, "FD", ""},
+    {0x00189806, "SQ", ""},
+    {0x00189807, "SQ", ""},
+    {0x00189808, "CS", ""},
+    {0x00189809, "SQ", ""},
+    {0x0018980B, "CS", ""},
+    {0x0018980C, "CS", ""},
+    {0x0018980D, "SQ", ""},
+    {0x0018980E, "SQ", ""},
+    {0x0018980F, "SQ", ""},
+    {0x00189810, "US", ""}, /// US or SS
+    {0x00189810, "SS", ""}, /// US or SS
+
+    {0x0018A001, "SQ", ""},
+    {0x0018A002, "DT", ""},
+    {0x0018A003, "ST", ""},
+
+    // -------------------------------------------------------------------------
     // Group tag 0020 ----------------------------------------------------------
     {0x0020000D, "UI", "Study Instance UID"},
     {0x0020000E, "UI", "Series Instance UID"},
@@ -442,6 +1350,7 @@ TDicomDictionary dict[]=
     {0x00201208, "IS", "Number of Study Related Images"},
     {0x00204000, "LT", "Image Comments"},
 
+    // -------------------------------------------------------------------------
     // Group tag 0028 ----------------------------------------------------------
     {0x00280002, "US", "Samples per Pixel"},
     {0x00280004, "CS", "Photometric Interpretation"},
@@ -488,6 +1397,7 @@ TDicomDictionary dict[]=
     {0x00283006, "US", "LUT Data"},
     {0x00283010, "SQ", "VOI LUT Sequence"},
 
+    // -------------------------------------------------------------------------
     // Group tag 0032 ----------------------------------------------------------
     {0x0032000A, "CS", "Study Status ID"},
     {0x0032000C, "CS", "Study Priority ID"},
@@ -515,6 +1425,7 @@ TDicomDictionary dict[]=
     {0x00321070, "LO", "Requested Contrast Agent"},
     {0x00324000, "LT", "Study Comments"},
 
+    // -------------------------------------------------------------------------
     // Group tag 0040 ----------------------------------------------------------
     {0x00400001, "AE", "Scheduled Station AE Title"},
     {0x00400002, "DA", "Scheduled Procedure Step Start Date"},
@@ -731,15 +1642,18 @@ TDicomDictionary dict[]=
     {0x00541400, "CS", "Counts Included"},
     {0x00541401, "CS", "Dead Time Correction Flag"},
 
+    // -------------------------------------------------------------------------
     // Group Tag 2030 ----------------------------------------------------------
     {0x20300010, "US", "AnnotationPosition"},
     {0x20300020, "LO", "TextString"},
 
+    // -------------------------------------------------------------------------
     // Group tag 2050
     {0x20500010, "SQ", "Presentation LUT Sequence"},
     {0x20500020, "CS", "Presentation LUT Shape"},
     {0x20500500, "SQ", "Referenced Presentation LUT Sequence"},
 
+    // -------------------------------------------------------------------------
     // Group Tag 3002 ----------------------------------------------------------
     {0x30020002, "SH", "RT Image Label"},
     {0x30020003, "LO", "RT Image Name"},
@@ -764,6 +1678,7 @@ TDicomDictionary dict[]=
     {0x30020041, "CS", "Fluence Data Source"},
     {0x30020042, "DS", "Fluence Data Scale"},
 
+    // -------------------------------------------------------------------------
     // Group Tag 3004 ----------------------------------------------------------
     {0x30040001, "CS", "DVH Type"},
     {0x30040002, "CS", "Dose Units"},
@@ -789,6 +1704,7 @@ TDicomDictionary dict[]=
     {0x30040072, "DS", "DVH Maximum Dose"},
     {0x30040074, "DS", "DVH Mean Dose"},
 
+    // -------------------------------------------------------------------------
     // Group tag 3006 ----------------------------------------------------------
     {0x30060002, "SH", "Structure Set Label"},
     {0x30060004, "LO", "Structure Set Name"},
@@ -840,6 +1756,7 @@ TDicomDictionary dict[]=
     {0x300600C6, "DS", "Frame of Reference Transformation Matrix"},
     {0x300600C8, "LO", "Frame of Reference Transformation Comment"},
 
+    // -------------------------------------------------------------------------
     // Group tag 60(xx) : variable masked in 0x00FF with. ----------------------
     {0x60FF0010, "US", "Overlay Rows"},
     {0x60FF0011, "US", "Overlay Columns"},
@@ -880,32 +1797,41 @@ TDicomDictionary dict[]=
     {0x60FF1303, "DS", "ROI Standard Deviation"},
     {0x60FF1500, "LO", "Overlay Label"},
     {0x60FF3000, "OW", "Overlay Data"},         /// Represents OB or OW type of VR
+    {0x60FF3000, "VR", "Overlay Data"},         /// Represents OB or OW type of VR
     {0x60FF4000, "LT", "Overlay Comments"},
 
+    // -------------------------------------------------------------------------
     // Group tag 7FE0 ----------------------------------------------------------
     {0x7FE00010, "OW", "Pixel Data"},           /// Represents OB or OW type of VR
+    {0x7FE00010, "VR", "Pixel Data"},           /// Represents OB or OW type of VR
     {0x7FE00020, "OW", "Coefficients SDVN"},
     {0x7FE00030, "OW", "Coefficients SDHN"},
     {0x7FE00040, "OW", "Coefficients SDDN"},
 
+    // -------------------------------------------------------------------------
     // Group tag 7F(xx) : variable, masked in 0x00FF with. ---------------------
     {0x7FFF0010, "OW", "Variable Pixel Data"},  /// Represents OB or OW type of VR
+    {0x7FFF0010, "VR", "Variable Pixel Data"},  /// Represents OB or OW type of VR
     {0x7FFF0011, "US", "Variable Next Data Group"},
     {0x7FFF0020, "OW", "Coefficients SDVN"},
     {0x7FFF0030, "OW", "Coefficients SDHN"},
     {0x7FFF0040, "OW", "Coefficients SDDN"},
 
+    // -------------------------------------------------------------------------
     // Group tag FFFA ----------------------------------------------------------
     {0xFFFAFFFA, "SQ", "Digital Signatures Sequence"},
 
+    // -------------------------------------------------------------------------
     // Group tag FFFC ----------------------------------------------------------
     {0xFFFCFFFC, "OB", "Data Set Trailling Padding"},
 
+    // -------------------------------------------------------------------------
     // Group tag FFFE ----------------------------------------------------------
     {0xFFFEE000, "DL", "Item"},
     {0xFFFEE00D, "DL", "Item Delimitation Item"},
     {0xFFFEE0DD, "DL", "Sequence Delimitation Item"},
 
+    // -------------------------------------------------------------------------
     // EOD ---------------------------------------------------------------------
     {0x00000000, "", ""} // terminating NULL
 };
@@ -940,7 +1866,32 @@ int DicomDictionary::FindKeyIndex(const DWORD id)
     return -1;
 }
 
-WORD  DicomDictionary::GetVR(const DWORD id)
+int FindKeyIndexFrom(const DWORD id, int idx)
+{
+    if( idx >= sizeof ( dict ) )
+        return -2;
+
+    int nCnt = idx;
+
+    if(id == 0x00000000)
+    {
+        return -1;
+    }
+
+    while(dict[nCnt].id!=0)
+    {
+        if(dict[nCnt].id == id)
+            return nCnt;
+
+        nCnt++;
+    }
+
+    return -1;
+
+    return -1;
+}
+
+WORD  DicomDictionary::GetVR(const DWORD id, bool* sameavailed )
 {
     WORD    nRet   = 0;
 
@@ -949,30 +1900,75 @@ WORD  DicomDictionary::GetVR(const DWORD id)
     if(nIndex >= 0)
     {
         memcpy(&nRet,&dict[nIndex].vr,2);
+
+        if ( sameavailed != NULL)
+        {
+            if ( FindKeyIndexFrom( id, nIndex ) > 0 )
+            {
+                *sameavailed = true;
+            }
+            else
+            {
+                *sameavailed = false;
+            }
+        }
     }
 
     return nRet;
 }
 
-void DicomDictionary::GetVR(const DWORD id, void *pVR)
+void DicomDictionary::GetVR(const DWORD id, void *pVR, bool* sameavailed)
 {
-    WORD nRet = GetVR(id);
+    bool bRet = false;
+    WORD nRet = GetVR( id, &bRet );
 
     if(pVR)
     {
         memcpy(pVR,&nRet,2);
+
+        if ( sameavailed != NULL)
+        {
+            *sameavailed = bRet;
+        }
     }
 }
 
-char* DicomDictionary::GetMean(const DWORD id)
+int DicomDictionary::GetVRarray( const DWORD id, WORD**pVRarray )
+{
+    if ( *pVRarray != NULL )
+        return -1;
+
+    int nIndex = FindKeyIndex(id);
+    int nCount = 0;
+
+    while ( nIndex > 0 )
+    {
+        *pVRarray = new WORD;
+        if ( *pVRarray != NULL )
+        {
+            memcpy( *pVRarray, &dict[nIndex].vr, 2 );
+            nCount++;
+
+            nIndex = FindKeyIndexFrom( id, nIndex );
+
+            if ( nIndex > 0 )
+            {
+                *pVRarray++;
+            }
+        }
+    }
+
+    return nCount;
+}
+
+const char* DicomDictionary::GetMean(const DWORD id)
 {
     int     nIndex = FindKeyIndex(id);
-    char*   pRet   = NULL;
 
     if(nIndex >= 0)
     {
-        pRet = (char*)&dict[nIndex].mean;
+        return (const char*)&dict[nIndex].mean;
     }
 
-    return pRet;
+    return NULL;
 }

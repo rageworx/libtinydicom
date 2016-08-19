@@ -158,7 +158,6 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
     {
         case OB:
         case OW:
-        case SQ:
         case UN:
         case UT:
             // Explicit VR with 32-bit length if other two bytes are zero
@@ -184,6 +183,7 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
         case SH:
         case SL:
         case SS:
+        case SQ:
         case ST:
         case TM:
         case UI:
@@ -236,6 +236,7 @@ bool    TagReader::readNextTag(TagElement *pTagElem)
 
         // added for some VR("SQ") using abnormal size.
         // Maybe SQ writes in Leadtools.
+        // 0xFFFFFFFFFF means -1 in singed.
         if ( ( nLen > 0 ) && ( nLen != 0xFFFFFFFF ) )
         {
             pTagElem->id = aTag;
