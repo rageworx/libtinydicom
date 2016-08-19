@@ -56,7 +56,7 @@ LIB_EXPORT bool         NewElement( DWORD tagID, TagElement** pElement );
 LIB_EXPORT int          ReadInt( TagElement* pElem );
 LIB_EXPORT char*        ReadAnsiString( TagElement* pElem );
 LIB_EXPORT wchar_t*     ReadWideString( TagElement* pElem );
-LIB_EXPORT bool         ReadPixelData( ImageInformation** pII );
+LIB_EXPORT bool         ReadPixelData( ImageInformation* pII );
 
 LIB_EXPORT int          WriteInt( TagElement* pElem, const int iv );
 LIB_EXPORT int          WriteAnsiString( TagElement* pElem, const char* as );

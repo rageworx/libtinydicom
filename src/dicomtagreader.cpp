@@ -235,6 +235,7 @@ bool    TagReader::readNextTag(TagElement *pTagElem)
         DWORD nLen = getLength(nVR,nCarrier);
 
         // added for some VR("SQ") using abnormal size.
+        // Maybe SQ writes in Leadtools.
         if ( ( nLen > 0 ) && ( nLen != 0xFFFFFFFF ) )
         {
             pTagElem->id = aTag;
