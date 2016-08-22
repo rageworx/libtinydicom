@@ -9,7 +9,7 @@
 using namespace DicomImageViewer;
 
 static const
-TDicomDictionary dict[]=
+TDicomDictionary dicom_dict[]=
 {
     // -------------------------------------------------------------------------
     // Group tag 0002 ----------------------------------------------------------
@@ -1168,7 +1168,9 @@ TDicomDictionary dict[]=
     {0x00189440, "SS", "Center of Circular Exposure Control Sensing Region"},
     {0x00189441, "US", "Radius of Circular Exposure Control Sensing Region"},
     {0x00189442, "SS", "Vertices of the Polygonal Exposure Control Sensing Region"},
-    /// retired, removed -- {0x00189445, "", ""},
+
+    // retired, removed -- {0x00189445, "", ""},
+
     {0x00189447, "FL", "Column Angulation(Patient)"},
     {0x00189449, "FL", "Beam Angle"},
     {0x00189451, "SQ", "Frame Detector Parameters Sequence"},
@@ -1323,23 +1325,33 @@ TDicomDictionary dict[]=
     {0x00200016, "IS", "Interval Number"},
     {0x00200017, "IS", "Time Slot Number"},
     {0x00200018, "IS", "Angle Number"},
+    {0x00200019, "IS", "Item Number"},
     {0x00200020, "CS", "Patient Orientation"},
     {0x00200022, "US", "Overlay Number"},
     {0x00200024, "US", "Curve Number"},
+    {0x00202026, "IS", "LUT Number"},
     {0x00200030, "DS", "Image Position"},
     {0x00200032, "DS", "Image Position (Patient)"},
+    {0x00200035, "DS", "Image Orientation"},
     {0x00200037, "DS", "Image Orientation (Patient)"},
     {0x00200050, "DS", "Location"},
     {0x00200052, "UI", "Frame of Reference UID"},
     {0x00200060, "CS", "Laterality"},
+    {0x00200062, "CS", "Image Laterality"},
     {0x00200070, "LO", "Image Geometry Type"},
     {0x00200080, "UI", "Masking Image UID"},
+    {0x002000AA, "IS", "Report Number"},
     {0x00200100, "IS", "Temporal Position Identifier"},
     {0x00200105, "IS", "Number of Temporal Positions"},
     {0x00200110, "DS", "Temporal Resolution"},
+    {0x00200200, "UI", "Synchronization Frame of Reference UID"},
+    {0x00200242, "UI", "SOP Instance UID of Concatenation Source"},
     {0x00201000, "IS", "Series in Study"},
     {0x00201002, "IS", "Images in Acquisition"},
+    {0x00201003, "IS", "Images in Series"},
     {0x00201004, "IS", "Acquisition in Study"},
+    {0x00201005, "IS", "Images in Study"},
+    {0x00201020, "LO", "Reference"},
     {0x00201040, "LO", "Position Reference Indicator"},
     {0x00201041, "DS", "Slice Location"},
     {0x00201070, "IS", "Other Study Numbers"},
@@ -1348,7 +1360,207 @@ TDicomDictionary dict[]=
     {0x00201204, "IS", "Number of Patient Related Images"},
     {0x00201206, "IS", "Number of Study Related Series"},
     {0x00201208, "IS", "Number of Study Related Images"},
+    {0x00201209, "IS", "Number of Series Related Instances"},
+
+    // Source Image IDS
+    // 0x00203100 ~ 0x002031FF, "CS", "Source Image IDs"
+
+    {0x00203401, "CS", "Modifying Device ID"},
+    {0x00203402, "CS", "Modified Image ID"},
+    {0x00203403, "DA", "Modified Image Date"},
+    {0x00203404, "LO", "Modifying Device Manufacturer"},
+    {0x00203405, "TM", "Modified Image Time"},
+    {0x00203406, "LO", "Modified Image Description"},
+
     {0x00204000, "LT", "Image Comments"},
+
+    {0x00205000, "AT", "Original Image Identification"},
+    {0x00205002, "LO", "Original Image Identification Nomenclature"},
+
+    {0x00209056, "SH", "Stack ID"},
+    {0x00209057, "UL", "In-Stack Position Number"},
+    {0x00209071, "SQ", "Frame Anatomy Sequence"},
+    {0x00209072, "CS", "Frame Laterality"},
+
+    {0x00209111, "SQ", "Frame Content Sequence"},
+    {0x00209113, "SQ", "Plane Position Sequence"},
+    {0x00209116, "SQ", "Plane Orientation Sequence"},
+    {0x00209128, "UL", "Temporal Position Index"},
+    {0x00209153, "FD", "Nominal Cardiac Trigger Delay Time"},
+    {0x00209154, "FL", "Nominal Cardiac Trigger Time Prior To R-Peak"},
+    {0x00209155, "FL", "Actual Cardiac Trigger Time Prior To R-Peak"},
+    {0x00209156, "US", "Frame Acquisition Number"},
+    {0x00209157, "UL", "Dimension Index Values"},
+    {0x00209158, "LT", "Frame Comments"},
+    {0x00209161, "UI", "Concatenation UID"},
+    {0x00209162, "US", "In-concatenation Number"},
+    {0x00209163, "US", "In-concatenation TotalNumber"},
+    {0x00209164, "UI", "Dimension Organization UID"},
+    {0x00209165, "AT", "Dimension Index Pointer"},
+    {0x00209167, "AT", "Functional Group Pointer"},
+    {0x00209170, "SQ", "Unassigned SharedConverted Attributes Sequence"},
+    {0x00209171, "SQ", "Unassigned Per-FrameConverted Attributes Sequence"},
+    {0x00209172, "SQ", "Conversion Source Attributes Sequence"},
+
+    {0x00209213, "LO", "Dimension Index Private Creator"},
+    {0x00209221, "SQ", "Dimension Organization Sequence"},
+    {0x00209222, "SQ", "Dimension Index Sequence"},
+    {0x00209228, "UL", "Concatenation Frame Offset Number"},
+    {0x00209238, "LO", "Functional Group Private Creator"},
+    {0x00209241, "FL", "Nominal Percentage of Cardiac Phase"},
+    {0x00209245, "FL", "Nominal Percentage of Respiratory Phase"},
+    {0x00209246, "FL", "Starting Respiratory Amplitude"},
+    {0x00209247, "CS", "Starting Respiratory Phase"},
+    {0x00209248, "FL", "Ending Respiratory Amplitude"},
+    {0x00209249, "CS", "Ending Respiratory Phase"},
+    {0x00209250, "CS", "Respiratory Trigger Type"},
+    {0x00209251, "FD", "R-R Interval Time Nominal"},
+    {0x00209252, "FD", "Actual Cardiac TriggerDelay Time"},
+    {0x00209253, "SQ", "Respiratory Synchronization Sequence"},
+    {0x00209254, "FD", "Respiratory Interval Time"},
+    {0x00209255, "FD", "Nominal Respiratory Trigger Delay Time"},
+    {0x00209256, "FD", "Respiratory Trigger Delay Threshold"},
+    {0x00209257, "FD", "Actual Respiratory TriggerDelay Time"},
+
+    {0x00209301, "FD", "Image Position (Volume)"},
+    {0x00209302, "FD", "Image Orientation (Volume)"},
+    {0x00209307, "CS", "Ultrasound Acquisition Geometry"},
+    {0x00209308, "FD", "Apex Position"},
+    {0x00209309, "FD", "Volume to Transducer Mapping Matrix"},
+    {0x0020930A, "FD", "Volume to Table Mapping Matrix"},
+    {0x0020930B, "CS", "Volume to Transducer Relationship"},
+    {0x0020930C, "CS", "Patient Frame of Reference Source"},
+    {0x0020930D, "FD", "Temporal Position Time Offset"},
+    {0x0020930E, "SQ", "Plane Position (Volume) Sequence"},
+    {0x0020930F, "SQ", "Plane Orientation (Volume) Sequence"},
+    {0x00209310, "SQ", "Temporal Position Sequence"},
+    {0x00209311, "CS", "Dimension Organization Type"},
+    {0x00209312, "UI", "Volume Frame of Reference UID"},
+    {0x00209313, "UI", "Table Frame of Reference UID"},
+
+    {0x00209421, "LO", "Dimension DescriptionLabel"},
+    {0x00209450, "SQ", "Patient Orientation inFrame Sequence"},
+    {0x00209453, "LO", "Frame Label"},
+
+    {0x00209518, "US", "Acquisition Index"},
+    {0x00209529, "SQ", "Contributing SOP Instances ReferenceSequence"},
+    {0x00209536, "US", "Reconstruction Index"},
+
+    // -------------------------------------------------------------------------
+    // Group tag 0022 ----------------------------------------------------------
+    {0x00220001, "US", "Light Path Filter Pass-Through Wavelength"},
+    {0x00220002, "US", "Light Path Filter Pass Band"},
+    {0x00220003, "US", "Image Path FilterPass-Through Wavelength"},
+    {0x00220004, "US", "Image Path Filter PassBand"},
+    {0x00220005, "CS", "Patient Eye Movement Commanded"},
+    {0x00220006, "SQ", "Patient Eye Movement Command Code Sequence"},
+    {0x00220007, "FL", "Spherical Lens Power"},
+    {0x00220008, "FL", "Cylinder Lens Power"},
+    {0x00220009, "FL", "Cylinder Axis"},
+    {0x0022000A, "FL", "Emmetropic Magnification"},
+    {0x0022000B, "FL", "Intra Ocular Pressure"},
+    {0x0022000C, "FL", "Horizontal Field of View"},
+    {0x0022000D, "CS", "Pupil Dilated"},
+    {0x0022000E, "FL", "Degree of Dilation"},
+    {0x00220010, "FL", "Stereo Baseline Angle"},
+    {0x00220011, "FL", "Stereo Baseline Displacement"},
+    {0x00220012, "FL", "Stereo Horizontal Pixel Offset"},
+    {0x00220013, "FL", "Stereo Vertical Pixel Offset"},
+    {0x00220014, "FL", "Stereo Rotation"},
+    {0x00220015, "SQ", "Acquisition Device Type Code Sequence"},
+    {0x00220016, "SQ", "Illumination Type Code Sequence"},
+    {0x00220017, "SQ", "Light Path Filter Type Stack Code Sequence"},
+    {0x00220018, "SQ", "Image Path Filter Type Stack Code Sequence"},
+    {0x00220019, "SQ", "Lenses Code Sequence"},
+    {0x0022001A, "SQ", "Channel Description Code Sequence"},
+    {0x0022001B, "SQ", "Refractive State Sequence"},
+    {0x0022001C, "SQ", "Mydriatic Agent Code Sequence"},
+    {0x0022001D, "SQ", "Relative Image Position Code Sequence"},
+    {0x0022001E, "FL", "Camera Angle of View"},
+    {0x00220020, "SQ", "Stereo Pairs Sequence"},
+    {0x00220021, "SQ", "Left Image Sequence"},
+    {0x00220022, "SQ", "Right Image Sequence"},
+    {0x00220028, "CS", "Stereo Pairs Present"},
+    {0x00220030, "FL", "Axial Length of the Eye"},
+    {0x00220031, "SQ", "Ophthalmic Frame Location Sequence"},
+    {0x00220032, "FL", "Reference Coordinates"},
+    {0x00220035, "FL", "Depth Spatial Resolution"},
+    {0x00220036, "FL", "Maximum Depth Distortion"},
+    {0x00220037, "FL", "Along-scan SpatialResolution"},
+    {0x00220038, "FL", "Maximum Along-scan Distortion"},
+    {0x00220039, "CS", "Ophthalmic Image Orientation"},
+    {0x00220041, "FL", "Depth of Transverse Image"},
+    {0x00220042, "SQ", "Mydriatic Agent Concentration Units Sequence"},
+    {0x00220048, "FL", "Across-scan Spatial Resolution"},
+    {0x00220049, "FL", "Maximum Across-scan Distortion"},
+    {0x0022004E, "DS", "Mydriatic Agent Concentration"},
+    {0x00220055, "FL", "Illumination Wave Length"},
+    {0x00220056, "FL", "Illumination Power"},
+    {0x00220057, "FL", "Illumination Bandwidth"},
+    {0x00220058, "SQ", "Mydriatic Agent Sequence"},
+
+    {0x00221007, "SQ", "Ophthalmic Axial Measurements Right EyeSequence"},
+    {0x00221008, "SQ", "Ophthalmic Axial Measurements Left EyeSequence"},
+    {0x00221009, "CS", "Ophthalmic Axial Measurements Device Type"},
+    {0x00221010, "CS", "Ophthalmic Axial Length Measurements Type"},
+    {0x00221012, "SQ", "Ophthalmic Axial Length Sequence"},
+    {0x00221019, "FL", "Ophthalmic Axial Length"},
+    {0x00221024, "SQ", "Lens Status Code Sequence"},
+    {0x00221025, "SQ", "Vitreous Status Code Sequence"},
+    {0x00221028, "SQ", "IOL Formula Code Sequence"},
+    {0x00221029, "LO", "IOL Formula Detail"},
+    {0x00221033, "FL", "Keratometer Index"},
+    {0x00221035, "SQ", "Source of Ophthalmic AxialLength Code Sequence"},
+    {0x00221037, "FL", "Target Refraction"},
+    {0x00221039, "CS", "Refractive Procedure Occurred"},
+    {0x00221040, "SQ", "Refractive Surgery TypeCode Sequence"},
+    {0x00221044, "SQ", "Ophthalmic Ultrasound Method Code Sequence"},
+    {0x00221050, "SQ", "Ophthalmic Axial Length Measurements Sequence"},
+    {0x00221053, "FL", "IOL Power"},
+    {0x00221054, "FL", "Predicted Refractive Error"},
+    {0x00221059, "FL", "Ophthalmic Axial LengthVelocity"},
+    {0x00221065, "LO", "Lens Status Description"},
+    {0x00221066, "LO", "Vitreous Status Description"},
+    {0x00221090, "SQ", "IOL Power Sequence"},
+    {0x00221092, "SQ", "Lens Constant Sequence"},
+    {0x00221093, "LO", "IOL Manufacturer"},
+    {0x00221094, "LO", "Lens Constant Description"},
+    {0x00221095, "LO", "Implant Name"},
+    {0x00221096, "SQ", "Keratometry Measurement Type Code Sequence"},
+    {0x00221097, "LO", "Implant Part Number"},
+
+    {0x00221100, "SQ", "Referenced Ophthalmic Axial Measurements Sequence"},
+    {0x00221101, "SQ", "Ophthalmic Axial Length Measurements Segment Name Code Sequence"},
+    {0x00221103, "SQ", "Refractive Error Before Refractive Surgery Code Sequence"},
+    {0x00221121, "FL", "IOL Power For Exact Emmetropia"},
+    {0x00221122, "FL", "IOL Power For Exact Target Refraction"},
+    {0x00221125, "SQ", "Anterior Chamber Depth Definition Code Sequence"},
+    {0x00221127, "SQ", "Lens Thickness Sequence"},
+    {0x00221128, "SQ", "Anterior Chamber Depth Sequence"},
+    {0x00221130, "FL", "Lens Thickness"},
+    {0x00221131, "FL", "Anterior Chamber Depth"},
+    {0x00221132, "SQ", "Source of Lens Thickness Data Code Sequence"},
+    {0x00221133, "SQ", "Source of Anterior Chamber Depth Data Code Sequence"},
+    {0x00221134, "SQ", "Source of Refractive Measurements Sequence"},
+    {0x00221135, "SQ", ""},
+    {0x00221140, "CS", ""},
+    {0x00221150, "SQ", ""},
+    {0x00221153, "SQ", ""},
+    {0x00221155, "FL", ""},
+    {0x00221159, "LO", ""},
+
+    {0x00221210, "SQ", ""},
+    {0x00221211, "SQ", ""},
+    {0x00221220, "SQ", ""},
+    {0x00221225, "SQ", ""},
+    {0x00221230, "SQ", ""},
+    {0x00221250, "SQ", ""},
+    {0x00221255, "SQ", ""},
+    {0x00221257, "SQ", ""},
+    {0x00221260, "SQ", ""},
+    {0x00221262, "SQ", ""},
+    {0x00221265, "SQ", ""},
+    {0x00221273, "LO", ""},
 
     // -------------------------------------------------------------------------
     // Group tag 0028 ----------------------------------------------------------
@@ -1563,6 +1775,8 @@ TDicomDictionary dict[]=
     {0x0040DB0D, "UI", "Template Extension Creator UID"},
     {0x0040DB73, "UL", "Referenced Content Item Identifier"},
 
+    // -------------------------------------------------------------------------
+    // Group Tag 0054 ----------------------------------------------------------
     {0x00540011, "US", "Number of Energy Windows"},
     {0x00540012, "SQ", "Energy Window Information Sequence"},
     {0x00540013, "SQ", "Energy Window Range Sequence"},
@@ -1831,9 +2045,8 @@ TDicomDictionary dict[]=
     {0xFFFEE00D, "DL", "Item Delimitation Item"},
     {0xFFFEE0DD, "DL", "Sequence Delimitation Item"},
 
-    // -------------------------------------------------------------------------
-    // EOD ---------------------------------------------------------------------
-    {0x00000000, "", ""} // terminating NULL
+    // EOF
+    {0x00000000, NULL, NULL }
 };
 
 WORD DicomDictionary::GetVersion()
@@ -1850,14 +2063,14 @@ int DicomDictionary::FindKeyIndex(const DWORD id)
 {
     int nCnt = 0;
 
-    if(id == 0x00000000)
+    if( id == 0x00000000 )
     {
         return -1;
     }
 
-    while(dict[nCnt].id!=0)
+    while ( dicom_dict[nCnt].id != 0x00000000 )
     {
-        if(dict[nCnt].id == id)
+        if ( dicom_dict[nCnt].id == id )
             return nCnt;
 
         nCnt++;
@@ -1868,19 +2081,19 @@ int DicomDictionary::FindKeyIndex(const DWORD id)
 
 int FindKeyIndexFrom(const DWORD id, int idx)
 {
-    if( idx >= sizeof ( dict ) )
+    if( idx >= sizeof ( dicom_dict ) )
         return -2;
 
     int nCnt = idx;
 
-    if(id == 0x00000000)
+    if( id == 0x00000000 )
     {
         return -1;
     }
 
-    while(dict[nCnt].id!=0)
+    while( dicom_dict[nCnt].id != 0 )
     {
-        if(dict[nCnt].id == id)
+        if( dicom_dict[nCnt].id == id )
             return nCnt;
 
         nCnt++;
@@ -1897,9 +2110,9 @@ WORD  DicomDictionary::GetVR(const DWORD id, bool* sameavailed )
 
     int     nIndex = FindKeyIndex(id);
 
-    if(nIndex >= 0)
+    if( nIndex >= 0 )
     {
-        memcpy(&nRet,&dict[nIndex].vr,2);
+        memcpy( &nRet, &dicom_dict[nIndex].vr, 2 );
 
         if ( sameavailed != NULL)
         {
@@ -1924,7 +2137,7 @@ void DicomDictionary::GetVR(const DWORD id, void *pVR, bool* sameavailed)
 
     if(pVR)
     {
-        memcpy(pVR,&nRet,2);
+        memcpy( pVR, &nRet, 2 );
 
         if ( sameavailed != NULL)
         {
@@ -1946,7 +2159,7 @@ int DicomDictionary::GetVRarray( const DWORD id, WORD**pVRarray )
         *pVRarray = new WORD;
         if ( *pVRarray != NULL )
         {
-            memcpy( *pVRarray, &dict[nIndex].vr, 2 );
+            memcpy( *pVRarray, &dicom_dict[nIndex].vr, 2 );
             nCount++;
 
             nIndex = FindKeyIndexFrom( id, nIndex );
@@ -1967,7 +2180,7 @@ const char* DicomDictionary::GetMean(const DWORD id)
 
     if(nIndex >= 0)
     {
-        return (const char*)&dict[nIndex].mean;
+        return (const char*)&dicom_dict[nIndex].mean;
     }
 
     return NULL;
