@@ -148,16 +148,18 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
     if(bLittleEndian)
     {
         // Swap it !!
-        BYTE *pA1 = (BYTE*)&nVR;
-        BYTE *pA2 = pA1+1;
-        cVR = (*pA1 << 8 ) + *pA2;
+        // BYTE *pA1 = (BYTE*)&nVR;
+        // BYTE *pA2 = pA1+1;
+        // cVR = (*pA1 << 8 ) + *pA2;
+        cVR = SwapWORD( nVR );
     }
-
 
     switch(cVR)
     {
+        // Related in UNSIGNED
         case OB:
         case OW:
+        case SQ:
         case UN:
         case UT:
             // Explicit VR with 32-bit length if other two bytes are zero
@@ -167,6 +169,7 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
             // Implicit VR with 32-bit length
             return nCarrier;
 
+        // Related in SIGNED
         case AE:
         case AS:
         case AT:
@@ -183,7 +186,6 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
         case SH:
         case SL:
         case SS:
-        case SQ:
         case ST:
         case TM:
         case UI:
