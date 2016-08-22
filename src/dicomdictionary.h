@@ -13,7 +13,8 @@ namespace DicomImageViewer
     {
         DWORD   id;
         char    vr[3];
-        char    mean[80];
+        const
+        char*   mean;
     }TDicomDictionary;
 
     class DicomDictionary

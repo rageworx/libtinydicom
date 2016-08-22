@@ -272,8 +272,6 @@ TagElement* TagWriter::FindTagElement(DWORD TagID)
     if (TagID == 0)
         return NULL;
 
-    DWORD nCnt = 0;
-
     list<TagElement*>::iterator  it;
 
     for(it=TagElements.begin(); it!=TagElements.end(); advance(it,1))
