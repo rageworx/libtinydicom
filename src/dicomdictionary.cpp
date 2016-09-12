@@ -4217,15 +4217,12 @@ int FindKeyIndexFrom(const DWORD id, int idx)
     }
 
     return -1;
-
-    return -1;
 }
 
 WORD  DicomDictionary::GetVR(const DWORD id, bool* sameavailed )
 {
     WORD   nRet    = 0;
     int    nIndex  = FindKeyIndex(id);
-
 
     if( nIndex >= 0 )
     {
