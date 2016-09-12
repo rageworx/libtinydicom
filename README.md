@@ -14,6 +14,11 @@
  - I have gathering more VR information, but it is really narrow to know. Absolutely limited.
 
 ## Updated news
+### 2016-09-12
+ - Working for latest dictionaty for 3.6 (2016c) now.
+ - Tagged to 'dictionaryworking' until it complete written all dictionaries.
+ - Added some tag state as like 'retired, trial, dicos, diconde'.
+
 ### 2014-11-06
  - updated dicom dictionary.
  - updated pixel information writing.
