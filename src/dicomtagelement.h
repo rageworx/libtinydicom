@@ -3,10 +3,10 @@
 
 using namespace std;
 
-#define MAX_STATICBUFFER_LENGTH          64
-
 namespace DicomImageViewer
 {
+    #define MAX_STATICBUFFER_LENGTH          64
+
     typedef struct _TagElement
     {
         DWORD   id;
@@ -16,6 +16,6 @@ namespace DicomImageViewer
         char    staticbuffer[MAX_STATICBUFFER_LENGTH];
         void*   dynamicbuffer;
     }TagElement;
-};
+}
 
 #endif // _DICOMTAGELEMENT_H_

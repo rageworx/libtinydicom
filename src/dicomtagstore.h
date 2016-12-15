@@ -51,6 +51,6 @@ namespace DicomImageViewer
             // destructor
             ~TagStore();
     };
-};
+}
 
 #endif // _DICOMTAGSTORE_H_

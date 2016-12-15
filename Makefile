@@ -32,7 +32,7 @@ SRCS = $(wildcard $(SOURCEDIR)/*.cpp)
 OBJS = $(SRCS:$(SOURCEDIR)/%.cpp=$(OBJDIR)/%.o)
 LOBJ = $(OBJDIR)/libdcm.o
 
-DEFINEOPT = -DRAWPROCESSOR_USE_LOCALTCHAR
+DEFINEOPT = -DLIB_EXPORT
 
 ifeq (debug,$(firstword $(MAKECMDGOALS)))
 	OPTIMIZEOPT :=

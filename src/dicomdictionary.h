@@ -49,7 +49,6 @@ namespace DicomImageViewer
             static int GetElemState( const DWORD id );
             static int GetVRarray( const DWORD id, WORD**pVRarray );
     };
-};
-
+}
 
 #endif // _DICOMDICTIONARY_H_

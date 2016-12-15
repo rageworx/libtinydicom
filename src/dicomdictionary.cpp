@@ -4319,7 +4319,7 @@ WORD  DicomDictionary::GetVR(const DWORD id, bool* sameavailed )
     {
         if ( strlen( dicom_dict[nIndex].vr ) > 0 )
         {
-            memcpy( &nRet, &dicom_dict[nIndex].vr, 2 );
+            memcpy( &nRet, dicom_dict[nIndex].vr, 2 );
 
             if ( sameavailed != NULL)
             {
@@ -4381,14 +4381,13 @@ int DicomDictionary::GetVRarray( const DWORD id, WORD**pVRarray )
         {
             if ( strlen ( dicom_dict[nIndex].vr ) > 0 )
             {
-                memcpy( *pVRarray, &dicom_dict[nIndex].vr, 2 );
+                memcpy( *pVRarray, dicom_dict[nIndex].vr, 2 );
                 nCount++;
 
                 nIndex = FindKeyIndexFrom( id, nIndex );
 
                 if ( nIndex > 0 )
                 {
-                    //*pVRarray++;
                     pVRarray++;
                 }
             }
@@ -4404,7 +4403,7 @@ const char* DicomDictionary::GetMean(const DWORD id)
 
     if(nIndex >= 0)
     {
-        return (const char*)&dicom_dict[nIndex].mean;
+        return dicom_dict[nIndex].mean;
     }
 
     return NULL;

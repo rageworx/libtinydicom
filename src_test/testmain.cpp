@@ -1,6 +1,6 @@
 #include "testmain.h"
 
-WORD GetElem2WORD( TagElement* pElem )
+WORD GetElem2WORD( DCMTagElement* pElem )
 {
     WORD tmpUS = 0;
 
@@ -26,17 +26,17 @@ int main(int argc, char** argv)
         wprintf( L"OK.\n" );
         wprintf( L"\n" );
 
-        TagElement* pTagModal = FindElement( 0x00080060 );
-        TagElement* pTagKVP = FindElement( 0x00180060 );
-        TagElement* pTagIPP = FindElement( 0x00200032 );
-        TagElement* pTagIOP = FindElement( 0x00200037 );
-        TagElement* pTagFORUID = FindElement( 0x00200052 );
+        DCMTagElement* pTagModal = FindElement( 0x00080060 );
+        DCMTagElement* pTagKVP = FindElement( 0x00180060 );
+        DCMTagElement* pTagIPP = FindElement( 0x00200032 );
+        DCMTagElement* pTagIOP = FindElement( 0x00200037 );
+        DCMTagElement* pTagFORUID = FindElement( 0x00200052 );
 
-        TagElement* pTagSPP = FindElement( 0x00280002 );
-        TagElement* pTagPI  = FindElement( 0x00280004 );
-        TagElement* pTagRow = FindElement( 0x00280010 );
-        TagElement* pTagCol = FindElement( 0x00280011 );
-        TagElement* pTagPxS = FindElement( 0x00280030 );
+        DCMTagElement* pTagSPP = FindElement( 0x00280002 );
+        DCMTagElement* pTagPI  = FindElement( 0x00280004 );
+        DCMTagElement* pTagRow = FindElement( 0x00280010 );
+        DCMTagElement* pTagCol = FindElement( 0x00280011 );
+        DCMTagElement* pTagPxS = FindElement( 0x00280030 );
 
         printf( "\n" );
         printf( "Modality                   : %s\n", pTagModal->staticbuffer );
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
         wprintf( L"Adding some tags ... \n" );
 
         // Modality = CT
-        TagElement* newTagModal = NULL;
+        DCMTagElement* newTagModal = NULL;
         if ( NewElement( 0x00080060, &newTagModal ) == true )
         {
             WriteAnsiString( newTagModal, "CT" );
@@ -115,13 +115,13 @@ int main(int argc, char** argv)
                 return 0;
             }
 
-            TagElement* newTagPI = NULL;
+            DCMTagElement* newTagPI = NULL;
             if ( NewElement( 0x00280004, &newTagPI ) == true )
             {
                 WriteAnsiString( newTagPI, "MONOCHROME2" );
             }
 
-            TagElement* newTagIT = NULL;
+            DCMTagElement* newTagIT = NULL;
             if ( NewElement( 0x00080008, &newTagIT ) == true )
             {
                 WriteAnsiString( newTagIT, "ORIGINAL\\PRIMARY\\AXIAL" );

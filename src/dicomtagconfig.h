@@ -41,7 +41,7 @@
 #endif // WORD
 
 #ifndef DWORD
-    #define DWORD   unsigned int
+    #define DWORD   unsigned long
 #endif // DWORD
 
 #ifndef NULL

@@ -3,13 +3,12 @@
     #include <tchar.h>
 #endif /// of _WIN32
 
-#include "stools.h"
-
 #include "dicomtagreader.h"
 #include "dicomtagwriter.h"
 #include "dicomdictionary.h"
 
 #include "libdcm.h"
+#include "stdunicode.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +35,7 @@ static TSTRING lastErrMsg;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void tool_replace_element(TagElement* pDst, TagElement* pSrc)
+void tool_replace_element(DCMTagElement* pDst, DCMTagElement* pSrc)
 {
     if(!pSrc)
         return;
@@ -182,15 +181,16 @@ LIB_EXPORT int GetElementCount()
     return -1;
 }
 
-LIB_EXPORT int GetElement(int index, TagElement** pElement)
+LIB_EXPORT int GetElement(int index, DCMTagElement** pElement)
 {
     lastErrMsg.clear();
 
-    if(pReader)
+    if( pReader != NULL )
     {
-        if(index < pReader->GetTagCount())
+        if( index < pReader->GetTagCount() )
         {
-            *pElement = (TagElement*)pReader->GetTagElement(index);
+            DicomImageViewer::TagElement* pElem = pReader->GetTagElement((unsigned int)index);
+            *pElement = (DCMTagElement*)pElem;
             if(!pElement)
             {
                 lastErrMsg = TEXT("DICOM tag not found");
@@ -208,13 +208,13 @@ LIB_EXPORT int GetElement(int index, TagElement** pElement)
     return -1;
 }
 
-LIB_EXPORT TagElement* FindElement(DWORD tagID)
+LIB_EXPORT DCMTagElement* FindElement(DWORD tagID)
 {
     lastErrMsg.clear();
 
     if(pReader)
     {
-        TagElement *pRet = (TagElement*)pReader->FindTagElement(tagID);
+        DCMTagElement *pRet = (DCMTagElement*)pReader->FindTagElement(tagID);
         return pRet;
     }
 
@@ -223,7 +223,7 @@ LIB_EXPORT TagElement* FindElement(DWORD tagID)
     return NULL;
 }
 
-LIB_EXPORT bool AddElement(TagElement* pElement)
+LIB_EXPORT bool AddElement(DCMTagElement* pElement)
 {
     lastErrMsg.clear();
 
@@ -233,15 +233,15 @@ LIB_EXPORT bool AddElement(TagElement* pElement)
         return false;
     }
 
-    TagElement* pFoundElem      = NULL;
+    DicomImageViewer::TagElement* pFoundElem      = NULL;
 
     if(pReader)
     {
-        pFoundElem = (TagElement*)pReader->FindTagElement(pElement->id);
+        pFoundElem = pReader->FindTagElement( pElement->id );
         if(pFoundElem)
         {
             // if found same tag, replace it.
-            tool_replace_element(pFoundElem, pElement);
+            tool_replace_element( (DCMTagElement*)pFoundElem, (DCMTagElement*)pElement);
             return true;
         }
         else
@@ -261,9 +261,9 @@ LIB_EXPORT bool AddElementEx(DWORD tagID, char *data, int dataSize)
 {
     lastErrMsg.clear();
 
-    TagElement* pNewElem = new TagElement();
+    DicomImageViewer::TagElement* pNewElem = new DicomImageViewer::TagElement();
 
-    memset(pNewElem, 0, sizeof(TagElement));
+    memset(pNewElem, 0, sizeof(DicomImageViewer::TagElement));
 
     pNewElem->id = tagID;
 
@@ -279,7 +279,7 @@ LIB_EXPORT bool AddElementEx(DWORD tagID, char *data, int dataSize)
         memcpy(pNewElem->staticbuffer, data, dataSize);
     }
 
-    if(AddElement(pNewElem) == false)
+    if(AddElement( (DCMTagElement*)pNewElem ) == false)
     {
         if(pNewElem->alloced)
         {
@@ -327,14 +327,14 @@ LIB_EXPORT bool SaveDCM( const wchar_t* newName )
 
             for(int cnt=0; cnt<tagCount; cnt++)
             {
-                TagElement* pSrcElem = (TagElement*)pReader->GetTagElement(cnt);
+                DicomImageViewer::TagElement* pSrcElem = pReader->GetTagElement( cnt );
                 if(pSrcElem)
                 {
-                    TagElement *pNewElem = new TagElement();
+                    DicomImageViewer::TagElement *pNewElem = new DicomImageViewer::TagElement();
 
                     if(pNewElem)
                     {
-                        memset(pNewElem,0,sizeof(TagElement));
+                        memset(pNewElem,0,sizeof(DicomImageViewer::TagElement));
 
                         // copy it ..
                         pNewElem->id = pSrcElem->id;
@@ -388,10 +388,10 @@ LIB_EXPORT WORD  GetVR(DWORD tagID)
 LIB_EXPORT wchar_t* GetDicomMeaning(DWORD tagID)
 {
     const char* refstr = DicomImageViewer::DicomDictionary::GetMean(tagID);
-    return ConvertFromMBCS( refstr );
+    return DicomImageViewer::convertM2W( refstr );
 }
 
-LIB_EXPORT bool NewElement( DWORD tagID, TagElement** pElement )
+LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
 {
     lastErrMsg.clear();
 
@@ -404,14 +404,13 @@ LIB_EXPORT bool NewElement( DWORD tagID, TagElement** pElement )
     if ( FindElement( tagID ) != NULL )
         return false;       /// Already Exist.
 
-    TagElement* newElem = new TagElement();
+    DCMTagElement* newElem = (DCMTagElement*)new DicomImageViewer::TagElement();
     if( newElem != NULL )
     {
-        memset( newElem, 0, sizeof( TagElement ) );
+        memset( newElem, 0, sizeof( DCMTagElement ) );
         WORD wVR = GetVR( tagID );
         newElem->id = tagID;
         memcpy( newElem->VRtype, &wVR, 2 );
-
         if ( AddElement( newElem ) == true )
         {
             *pElement = newElem;
@@ -429,7 +428,7 @@ LIB_EXPORT wchar_t* GetLastErrMsg()
     return (wchar_t*)lastErrMsg.c_str();
 }
 
-LIB_EXPORT int ReadInt( TagElement* pElem )
+LIB_EXPORT int ReadInt( DCMTagElement* pElem )
 {
     int retInt = 0;
 
@@ -467,7 +466,7 @@ LIB_EXPORT int ReadInt( TagElement* pElem )
     return retInt;
 }
 
-LIB_EXPORT char* ReadAnsiString( TagElement* pElem )
+LIB_EXPORT char* ReadAnsiString( DCMTagElement* pElem )
 {
     if ( pElem != NULL )
     {
@@ -487,7 +486,7 @@ LIB_EXPORT char* ReadAnsiString( TagElement* pElem )
     return NULL;
 }
 
-LIB_EXPORT wchar_t* ReadWideString( TagElement* pElem )
+LIB_EXPORT wchar_t* ReadWideString( DCMTagElement* pElem )
 {
     if ( pElem != NULL )
     {
@@ -512,11 +511,11 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
     if ( pII == NULL )
         return false;
 
-    TagElement* pTagRow = FindElement( 0x00280010 );    /// Rows
-    TagElement* pTagCol = FindElement( 0x00280011 );    /// Cols
-    TagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
-    TagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
-    TagElement* pTagPxs = FindElement( 0x7FE00010 );
+    DCMTagElement* pTagRow = FindElement( 0x00280010 );    /// Rows
+    DCMTagElement* pTagCol = FindElement( 0x00280011 );    /// Cols
+    DCMTagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
+    DCMTagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
+    DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
 
     if ( pTagPSp != NULL )
     {
@@ -582,7 +581,7 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
     return false;
 }
 
-LIB_EXPORT int  WriteInt(  TagElement* pElem, const int iv )
+LIB_EXPORT int  WriteInt(  DCMTagElement* pElem, const int iv )
 {
     int writeInt = 0;
 
@@ -624,7 +623,7 @@ LIB_EXPORT int  WriteInt(  TagElement* pElem, const int iv )
     return writeInt;
 }
 
-LIB_EXPORT int  WriteAnsiString( TagElement* pElem, const char* as )
+LIB_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
 {
     int writeInt = 0;
 
@@ -635,7 +634,7 @@ LIB_EXPORT int  WriteAnsiString( TagElement* pElem, const char* as )
         {
             if ( pElem->dynamicbuffer != NULL )
             {
-                delete[] pElem->dynamicbuffer;
+                delete[] (char*)pElem->dynamicbuffer;
                 pElem->dynamicbuffer = NULL;
                 pElem->alloced = false;
             }
@@ -655,7 +654,7 @@ LIB_EXPORT int  WriteAnsiString( TagElement* pElem, const char* as )
         {
             if ( pElem->dynamicbuffer != NULL )
             {
-                delete[] pElem->dynamicbuffer;
+                delete[] (char*)pElem->dynamicbuffer;
                 pElem->dynamicbuffer = NULL;
                 pElem->alloced = false;
             }
@@ -671,7 +670,7 @@ LIB_EXPORT int  WriteAnsiString( TagElement* pElem, const char* as )
     return writeInt;
 }
 
-LIB_EXPORT int  WriteWideString( TagElement* pElem, const wchar_t* ws )
+LIB_EXPORT int  WriteWideString( DCMTagElement* pElem, const wchar_t* ws )
 {
     int writeInt = 0;
 
@@ -682,7 +681,7 @@ LIB_EXPORT int  WriteWideString( TagElement* pElem, const wchar_t* ws )
         {
             if ( pElem->dynamicbuffer != NULL )
             {
-                delete[] pElem->dynamicbuffer;
+                delete[] (char*)pElem->dynamicbuffer;
                 pElem->dynamicbuffer = NULL;
                 pElem->alloced = false;
             }
@@ -702,7 +701,7 @@ LIB_EXPORT int  WriteWideString( TagElement* pElem, const wchar_t* ws )
         {
             if ( pElem->dynamicbuffer != NULL )
             {
-                delete[] pElem->dynamicbuffer;
+                delete[] (char*)pElem->dynamicbuffer;
                 pElem->dynamicbuffer = NULL;
                 pElem->alloced = false;
             }
@@ -729,7 +728,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
     // Write widht, height in Column and Rows.
     if ( ( pII->width != 0 ) && ( pII->height != 0 ) )
     {
-        TagElement* tagCol = FindElement( 0x00280011 );
+        DCMTagElement* tagCol = FindElement( 0x00280011 );
         if ( tagCol == NULL )
         {
             if ( NewElement( 0x00280011, &tagCol ) == false )
@@ -740,7 +739,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
 
         WriteInt( tagCol, pII->width );
 
-        TagElement* tagRow = FindElement( 0x00280010 );
+        DCMTagElement* tagRow = FindElement( 0x00280010 );
         if ( tagRow == NULL )
         {
             if ( NewElement( 0x00280010, &tagRow ) == false )
@@ -756,7 +755,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
 
     if ( pII->bpp != 0 )
     {
-        TagElement* tagBS = FindElement( 0x00280101 );
+        DCMTagElement* tagBS = FindElement( 0x00280101 );
         if ( tagBS == NULL )
         {
             if ( NewElement( 0x00280101, &tagBS ) == false )
@@ -780,7 +779,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
             bitsalloced = 32;
         }
 
-        TagElement* tagBA = FindElement( 0x00280100 );
+        DCMTagElement* tagBA = FindElement( 0x00280100 );
         if ( tagBA == NULL )
         {
             if ( NewElement( 0x00280100, &tagBA ) == false )
@@ -796,7 +795,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
     // Write pixel spacing information.
     if ( ( pII->spacing_w != 0.0f ) && ( pII->spacing_h != 0.0f ) )
     {
-        TagElement* tagPS = FindElement( 0x00280030 );
+        DCMTagElement* tagPS = FindElement( 0x00280030 );
         if ( tagPS == NULL )
         {
             if ( NewElement( 0x00280030, &tagPS ) == false )
@@ -815,7 +814,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
     // Write Pixels.
     if ( pII->pixels != NULL )
     {
-        TagElement* tagPxs = FindElement( 0x7FE00010 );
+        DCMTagElement* tagPxs = FindElement( 0x7FE00010 );
         if ( tagPxs == NULL )
         {
             if ( NewElement( 0x7FE00010, &tagPxs ) == false )

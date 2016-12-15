@@ -16,6 +16,8 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-DDEBUG" />
+					<Add option="-D_DEBUG" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -53,7 +55,7 @@
 		</Build>
 		<Compiler>
 			<Add directory="src" />
-			<Add directory="src_dll" />
+			<Add directory="src_lib" />
 		</Compiler>
 		<Unit filename="src/dicomdecoder.h" />
 		<Unit filename="src/dicomdictionary.cpp" />

@@ -59,6 +59,6 @@ namespace DicomImageViewer
             // destructor
             ~TagWriter();
     };
-};
+}
 
 #endif // _DICOMTAGWRITER_H_
