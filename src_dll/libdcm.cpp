@@ -635,6 +635,7 @@ DLL_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
     if ( pElem != NULL )
     {
         int wLen = strlen( as );
+        int bLen = wLen + (wLen % 2); // need 2 bytes padding.
         if ( wLen >= 64 )
         {
             if ( pElem->dynamicbuffer != NULL )
@@ -644,15 +645,21 @@ DLL_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
                 pElem->alloced = false;
             }
 
-            pElem->dynamicbuffer = new char[ wLen + 1 ];
+            pElem->dynamicbuffer = new char[ bLen + 1 ];
             if ( pElem->dynamicbuffer != NULL )
             {
-                memset( pElem->dynamicbuffer, 0, wLen + 1 );
+                memset( pElem->dynamicbuffer, 0, bLen + 1 );
                 memcpy( pElem->dynamicbuffer, as, wLen );
-                pElem->size = wLen;
+                if ( wLen != bLen )
+                {
+                    char* ptrx = (char*)pElem->dynamicbuffer;
+                    ptrx += wLen;
+                    *ptrx = 0x20;
+                }
+                pElem->size = bLen;
                 pElem->alloced = true;
 
-                writeInt = wLen;
+                writeInt = bLen;
             }
         }
         else
@@ -666,9 +673,14 @@ DLL_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
 
             memset( pElem->staticbuffer, 0, 64 );
             memcpy( pElem->staticbuffer, as, wLen );
-            pElem->size = wLen;
+            if ( wLen != bLen )
+            {
+                strcat( pElem->staticbuffer, " " );
+            }
 
-            writeInt = wLen;
+            pElem->size = bLen;
+
+            writeInt = bLen;
         }
     }
 
@@ -828,6 +840,13 @@ DLL_EXPORT bool AddImage( ImageInformation* pII )
             }
         }
 
+        // Check VR is OW or OB.
+        // OB may not working for many DICOM viewers.
+        if ( strncmp( tagPxs->VRtype, "OW", 2 ) != 0 )
+        {
+            tagPxs->VRtype[0] = 'O';
+            tagPxs->VRtype[1] = 'W';
+        }
         tagPxs->size = pII->width * pII->height * ( bitsalloced / 8 );
 
         if( tagPxs->size > 64 )
