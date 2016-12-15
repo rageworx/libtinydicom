@@ -1,6 +1,8 @@
-#ifdef _WIN32
-    #include <windows.h>
-#endif /// of _WIN32
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+#include "dicomtagconfig.h"
 #include "dicomdictionary.h"
 
 #define DIC_VERSION     0x0305      /// 3.5

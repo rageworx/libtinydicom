@@ -27,9 +27,41 @@
 #endif
 
 #if (USING_DCM_ISE_DLL == 1)
-    #define DICOMTAG_OPT_USING_DCMISE    
+    #define DICOMTAG_OPT_USING_DCMISE
 #else
     #define DICOMTAG_OPT_USING_INTERNALVOLUMEENGINE
 #endif
+
+#ifndef BYTE
+    #define BYTE    unsigned char
+#endif // BYTE
+
+#ifndef WORD
+    #define WORD    unsigned short
+#endif // WORD
+
+#ifndef DWORD
+    #define DWORD   unsigned int
+#endif // DWORD
+
+#ifndef NULL
+    #ifdef __cplusplus
+        #ifndef _WIN64
+            #define NULL 0
+        #else
+            #define NULL 0LL
+        #endif
+    #else
+        #define NULL ((void *)0)
+    #endif
+#endif // NULL
+
+#ifndef FALSE
+    #define FALSE 0
+#endif // FALSE
+
+#ifndef TRUE
+    #define TRUE 1
+#endif // TRUE
 
 #endif //__DICOMTAGCONFIG_H__

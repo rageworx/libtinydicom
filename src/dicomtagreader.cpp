@@ -1,5 +1,6 @@
-#include <windows.h>
-#include <tchar.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
