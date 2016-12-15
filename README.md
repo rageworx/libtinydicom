@@ -12,8 +12,14 @@
 ## Known VR (WORD)
  - See source code of dicomdictinary.cpp.
  - I have gathering more VR information, but it is really narrow to know. Absolutely limited.
+ - Still making it keep updated for latest version, but too many VR and dictionaries may need more time for only myself.
 
 ## Updated news
+### 2016-12-15
+ - Now supporting Makefile ( I didn't know this file not included... )
+ - Make has two different options, `make` and `make debug`.
+ - Removed some platform dependency issues.
+
 ### 2016-09-12
  - Working for latest dictionaty for 3.6 (2016c) now.
  - Tagged to 'dictionaryworking' until it complete written all dictionaries.
