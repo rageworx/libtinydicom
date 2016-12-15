@@ -5,7 +5,7 @@
 #include "dicomdictionary.h"
 #include "dicomdecoder.h"
 #include "dicomtagstore.h"
-#include "stools.h"
+#include "stdunicode.h"
 
 using namespace DicomImageViewer;
 
@@ -43,7 +43,7 @@ void TagStore::clearTags()
         {
             if(pTE->size && pTE->dynamicbuffer && pTE->alloced)
             {
-                delete[] pTE->dynamicbuffer;
+                delete[] (char*)pTE->dynamicbuffer;
                 pTE->alloced = FALSE;
             }
         }

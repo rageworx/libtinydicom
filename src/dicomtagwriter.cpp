@@ -5,7 +5,8 @@
 #include "dicomdictionary.h"
 #include "dicomdecoder.h"
 #include "dicomtagwriter.h"
-#include "stools.h"
+#include "stdunicode.h"
+#include "swap.h"
 
 using namespace DicomImageViewer;
 
@@ -22,7 +23,7 @@ TagWriter::TagWriter( const wchar_t* fileName )
 
 TagWriter::TagWriter( const char* fileName)
 {
-    wstring convStr = ConvertFromMBCS(fileName);
+    wstring convStr = convertM2W(fileName);
     createInstance(convStr);
 }
 
@@ -40,7 +41,7 @@ void TagWriter::createInstance(wstring &fileName)
     // file open --
 
 #ifdef  __GNUC__
-    fileStream.open(ConvertFromUnicode((wchar_t*)fileName.c_str()),
+    fileStream.open(convertW2M((wchar_t*)fileName.c_str()),
                     ios::binary | ios::out | ios::app);
 #else
     fileStream.open(fileName.c_str(), ios::binary | ios::out | ios::app);
@@ -79,7 +80,7 @@ bool TagWriter::writeBYTE(BYTE aByte)
     if(!bFileCreated)
         return false;
 
-    fileStream.write((char*)aByte,1);
+    fileStream.write((char*)&aByte,1);
     fileLength = fileStream.tellg();
 
     return false;
@@ -125,7 +126,7 @@ void TagWriter::clearTags()
             if(pTE->alloced && (pTE->size > 0))
             {
                 if(pTE->dynamicbuffer)
-                    delete[] pTE->dynamicbuffer;
+                    delete[] (char*)pTE->dynamicbuffer;
 
                 pTE->alloced = FALSE;
             }

@@ -9,7 +9,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-char*    convertW2M(const wchar_t* src);
-wchar_t* convertM2W(const char* src);
+namespace DicomImageViewer
+{
+	char*    convertW2M(const wchar_t* src);
+	wchar_t* convertM2W(const char* src);
+}
 
 #endif /// of __STDUNICODE_H__

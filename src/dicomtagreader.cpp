@@ -5,7 +5,8 @@
 #include "dicomdictionary.h"
 #include "dicomdecoder.h"
 #include "dicomtagreader.h"
-#include "stools.h"
+#include "stdunicode.h"
+#include "swap.h"
 
 using namespace DicomImageViewer;
 
@@ -22,7 +23,7 @@ TagReader::TagReader( const wchar_t* fileName )
 
 TagReader::TagReader( const char* fileName )
 {
-    wstring fn = ConvertFromMBCS(fileName);
+    wstring fn = convertM2W(fileName);
     createInstance(fn);
 }
 
@@ -42,7 +43,7 @@ void    TagReader::createInstance(wstring &fileName)
     // file open --
 #ifdef  __GNUC__
     wchar_t *pWC = (wchar_t*)fileName.c_str();
-    char *pFn    = ConvertFromUnicode(pWC);
+    char *pFn    = convertW2M(pWC);
     fileStream.open(pFn, ios::binary | ios::in );
 #else
     fileStream.open(fileName.c_str(), ios::binary | ios::in );
@@ -94,7 +95,7 @@ int     TagReader::readString(char *pBuf, DWORD nLength)
     DWORD   nCurPos = fileStream.tellg();
 
     if(nCurPos + nLength > fileLength)
-        return NULL;
+        return 0;
 
     if(pBuf)
     {

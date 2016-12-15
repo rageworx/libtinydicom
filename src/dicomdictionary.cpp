@@ -4285,7 +4285,7 @@ int DicomDictionary::FindKeyIndex(const DWORD id)
     return -1;
 }
 
-int FindKeyIndexFrom(const DWORD id, int idx)
+int DicomDictionary::FindKeyIndexFrom(const DWORD id, int idx)
 {
     if( idx >= (int)sizeof ( dicom_dict ) )
         return -2;

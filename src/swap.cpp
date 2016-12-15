@@ -1,6 +1,6 @@
 #include "swap.h"
 
-unsigned short SwapWORD(unsigned short nWord)
+unsigned short DicomImageViewer::SwapWORD(unsigned short nWord)
 {
     unsigned short nRet = 0;
 
@@ -11,7 +11,7 @@ unsigned short SwapWORD(unsigned short nWord)
     return nRet;
 }
 
-unsigned long SwapDWORD(unsigned long nDWord)
+unsigned long DicomImageViewer::SwapDWORD(unsigned long nDWord)
 {
     unsigned long nRet = 0;
 
