@@ -2,12 +2,17 @@
 
 
 ## Introduce
- - A DICOM tag library for using C++/STL
- - Related in DICOM tag file (.DCM) read and write library is too far to get free. So I made this to read and write DCM files for free and tiny ! It is still prototype and need to be enhanced.
+ - A DICOM tag read/write library for using C++/STL
+ - Related in DICOM tag file (.DCM) read and write library is too far to get free in light size. So I made this to read and write DCM files for free and tiny ! It is still prototype and need to be enhanced.
 
 ## Project target
  - Basically this project targeted to has non-platform-dependency.
- - But current is using to Code::Blocks project file (CBP) and targeted for Windows32.
+ - Just build it with your gcc or MinGW in shell (or MSYS) via make. Maybe there's no platform dependency.
+
+## License
+ - MIT License.
+ - You can use my source code whatever you want.
+ - But no warranty, just remember this please.
 
 ## Known VR (WORD)
  - See source code of dicomdictinary.cpp.
