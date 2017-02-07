@@ -91,9 +91,9 @@ void    TagReader::createInstance(wstring &fileName)
     }
 }
 
-int     TagReader::readString(char *pBuf, DWORD nLength)
+int TagReader::readString(char *pBuf, DWORD nLength)
 {
-    DWORD   nCurPos = fileStream.tellg();
+    DWORD nCurPos = fileStream.tellg();
 
     if(nCurPos + nLength > fileLength)
         return 0;
@@ -110,7 +110,25 @@ int     TagReader::readString(char *pBuf, DWORD nLength)
     return 0;
 }
 
-BYTE    TagReader::readBYTE()
+DWORD TagReader::seekToNext()
+{
+    while( true )
+    {
+        BYTE nRet = readBYTE();
+
+        if ( nRet == 0 )
+            return fileStream.tellg();
+
+        DWORD nCurPos = fileStream.tellg();
+
+        if ( nCurPos == fileLength )
+            break;
+    }
+
+    return 0;
+}
+
+BYTE TagReader::readBYTE()
 {
     BYTE    aByte   = 0;
     DWORD   nCurPos = fileStream.tellg();
@@ -202,7 +220,7 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
     }
 }
 
-bool    TagReader::readNextTag(TagElement *pTagElem)
+bool TagReader::readNextTag(TagElement *pTagElem)
 {
     DWORD   aTag    = 0;
     bool    bDone   = false;
@@ -236,12 +254,39 @@ bool    TagReader::readNextTag(TagElement *pTagElem)
         memcpy(&nVR,aSubTag,2);
         memcpy(&nCarrier,&aSubTag[2],2);
 
+        bool  bVRLenTested = true;
         DWORD nLen = getLength(nVR,nCarrier);
+        DWORD nCurReadPos = fileStream.tellg();
 
-        // added for some VR("SQ") using abnormal size.
-        // Maybe SQ writes in Leadtools.
-        // 0xFFFFFFFFFF means -1 in singed.
-        if ( ( nLen > 0 ) && ( nLen != 0xFFFFFFFF ) )
+        /***
+        **  Testing VR and Length ...
+        ** added for some VR("SQ") using abnormal size.
+        ** Maybe SQ writes in Leadtools.
+        ** 0xFFFFFFFFFF means -1 in singed.
+        ***/
+
+        if ( nLen == 0 )
+        {
+            bVRLenTested = false;
+        }
+        else
+        if ( nLen == 0xFFFFFFFF )
+        {
+            bVRLenTested = false;
+        }
+        if ( nLen > nCurReadPos )
+        {
+            if ( nCurReadPos < fileLength )
+            {
+                /** It must be bad VR and UUID.
+                    Seek to next NULL ... **/
+
+                seekToNext();
+            }
+            return false;
+        }
+
+        if ( bVRLenTested == true )
         {
             pTagElem->id = aTag;
 
@@ -271,11 +316,13 @@ bool    TagReader::readNextTag(TagElement *pTagElem)
             }
 
             return true;
-        }else{
+        }
+        else
+        {
             pTagElem->id = aTag;
 
             memcpy(pTagElem->VRtype,&nVR,2);
-            pTagElem->size = nLen;
+            pTagElem->size = 0;
             pTagElem->dynamicbuffer = NULL;
 
             return true;
@@ -290,26 +337,29 @@ void TagReader::readTags()
     TagElement *pTagElem = NULL;
     bool        bRepeat = true;
 
-    while(bRepeat)
+    while( bRepeat )
     {
         pTagElem = new TagElement;
-        if(pTagElem)
+        if( pTagElem != NULL )
         {
             memset(pTagElem,0,sizeof(TagElement));
-            bRepeat = readNextTag(pTagElem);
+            bool bRead = readNextTag(pTagElem);
 
-            if(bRepeat)
+            if( bRead == true )
             {
                 TagElements.push_back(pTagElem);
             }
-
-            DWORD fPos = fileStream.tellg();
-            if(fPos < fileLength)
+            else
             {
-                bRepeat = true;
+                delete pTagElem;
+
+                bRepeat = false;
             }
-        }else
+        }
+        else
+        {
             bRepeat = false;
+        }
     }
 }
 

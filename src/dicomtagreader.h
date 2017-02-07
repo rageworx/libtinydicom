@@ -34,6 +34,7 @@ namespace DicomImageViewer
             void        createInstance( wstring &fileName );
 
             int         readString(char *pBuf, DWORD nLength);
+            DWORD       seekToNext();
             BYTE        readBYTE();
             WORD        readWORD();
             DWORD       readDWORD();
