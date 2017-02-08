@@ -1,11 +1,15 @@
 /*******************************************************************************
 * STL , DicomImageViewer::DicomTagReader
-*                                                    last revision : 2011-09-05
+*                                                    last revision : 2017-02-08
 * =============================================================================
 *
 * * (C)Copyright 2011-2014 Raphael Kim (rage.kim)
 * *
 * * Unicode Model.
+*
+* Update in 2017-02-08
+*  : Enhanced to handle bad VR, UUID DICOM file.
+*
 *
 *******************************************************************************/
 #pragma once
@@ -39,7 +43,7 @@ namespace DicomImageViewer
             WORD        readWORD();
             DWORD       readDWORD();
 
-            DWORD       getLength(WORD nVR,WORD nCarrier);
+            DWORD       getLength(WORD* nVR,WORD nCarrier);
             bool        readNextTag(TagElement *pTagElem);
             void        readTags();
 

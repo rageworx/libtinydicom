@@ -20,6 +20,11 @@
  - Still making it keep updated for latest version, but too many VR and dictionaries may need more time for only myself.
 
 ## Updated news
+
+### 2017-02-08
+ - Enhanced to read bad VR and UUID tags.
+ - Some DCM file contains bad VR, or UUID. Made it possible to read.
+
 ### 2016-12-15
  - Now supporting Makefile ( I didn't know this file not included... )
  - Make has two different options, `make` and `make debug`.

@@ -161,27 +161,35 @@ DWORD   TagReader::readDWORD()
     return aDWord;
 }
 
-DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
+DWORD TagReader::getLength(WORD* nVR,WORD nCarrier)
 {
-    WORD cVR = nVR;
+    if ( nVR == NULL )
+        return 0;
 
-    if(bLittleEndian)
+    WORD cVR = *nVR;
+
+    if( bLittleEndian == true )
     {
         // Swap it !!
         // BYTE *pA1 = (BYTE*)&nVR;
         // BYTE *pA2 = pA1+1;
         // cVR = (*pA1 << 8 ) + *pA2;
-        cVR = SwapWORD( nVR );
+        cVR = SwapWORD( *nVR );
     }
 
-    switch(cVR)
+    switch( cVR )
     {
-        // Related in UNSIGNED
-        case OB:
-        case OW:
-        case SQ:
+        // Case if carrier 0, need to next size for Double Word.
+        // Related in strings ...
+        case UC:
         case UN:
         case UT:
+        // Related in floats ...
+        case OB:
+        // Related in integers ...
+        case OF:
+        case SQ:
+        case OW:
             // Explicit VR with 32-bit length if other two bytes are zero
             if (nCarrier == 0)
                 return readDWORD();
@@ -189,7 +197,9 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
             // Implicit VR with 32-bit length
             return nCarrier;
 
-        // Related in SIGNED
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // And others, normal cases ...
+        // Related in strings ...
         case AE:
         case AS:
         case AT:
@@ -197,27 +207,43 @@ DWORD   TagReader::getLength(WORD nVR,WORD nCarrier)
         case DA:
         case DS:
         case DT:
-        case FD:
-        case FL:
         case IS:
         case LO:
         case LT:
         case PN:
         case SH:
-        case SL:
-        case SS:
         case ST:
         case TM:
         case UI:
+        // Related in floats ...
+        case FD:
+        case FL:
+        // Related in integers ...
+        case SL:
+        case SS:
         case UL:
         case US:
+        case OL:
         case QQ:
             return nCarrier;
 
         default:
-            return (nVR << 16) + nCarrier;
-
+            // Bad VR !
+            *nVR = 0;
+            break;
     }
+
+    DWORD tmpDW = 0;
+
+    if ( bLittleEndian == true )
+    {
+        tmpDW = ( SwapWORD(cVR) << 16 ) | nCarrier;
+        return SwapDWORD( tmpDW );
+    }
+
+    tmpDW = ( cVR << 16 ) | nCarrier;
+
+    return tmpDW;
 }
 
 bool TagReader::readNextTag(TagElement *pTagElem)
@@ -243,6 +269,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
 
     if(aTag > 0)
     {
+        DWORD nCurReadPos = fileStream.tellg();
         char aSubTag[4] = {0};
         char *pRead = new char[4];
         readString(pRead,4);
@@ -255,14 +282,13 @@ bool TagReader::readNextTag(TagElement *pTagElem)
         memcpy(&nCarrier,&aSubTag[2],2);
 
         bool  bVRLenTested = true;
-        DWORD nLen = getLength(nVR,nCarrier);
-        DWORD nCurReadPos = fileStream.tellg();
+        DWORD nLen = getLength(&nVR,nCarrier);
 
         /***
         **  Testing VR and Length ...
         ** added for some VR("SQ") using abnormal size.
         ** Maybe SQ writes in Leadtools.
-        ** 0xFFFFFFFFFF means -1 in singed.
+        ** 0xFFFFFFFFFF means -1 in singed integer.
         ***/
 
         if ( nLen == 0 )
@@ -276,13 +302,6 @@ bool TagReader::readNextTag(TagElement *pTagElem)
         }
         if ( nLen > nCurReadPos )
         {
-            if ( nCurReadPos < fileLength )
-            {
-                /** It must be bad VR and UUID.
-                    Seek to next NULL ... **/
-
-                seekToNext();
-            }
             return false;
         }
 
@@ -290,19 +309,41 @@ bool TagReader::readNextTag(TagElement *pTagElem)
         {
             pTagElem->id = aTag;
 
+            // Handle BAD VR ...
+            if ( nVR == 0  )
+            {
+                if ( ( aTag & 0xFF000000 ) == 0x7F000000 )
+                {
+                    // Test Some Wrong/Bad DICOM contains Pixel datas in abnormal.
+                    nLen = readDWORD();
+
+                    if ( nLen > 0 )
+                    {
+                        nVR = OW;
+                    }
+                }
+                else
+                {
+                    // Find right VR.
+                    nVR = DicomDictionary::GetVR( aTag );
+                }
+            }
+
             memcpy(pTagElem->VRtype,&nVR,2);
             pTagElem->size = nLen;
 
             char *pRead = new char[nLen];
             memset(pRead,0,nLen);
-            if(pRead)
+            if( pRead != NULL )
             {
                 readString(pRead,nLen);
                 if(nLen > MAX_STATICBUFFER_LENGTH)
                 {
                     pTagElem->dynamicbuffer = pRead;
                     pTagElem->alloced = TRUE;
-                }else{
+                }
+                else
+                {
                     memset(pTagElem->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
                     memcpy(pTagElem->staticbuffer,pRead,nLen);
                     pTagElem->alloced = FALSE;
@@ -353,7 +394,11 @@ void TagReader::readTags()
             {
                 delete pTagElem;
 
-                bRepeat = false;
+                DWORD nCurReadPos = fileStream.tellg();
+                if ( nCurReadPos >= fileLength )
+                {
+                    bRepeat = false;
+                }
             }
         }
         else
