@@ -223,6 +223,32 @@ LIB_EXPORT DCMTagElement* FindElement(DWORD tagID)
     return NULL;
 }
 
+static DCMTagElement* FindPixelDataElement()
+{
+    lastErrMsg.clear();
+
+    if ( pReader != NULL )
+    {
+        unsigned tagsz = pReader->GetTagCount();
+        if ( tagsz > 0 )
+        {
+            for( unsigned cnt=0; cnt<tagsz; cnt++ )
+            {
+                DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
+#ifdef DEBUG
+                printf("TAG[%02d = %08X]\n", cnt, pRet->id );
+#endif // DEBUG
+                if ( ( pRet->id & 0xFF000FFF ) >= 0x7F000000 )
+                {
+                    return pRet;
+                }
+            }
+        }
+    }
+
+    return NULL;
+}
+
 LIB_EXPORT bool AddElement(DCMTagElement* pElement)
 {
     lastErrMsg.clear();
@@ -515,7 +541,8 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
     DCMTagElement* pTagCol = FindElement( 0x00280011 );    /// Cols
     DCMTagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
     DCMTagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
-    DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
+    //DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
+    DCMTagElement* pTagPxs = FindPixelDataElement();
 
     if ( pTagPSp != NULL )
     {
