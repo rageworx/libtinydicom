@@ -133,13 +133,13 @@ DLL_EXPORT bool NewDCM( const wchar_t* pFilePath )
     return false;
 }
 
-DLL_EXPORT bool OpenDCM( const wchar_t* pFilePath )
+LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
 {
     lastErrMsg.clear();
 
     if(pReader)
     {
-        lastErrMsg = _T("File already open.");
+        lastErrMsg = TEXT("File already open.");
         return false;
     }
 
@@ -158,7 +158,36 @@ DLL_EXPORT bool OpenDCM( const wchar_t* pFilePath )
         }
     }
 
-    lastErrMsg = _T("Failed to open DCM file.");
+    lastErrMsg = TEXT("Failed to open DCM file.");
+    return false;
+}
+
+LIB_EXPORT bool OpenDCMA( const char* pFilePath )
+{
+    lastErrMsg.clear();
+
+    if(pReader)
+    {
+        lastErrMsg = TEXT("File already open.");
+        return false;
+    }
+
+    if(pWriter)
+    {
+        delete pWriter;
+        pWriter = NULL;
+    }
+
+    pReader = new DicomImageViewer::TagReader(pFilePath);
+    if ( pReader != NULL )
+    {
+        if ( pReader->IsLoaded() )
+        {
+            return true;
+        }
+    }
+
+    lastErrMsg = TEXT("Failed to open DCM file.");
     return false;
 }
 

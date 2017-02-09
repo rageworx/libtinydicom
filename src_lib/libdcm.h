@@ -65,15 +65,9 @@ typedef struct _ImageInformation
 
 #ifdef LIB_EXPORT_ENABLE
     #define LIB_EXPORT __attribute__ ((visibility ("default")))
-#endif /// of LIB_EXPORT_ENABLE
-
-#ifdef UNICODE
-    #define     NewDCM( _s_ )   NewDCMW( _s_ )
-    #define     OpenDCM( _s_ )  OpenDCMW( _s_ )
 #else
-    #define     NewDCM( _s_ )   NewDCMA( _s_ )
-    #define     OpenDCM( _s_ )  OpenDCMA( _s_ )
-#endif /// of UNICODE
+    #define LIB_EXPORT
+#endif /// of LIB_EXPORT_ENABLE
 
 LIB_EXPORT bool         NewDCMW( const wchar_t* pFilePath );
 LIB_EXPORT bool         NewDCMA( const char* pFilePath );
@@ -108,6 +102,16 @@ LIB_EXPORT int          WriteWideString( DCMTagElement* pElem, const wchar_t* ws
 
 // -- related in images.
 LIB_EXPORT bool         AddImage( ImageInformation* pII );
+
+#ifndef LIB_EXPORT_ENABLE
+#ifdef UNICODE
+    #define     NewDCM( _s_ )   NewDCMW( _s_ )
+    #define     OpenDCM( _s_ )  OpenDCMW( _s_ )
+#else
+    #define     NewDCM( _s_ )   NewDCMA( _s_ )
+    #define     OpenDCM( _s_ )  OpenDCMA( _s_ )
+#endif /// of UNICODE
+#endif /// of LIB_EXPORT_ENABLE
 
 #ifdef __cplusplus
 }
