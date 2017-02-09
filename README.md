@@ -21,6 +21,10 @@
 
 ## Updated news
 
+### 2017-02-09
+ - Added some functions to supporting ANSI, UTF-8 base files.
+ - Also inserted some macro to keep same method name.
+
 ### 2017-02-08
  - Enhanced to read bad VR and UUID tags.
  - Some DCM file contains bad VR, or UUID. Made it possible to read.
