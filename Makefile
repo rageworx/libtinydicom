@@ -61,7 +61,7 @@ $(OBJS): $(OBJDIR)/%.o: $(SOURCEDIR)/%.cpp
 	@$(GPP) $(CFLAGS) -c $< -o $@
 
 $(LOBJ):
-	@echo "building $@ ..."
+	@echo "building export $@ ..."
 	@$(GPP) -I$(LIBSRCDIR) $(CFLAGS) -c $(LIBSRCDIR)/libdcm.cpp -o $@
 
 $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ)

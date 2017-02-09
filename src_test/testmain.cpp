@@ -17,8 +17,7 @@ WORD GetElem2WORD( DCMTagElement* pElem )
 
 int main(int argc, char** argv)
 {
-    //wchar_t reffn[] = L"dcm/TEST.DCM";
-    wchar_t reffn[] = L"TEST_BAD.DCM";
+    wchar_t reffn[] = L"dcm/TEST.DCM";
 
     wprintf( L"Open %S ... ", reffn );
 
