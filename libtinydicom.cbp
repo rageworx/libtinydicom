@@ -54,6 +54,8 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-DLIB_EXPORT_ENABLE" />
+			<Add option="-DUNICODE" />
 			<Add directory="src" />
 			<Add directory="src_lib" />
 		</Compiler>

@@ -35,7 +35,7 @@ static TSTRING lastErrMsg;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void tool_replace_element(DCMTagElement* pDst, DCMTagElement* pSrc)
+static void tool_replace_element(DCMTagElement* pDst, DCMTagElement* pSrc)
 {
     if(!pSrc)
         return;
@@ -62,6 +62,30 @@ void tool_replace_element(DCMTagElement* pDst, DCMTagElement* pSrc)
         memset(pDst->staticbuffer, 0, MAX_STATICBUFFER_LENGTH);
         memcpy(pDst->staticbuffer, pSrc->staticbuffer, MAX_STATICBUFFER_LENGTH);
     }
+}
+
+static DCMTagElement* FindPixelDataElement()
+{
+    lastErrMsg.clear();
+
+    if ( pReader != NULL )
+    {
+        unsigned tagsz = pReader->GetTagCount();
+        if ( tagsz > 0 )
+        {
+            for( unsigned cnt=0; cnt<tagsz; cnt++ )
+            {
+                DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
+
+                if ( ( pRet->id & 0xFF000FFF ) >= 0x7F000000 )
+                {
+                    return pRet;
+                }
+            }
+        }
+    }
+
+    return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +211,7 @@ DLL_EXPORT int GetElement(int index, DCMTagElement** pElement)
 
     if(pReader)
     {
-        if( index < pReader->GetTagCount() )
+        if( (unsigned)index < pReader->GetTagCount() )
         {
             DicomImageViewer::TagElement* pElem = pReader->GetTagElement((unsigned int)index);
             *pElement = (DCMTagElement*)pElem;
@@ -520,7 +544,8 @@ DLL_EXPORT bool ReadPixelData( ImageInformation* pII )
     DCMTagElement* pTagCol = FindElement( 0x00280011 );    /// Cols
     DCMTagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
     DCMTagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
-    DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
+    //DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
+    DCMTagElement* pTagPxs = FindPixelDataElement();       /// Find Pixel container.
 
     if ( pTagPSp != NULL )
     {
@@ -831,7 +856,8 @@ DLL_EXPORT bool AddImage( ImageInformation* pII )
     // Write Pixels.
     if ( pII->pixels != NULL )
     {
-        DCMTagElement* tagPxs = FindElement( 0x7FE00010 );
+        //DCMTagElement* tagPxs = FindElement( 0x7FE00010 );
+        DCMTagElement* tagPxs = FindPixelDataElement();
         if ( tagPxs == NULL )
         {
             if ( NewElement( 0x7FE00010, &tagPxs ) == false )
