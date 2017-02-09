@@ -36,6 +36,7 @@ namespace DicomImageViewer
 
             // private function methods -----------------------------------
             void        createInstance( wstring &fileName );
+            void        createInstance( string &fileName );
 
             int         readString(char *pBuf, DWORD nLength);
             DWORD       seekToNext();
@@ -56,8 +57,9 @@ namespace DicomImageViewer
 
             // constructor
             TagReader( wstring &fileName );
-            TagReader( const wchar_t *fileName );
-            TagReader( const char *fileName );
+            TagReader( string &fileName );
+            TagReader( const wchar_t* fileName );
+            TagReader( const char* fileName );
 
             // destructor
             ~TagReader();

@@ -32,7 +32,7 @@ SRCS = $(wildcard $(SOURCEDIR)/*.cpp)
 OBJS = $(SRCS:$(SOURCEDIR)/%.cpp=$(OBJDIR)/%.o)
 LOBJ = $(OBJDIR)/libdcm.o
 
-DEFINEOPT = -DLIB_EXPORT
+DEFINEOPT = -DLIB_EXPORT_ENABLE
 
 ifeq (debug,$(firstword $(MAKECMDGOALS)))
 	OPTIMIZEOPT :=
@@ -57,10 +57,13 @@ clean:
 	@rm -rf ${OUTDIR}/${OUTBIN}
 
 $(OBJS): $(OBJDIR)/%.o: $(SOURCEDIR)/%.cpp
+	@echo "building $@ ..."
 	@$(GPP) $(CFLAGS) -c $< -o $@
 
 $(LOBJ):
+	@echo "building $@ ..."
 	@$(GPP) -I$(LIBSRCDIR) $(CFLAGS) -c $(LIBSRCDIR)/libdcm.cpp -o $@
 
 $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ)
+	@echo "generating $@ ..."
 	@$(AR) -q $@ $(OBJDIR)/*.o

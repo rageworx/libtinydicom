@@ -13,19 +13,24 @@ using namespace DicomImageViewer;
 
 TagReader::TagReader( wstring &fileName )
 {
-    createInstance(fileName);
+    createInstance( fileName );
+}
+
+TagReader::TagReader( string &fileName )
+{
+    createInstance( fileName );
 }
 
 TagReader::TagReader( const wchar_t* fileName )
 {
     wstring fn = fileName;
-    createInstance(fn);
+    createInstance( fn );
 }
 
 TagReader::TagReader( const char* fileName )
 {
-    wstring fn = convertM2W(fileName);
-    createInstance(fn);
+    string fn = fileName;
+    createInstance( fn );
 }
 
 TagReader::~TagReader()
@@ -35,20 +40,22 @@ TagReader::~TagReader()
 
 ///////////////////////////////////////////////////////////////////
 
-void    TagReader::createInstance(wstring &fileName)
+void TagReader::createInstance( wstring &fileName )
 {
     // configure me --
-    bLittleEndian = DATA_ARRANGE_LITTLE_ENDIAN;
+
+    wchar_t *pWC = (wchar_t*)fileName.c_str();
+    string  aFn  = convertW2M(pWC);
+
+    createInstance( aFn );
+}
+
+void TagReader::createInstance( string &fileName )
+{
+    bLittleEndian = (bool)DATA_ARRANGE_LITTLE_ENDIAN;
     fileLength = 0;
 
-    // file open --
-#ifdef  __GNUC__
-    wchar_t *pWC = (wchar_t*)fileName.c_str();
-    char *pFn    = convertW2M(pWC);
-    fileStream.open(pFn, ios::binary | ios::in );
-#else
-    fileStream.open(fileName.c_str(), ios::binary | ios::in );
-#endif
+    fileStream.open( fileName.c_str(), ios::binary | ios::in );
 
     if( fileStream.is_open() == false )
     {
@@ -252,7 +259,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
     bool    bDone   = false;
     DWORD   nTemp   = readDWORD();
 
-    if(bLittleEndian)
+    if ( bLittleEndian == true )
     {
         // Swap it !!
         BYTE *pA1 = (BYTE*)&nTemp;
@@ -263,11 +270,13 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                (*pA1 << 16 ) +
                (*pA4 << 8  ) +
                 *pA3;
-    }else{
+    }
+    else
+    {
         aTag = nTemp;
     }
 
-    if(aTag > 0)
+    if( aTag > 0 )
     {
         DWORD nCurReadPos = fileStream.tellg();
         char aSubTag[4] = {0};

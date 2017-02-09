@@ -14,17 +14,24 @@
 ////////////////////////////////////////////////////////////////////////////////
 // if U change build system, check and modify here:
 
-#define CURRENT_SYSTEM_MODEL    SYSTEM_WIN32_X86
-#define USING_DCM_ISE_DLL       1
+#ifndef CURRENT_SYSTEM_MODEL
+    #define CURRENT_SYSTEM_MODEL    SYSTEM_WIN32_X86
+#endif /// of CURRENT_SYSTEM_MODEL
+
+#ifndef USING_DCM_ISE_DLL
+    #define USING_DCM_ISE_DLL       1
+#endif /// of USING_DCM_ISE_DLL
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#if ((CURRENT_SYSTEM_MODEL == SYSTEM_WIN32_X86) || (CURRENT_SYSTEM_MODEL == SYSTEM_WIN32_X86_64))
-    #define DATA_ARRANGE_LITTLE_ENDIAN      1
-#else
-    #define DATA_ARRANGE_LITTLE_ENDIAN      0
-#endif
+#ifndef DATA_ARRANGE_LITTLE_ENDIAN
+    #if ((CURRENT_SYSTEM_MODEL == SYSTEM_WIN32_X86) || (CURRENT_SYSTEM_MODEL == SYSTEM_WIN32_X86_64))
+        #define DATA_ARRANGE_LITTLE_ENDIAN      1
+    #else
+        #define DATA_ARRANGE_LITTLE_ENDIAN      0
+    #endif
+#endif /// of DATA_ARRANGE_LITTLE_ENDIAN
 
 #if (USING_DCM_ISE_DLL == 1)
     #define DICOMTAG_OPT_USING_DCMISE

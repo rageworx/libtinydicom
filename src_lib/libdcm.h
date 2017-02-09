@@ -63,10 +63,22 @@ typedef struct _ImageInformation
     void*       pixels;
 }ImageInformation;
 
-#define LIB_EXPORT __attribute__ ((visibility ("default")))
+#ifdef LIB_EXPORT_ENABLE
+    #define LIB_EXPORT __attribute__ ((visibility ("default")))
+#endif /// of LIB_EXPORT_ENABLE
 
-LIB_EXPORT bool         NewDCM( const wchar_t* pFilePath );
-LIB_EXPORT bool         OpenDCM( const wchar_t* pFilePath );
+#ifdef UNICODE
+    #define     NewDCM( _s_ )   NewDCMW( _s_ )
+    #define     OpenDCM( _s_ )  OpenDCMW( _s_ )
+#else
+    #define     NewDCM( _s_ )   NewDCMA( _s_ )
+    #define     OpenDCM( _s_ )  OpenDCMA( _s_ )
+#endif /// of UNICODE
+
+LIB_EXPORT bool         NewDCMW( const wchar_t* pFilePath );
+LIB_EXPORT bool         NewDCMA( const char* pFilePath );
+LIB_EXPORT bool         OpenDCMW( const wchar_t* pFilePath );
+LIB_EXPORT bool         OpenDCMA( const char* pFilePath );
 LIB_EXPORT bool         CloseDCM(void);
 LIB_EXPORT bool         IsDCMOpened(void);
 LIB_EXPORT int          GetElementCount();

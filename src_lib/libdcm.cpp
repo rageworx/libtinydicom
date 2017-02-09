@@ -24,8 +24,10 @@ static DicomImageViewer::TagWriter*   pWriter         = NULL;
 #if defined(UNICODE) || defined(_UNICODE)
     #define TSTRING wstring
     #ifndef _T
-        #define TEXT(x) L##x
-    #endif
+        #ifndef TEXT
+            #define TEXT(x) L##x
+        #endif /// of TEXT
+    #endif /// of _T
 #else
     #define TSTRING string
 #endif
@@ -69,7 +71,7 @@ void tool_replace_element(DCMTagElement* pDst, DCMTagElement* pSrc)
 
 // New DCM is simple.
 // Just make an empty DCM and read it again !
-LIB_EXPORT bool NewDCM( const wchar_t* pFilePath )
+LIB_EXPORT bool NewDCMW( const wchar_t* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -99,6 +101,31 @@ LIB_EXPORT bool NewDCM( const wchar_t* pFilePath )
 
     return OpenDCM( pFilePath );
     */
+
+    pReader = new DicomImageViewer::TagReader( pFilePath );
+    if ( pReader != NULL )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+LIB_EXPORT bool NewDCMA( const char* pFilePath )
+{
+    lastErrMsg.clear();
+
+    if( pReader != NULL )
+    {
+        delete pReader;
+        pReader = NULL;
+    }
+
+    if( pWriter != NULL )
+    {
+        delete pWriter;
+        pWriter = NULL;
+    }
 
     pReader = new DicomImageViewer::TagReader( pFilePath );
     if ( pReader != NULL )
@@ -187,7 +214,7 @@ LIB_EXPORT int GetElement(int index, DCMTagElement** pElement)
 
     if( pReader != NULL )
     {
-        if( index < pReader->GetTagCount() )
+        if( (unsigned)index < pReader->GetTagCount() )
         {
             DicomImageViewer::TagElement* pElem = pReader->GetTagElement((unsigned int)index);
             *pElement = (DCMTagElement*)pElem;
@@ -235,9 +262,7 @@ static DCMTagElement* FindPixelDataElement()
             for( unsigned cnt=0; cnt<tagsz; cnt++ )
             {
                 DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
-#ifdef DEBUG
-                printf("TAG[%02d = %08X]\n", cnt, pRet->id );
-#endif // DEBUG
+
                 if ( ( pRet->id & 0xFF000FFF ) >= 0x7F000000 )
                 {
                     return pRet;
@@ -542,7 +567,7 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
     DCMTagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
     DCMTagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
     //DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
-    DCMTagElement* pTagPxs = FindPixelDataElement();
+    DCMTagElement* pTagPxs = FindPixelDataElement();       /// Find Pixel container.
 
     if ( pTagPSp != NULL )
     {
@@ -600,9 +625,9 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
             {
                 pII->pixels = pTagPxs->staticbuffer;
             }
-        }
 
-        return true;
+            return true;
+        }
     }
 
     return false;

@@ -16,7 +16,7 @@ bool tagSortProc( const TagElement* first, const TagElement* second );
 ////////////////////////////////////////////////////////////////////////////////
 
 TagStore::TagStore()
-:bLittleEndian(DATA_ARRANGE_LITTLE_ENDIAN)
+: bLittleEndian( (bool)DATA_ARRANGE_LITTLE_ENDIAN )
 {
     // configure me --
 }
