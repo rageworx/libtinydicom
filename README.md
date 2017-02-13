@@ -21,6 +21,10 @@
 
 ## Updated news
 
+### 2017-02-13
+ - Fixed a bug sometimes wrong pointer returns in FindElement();
+ - Included FindElementIndex();
+
 ### 2017-02-09
  - Added some functions to supporting ANSI, UTF-8 base files.
  - Also inserted some macro to keep same method name.

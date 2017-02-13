@@ -77,6 +77,7 @@ LIB_EXPORT bool         CloseDCM(void);
 LIB_EXPORT bool         IsDCMOpened(void);
 LIB_EXPORT int          GetElementCount();
 LIB_EXPORT int          GetElement(int index, DCMTagElement** pElement);
+LIB_EXPORT int          FindElementIndex(DWORD tagID);
 LIB_EXPORT DCMTagElement* FindElement(DWORD tagID);
 LIB_EXPORT bool         AddElement(DCMTagElement* pElement);
 LIB_EXPORT bool         AddElementEx(DWORD tagID, char *data, int dataSize);

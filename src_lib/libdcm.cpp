@@ -66,6 +66,30 @@ void tool_replace_element(DCMTagElement* pDst, DCMTagElement* pSrc)
     }
 }
 
+static DCMTagElement* FindPixelDataElement()
+{
+    lastErrMsg.clear();
+
+    if ( pReader != NULL )
+    {
+        unsigned tagsz = pReader->GetTagCount();
+        if ( tagsz > 0 )
+        {
+            for( unsigned cnt=0; cnt<tagsz; cnt++ )
+            {
+                DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
+
+                if ( ( pRet->id & 0xFF000FFF ) >= 0x7F000000 )
+                {
+                    return pRet;
+                }
+            }
+        }
+    }
+
+    return NULL;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -265,41 +289,47 @@ LIB_EXPORT int GetElement(int index, DCMTagElement** pElement)
     return -1;
 }
 
-LIB_EXPORT DCMTagElement* FindElement(DWORD tagID)
+LIB_EXPORT int FindElementIndex(DWORD tagID)
 {
     lastErrMsg.clear();
 
-    if(pReader)
-    {
-        DCMTagElement *pRet = (DCMTagElement*)pReader->FindTagElement(tagID);
-        return pRet;
-    }
-
-    lastErrMsg = TEXT("DICOM not open");
-
-    return NULL;
-}
-
-static DCMTagElement* FindPixelDataElement()
-{
-    lastErrMsg.clear();
-
-    if ( pReader != NULL )
+    if( pReader != NULL )
     {
         unsigned tagsz = pReader->GetTagCount();
         if ( tagsz > 0 )
         {
             for( unsigned cnt=0; cnt<tagsz; cnt++ )
             {
-                DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
+                DCMTagElement* pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
 
-                if ( ( pRet->id & 0xFF000FFF ) >= 0x7F000000 )
+                if ( pRet != NULL )
                 {
-                    return pRet;
+                    if ( pRet->id == tagID )
+                        return cnt;
                 }
             }
         }
     }
+
+    lastErrMsg = TEXT("DICOM may not open, or could not find tag ID.");
+
+    return -1;
+}
+
+LIB_EXPORT DCMTagElement* FindElement(DWORD tagID)
+{
+    lastErrMsg.clear();
+
+    if( pReader != NULL )
+    {
+        DCMTagElement* pRet = (DCMTagElement*)pReader->FindTagElement( tagID );
+        if ( pRet != NULL )
+        {
+            return pRet;
+        }
+    }
+
+    lastErrMsg = TEXT("DICOM may not open, or could not find tag ID.");
 
     return NULL;
 }
@@ -908,7 +938,8 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
     // Write Pixels.
     if ( pII->pixels != NULL )
     {
-        DCMTagElement* tagPxs = FindElement( 0x7FE00010 );
+        //DCMTagElement* tagPxs = FindElement( 0x7FE00010 );
+        DCMTagElement* tagPxs = FindPixelDataElement();
         if ( tagPxs == NULL )
         {
             if ( NewElement( 0x7FE00010, &tagPxs ) == false )

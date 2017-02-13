@@ -93,7 +93,7 @@ static DCMTagElement* FindPixelDataElement()
 
 // New DCM is simple.
 // Just make an empty DCM and read it again !
-DLL_EXPORT bool NewDCM( const wchar_t* pFilePath )
+DLL_EXPORT bool NewDCMW( const wchar_t* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -133,7 +133,32 @@ DLL_EXPORT bool NewDCM( const wchar_t* pFilePath )
     return false;
 }
 
-LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
+DLL_EXPORT bool NewDCMA( const char* pFilePath )
+{
+    lastErrMsg.clear();
+
+    if( pReader != NULL )
+    {
+        delete pReader;
+        pReader = NULL;
+    }
+
+    if( pWriter != NULL )
+    {
+        delete pWriter;
+        pWriter = NULL;
+    }
+
+    pReader = new DicomImageViewer::TagReader( pFilePath );
+    if ( pReader != NULL )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+DLL_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -162,7 +187,7 @@ LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
     return false;
 }
 
-LIB_EXPORT bool OpenDCMA( const char* pFilePath )
+DLL_EXPORT bool OpenDCMA( const char* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -261,17 +286,47 @@ DLL_EXPORT int GetElement(int index, DCMTagElement** pElement)
     return -1;
 }
 
+DLL_EXPORT int FindElementIndex(DWORD tagID)
+{
+    lastErrMsg.clear();
+
+    if( pReader != NULL )
+    {
+        unsigned tagsz = pReader->GetTagCount();
+        if ( tagsz > 0 )
+        {
+            for( unsigned cnt=0; cnt<tagsz; cnt++ )
+            {
+                DCMTagElement* pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
+
+                if ( pRet != NULL )
+                {
+                    if ( pRet->id == tagID )
+                        return cnt;
+                }
+            }
+        }
+    }
+
+    lastErrMsg = TEXT("DICOM may not open, or could not find tag ID.");
+
+    return -1;
+}
+
 DLL_EXPORT DCMTagElement* FindElement(DWORD tagID)
 {
     lastErrMsg.clear();
 
-    if(pReader)
+    if( pReader != NULL )
     {
-        DCMTagElement *pRet = (DCMTagElement*)pReader->FindTagElement(tagID);
-        return pRet;
+        DCMTagElement* pRet = (DCMTagElement*)pReader->FindTagElement( tagID );
+        if ( pRet != NULL )
+        {
+            return pRet;
+        }
     }
 
-    lastErrMsg = _T("DICOM not open");
+    lastErrMsg = TEXT("DICOM may not open, or could not find tag ID.");
 
     return NULL;
 }
