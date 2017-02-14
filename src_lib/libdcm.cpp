@@ -79,9 +79,14 @@ static DCMTagElement* FindPixelDataElement()
             {
                 DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
 
-                if ( ( pRet->id & 0xFF000FFF ) >= 0x7F000000 )
+                if ( ( pRet->id & 0xFF00FFFF ) > 0x7F000000 )
                 {
-                    return pRet;
+                    // Check VR
+                    if ( ( strncmp( pRet->VRtype, "OW", 2 ) == 0 ) ||
+                         ( strncmp( pRet->VRtype, "OB", 2 ) == 0 ) )
+                    {
+                        return pRet;
+                    }
                 }
             }
         }

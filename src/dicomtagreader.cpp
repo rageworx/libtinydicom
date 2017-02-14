@@ -309,7 +309,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
         {
             bVRLenTested = false;
         }
-        if ( nLen > nCurReadPos )
+        if ( ( nLen + nCurReadPos ) > fileLength )
         {
             return false;
         }

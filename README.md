@@ -21,6 +21,9 @@
 
 ## Updated news
 
+### 2017-02-14
+ - Fixed some bugs for reading compatibilities.
+
 ### 2017-02-13
  - Fixed a bug sometimes wrong pointer returns in FindElement();
  - Included FindElementIndex();
