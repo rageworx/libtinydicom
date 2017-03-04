@@ -84,12 +84,12 @@ void TagReader::createInstance( string &fileName )
     readString(pMagic,4);
     if(strncmp(pMagic,DICM,4))
     {
-        delete pMagic;
+        delete[] pMagic;
 
         bFileLoaded = false;
         fileStream.close();
     }else{
-        delete pMagic;
+        delete[] pMagic;
 
         readTags();
         fileStream.close();
@@ -283,7 +283,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
         char *pRead = new char[4];
         readString(pRead,4);
         strncpy(aSubTag,pRead,4);
-        delete pRead;
+        delete[] pRead;
 
         WORD nVR = 0;
         WORD nCarrier = 0;

@@ -19,6 +19,7 @@
 #include <fstream>
 #include <list>
 
+#include "dicomtagconfig.h"
 #include "dicomtagelement.h"
 #include "dicomtagstore.h"
 

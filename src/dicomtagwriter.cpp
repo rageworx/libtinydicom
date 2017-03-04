@@ -1,5 +1,7 @@
-#include <windows.h>
-#include <tchar.h>
+#ifdef  _WIN32
+	#include <windows.h>
+	#include <tchar.h>
+#endif // of _WIN32
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
@@ -212,14 +214,18 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
             break;
     }
 
-    if(nSz)
+    if( nSz > 0 )
+	{
         if(pTagElem->alloced)
         {
             writeData((char*)pTagElem->dynamicbuffer, nSz);
-        } else {
+        }
+		else 
+		{
             writeData((char*)pTagElem->staticbuffer, nSz);
         }
-
+	}
+	
     return true;
 }
 
@@ -238,7 +244,7 @@ void TagWriter::writeTags()
     char *pEmpty = new char[ID_OFFSET];
     memset(pEmpty,0,ID_OFFSET);
     writeData(pEmpty, ID_OFFSET);
-    delete pEmpty;
+    delete[] pEmpty;
 
     // write magic
     char pMagic[4];
