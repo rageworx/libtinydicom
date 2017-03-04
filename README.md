@@ -21,6 +21,9 @@
 
 ## Updated news
 
+### 2017-03-04
+ - Fixed windows dependancy codes for other platforms like MAC OS and Linux.
+
 ### 2017-02-14
  - Fixed some bugs for reading compatibilities.
 
