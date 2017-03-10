@@ -23,6 +23,10 @@ extern "C"
     #define DWORD   unsigned long
 #endif // DWORD
 
+#ifndef _WIN32
+	#define TEXT
+#endif // _WIN32
+
 #ifndef NULL
     #ifdef __cplusplus
         #ifndef _WIN64

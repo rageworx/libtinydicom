@@ -1,5 +1,7 @@
-#include <windows.h>
-#include <tchar.h>
+#ifdef _WIN32
+	#include <windows.h>
+	#include <tchar.h>
+#endif /// of _WIN32
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"

@@ -23,6 +23,9 @@
 ### 2017-03-10
  - Fixed read and processing some unrecognized DICOM tag related in Pixel Data.
 
+### 2017-03-04
+ - Fixed windows dependancy codes for other platforms like MAC OS and Linux.
+
 ### 2017-02-14
  - Fixed some bugs for reading compatibilities.
 

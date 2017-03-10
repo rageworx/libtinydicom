@@ -4273,7 +4273,7 @@ int DicomDictionary::FindKeyIndex(const DWORD id)
 
     if ( ( remasked == 0x5000 ) || ( remasked == 0x6000 ) )
     {
-        rem_id = ( remasked << 16 ) || 0x00FF0000;
+        rem_id = ( remasked << 16 ) | 0x00FF0000;
     }
 
     while ( dicom_dict[nCnt].id != 0x00000000 )
