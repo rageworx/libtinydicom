@@ -75,9 +75,11 @@ static DCMTagElement* FindPixelDataElement()
         unsigned tagsz = pReader->GetTagCount();
         if ( tagsz > 0 )
         {
+            DCMTagElement* pAssume = NULL;
+
             for( unsigned cnt=0; cnt<tagsz; cnt++ )
             {
-                DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
+                DCMTagElement* pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
 
                 if ( ( pRet->id & 0xFF00FFFF ) > 0x7F000000 )
                 {
@@ -87,7 +89,18 @@ static DCMTagElement* FindPixelDataElement()
                     {
                         return pRet;
                     }
+                    else
+                    if ( pRet->alloced == true ) /// Assume to Pixel Data
+                    {
+                        pAssume = pRet;
+                    }
                 }
+            }
+
+            // Some DCM tags not using VR, damn. So I assume it.
+            if ( pAssume != NULL )
+            {
+                return pAssume;
             }
         }
     }
@@ -222,7 +235,6 @@ LIB_EXPORT bool OpenDCMA( const char* pFilePath )
     lastErrMsg = TEXT("Failed to open DCM file.");
     return false;
 }
-
 
 LIB_EXPORT bool CloseDCM(void)
 {
@@ -527,6 +539,7 @@ LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
         WORD wVR = GetVR( tagID );
         newElem->id = tagID;
         memcpy( newElem->VRtype, &wVR, 2 );
+
         if ( AddElement( newElem ) == true )
         {
             *pElement = newElem;
@@ -631,7 +644,6 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
     DCMTagElement* pTagCol = FindElement( 0x00280011 );    /// Cols
     DCMTagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
     DCMTagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
-    //DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
     DCMTagElement* pTagPxs = FindPixelDataElement();       /// Find Pixel container.
 
     if ( pTagPSp != NULL )
@@ -693,6 +705,7 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
 
             return true;
         }
+
     }
 
     return false;

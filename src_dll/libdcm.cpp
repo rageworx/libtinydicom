@@ -73,14 +73,32 @@ static DCMTagElement* FindPixelDataElement()
         unsigned tagsz = pReader->GetTagCount();
         if ( tagsz > 0 )
         {
+            DCMTagElement* pAssume = NULL;
+
             for( unsigned cnt=0; cnt<tagsz; cnt++ )
             {
-                DCMTagElement *pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
+                DCMTagElement* pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
 
-                if ( ( pRet->id & 0xFF000FFF ) >= 0x7F000000 )
+                if ( ( pRet->id & 0xFF00FFFF ) > 0x7F000000 )
                 {
-                    return pRet;
+                    // Check VR
+                    if ( ( strncmp( pRet->VRtype, "OW", 2 ) == 0 ) ||
+                         ( strncmp( pRet->VRtype, "OB", 2 ) == 0 ) )
+                    {
+                        return pRet;
+                    }
+                    else
+                    if ( pRet->alloced == true ) /// Assume to Pixel Data
+                    {
+                        pAssume = pRet;
+                    }
                 }
+            }
+
+            // Some DCM tags not using VR, damn. So I assume it.
+            if ( pAssume != NULL )
+            {
+                return pAssume;
             }
         }
     }
@@ -628,7 +646,6 @@ DLL_EXPORT bool ReadPixelData( ImageInformation* pII )
     DCMTagElement* pTagCol = FindElement( 0x00280011 );    /// Cols
     DCMTagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
     DCMTagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
-    //DCMTagElement* pTagPxs = FindElement( 0x7FE00010 );
     DCMTagElement* pTagPxs = FindPixelDataElement();       /// Find Pixel container.
 
     if ( pTagPSp != NULL )
@@ -687,9 +704,10 @@ DLL_EXPORT bool ReadPixelData( ImageInformation* pII )
             {
                 pII->pixels = pTagPxs->staticbuffer;
             }
+
+            return true;
         }
 
-        return true;
     }
 
     return false;

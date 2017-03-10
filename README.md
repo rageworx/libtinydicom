@@ -1,6 +1,5 @@
 #libtinydicom
 
-
 ## Introduce
  - A DICOM tag read/write library for using C++/STL
  - Related in DICOM tag file (.DCM) read and write library is too far to get free in light size. So I made this to read and write DCM files for free and tiny ! It is still prototype and need to be enhanced.
@@ -20,6 +19,9 @@
  - Still making it keep updated for latest version, but too many VR and dictionaries may need more time for only myself.
 
 ## Updated news
+
+### 2017-03-10
+ - Fixed read and processing some unrecognized DICOM tag related in Pixel Data.
 
 ### 2017-02-14
  - Fixed some bugs for reading compatibilities.

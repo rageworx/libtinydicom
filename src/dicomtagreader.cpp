@@ -324,11 +324,19 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                 if ( ( aTag & 0xFF000000 ) == 0x7F000000 )
                 {
                     // Test Some Wrong/Bad DICOM contains Pixel datas in abnormal.
-                    nLen = readDWORD();
-
-                    if ( nLen > 0 )
+                    if ( aTag == 0x7FE00000 )
                     {
-                        nVR = OW;
+                        nLen = 4;
+                        nVR  = 0;
+                    }
+                    else
+                    {
+                        // Check nVR.
+                        if ( ( nVR != OB ) && ( nVR != OW ) && ( nVR != OL ) )
+                        {
+                            // Assume it is WORD pixel data.
+                            nVR = OW;
+                        }
                     }
                 }
                 else
@@ -341,28 +349,31 @@ bool TagReader::readNextTag(TagElement *pTagElem)
             memcpy(pTagElem->VRtype,&nVR,2);
             pTagElem->size = nLen;
 
-            char *pRead = new char[nLen];
-            memset(pRead,0,nLen);
-            if( pRead != NULL )
+            if ( nLen > 0 )
             {
-                readString(pRead,nLen);
-                if(nLen > MAX_STATICBUFFER_LENGTH)
+                char *pRead = new char[nLen];
+                memset(pRead,0,nLen);
+                if( pRead != NULL )
                 {
-                    pTagElem->dynamicbuffer = pRead;
-                    pTagElem->alloced = TRUE;
-                }
-                else
+                    readString(pRead,nLen);
+                    if(nLen > MAX_STATICBUFFER_LENGTH)
+                    {
+                        pTagElem->dynamicbuffer = pRead;
+                        pTagElem->alloced = TRUE;
+                    }
+                    else
+                    {
+                        memset(pTagElem->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
+                        memcpy(pTagElem->staticbuffer,pRead,nLen);
+                        pTagElem->alloced = FALSE;
+                    }
+                }else
                 {
-                    memset(pTagElem->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
-                    memcpy(pTagElem->staticbuffer,pRead,nLen);
+                    // it failed to read data !
+                    pTagElem->dynamicbuffer = NULL;
                     pTagElem->alloced = FALSE;
+                    return false;
                 }
-            }else
-            {
-                // it failed to read data !
-                pTagElem->dynamicbuffer = NULL;
-                pTagElem->alloced = FALSE;
-                return false;
             }
 
             return true;
