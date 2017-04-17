@@ -5,7 +5,7 @@
 # Compiler configure.
 GCC = llvm-gcc
 GPP = llvm-g++
-AR  = llvm-ar
+AR  = ar
 
 SOURCEDIR = ./src
 LIBSRCDIR = ./src_lib
@@ -30,7 +30,7 @@ ifeq (debug,$(firstword $(MAKECMDGOALS)))
 	OPTIMIZEOPT :=
 	MOREOPT := -g
 else
-	OPTIMIZEOPT := -O3 -s
+	OPTIMIZEOPT := -O3
 	MOREOPT :=
 endif
 
