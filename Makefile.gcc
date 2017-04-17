@@ -67,3 +67,6 @@ $(LOBJ):
 $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ)
 	@echo "generating $@ ..."
 	@$(AR) -q $@ $(OBJDIR)/*.o
+	@echo "copying headers ..."
+	@cp src_lib/*.h $(OUTDIR)
+	@echo "done."

@@ -1,19 +1,11 @@
-# Makefile for libtinydicom with LLVM-GCC
-# (C)2017 Raphael Kim / rageworx
+# Makefile for libtinydicom . LLVM or MACOSX
+# (C)2016 Raphael Kim / rageworx
 #
 
-# To enable build for embedded linux, you may encomment next 2 lines.
-# CCPREPATH = ${ARM_LINUX_GCC_PATH}
-# CCPREFIX  = arm-linux-
-
-# To enable build for embedded linux, change following line.
-# CCPATH    = ${CCPREPATH}/${CCPREFIX}
-CCPATH = 
-
 # Compiler configure.
-GCC = ${CCPATH}llvm-gcc
-GPP = ${CCPATH}llvm-g++
-AR  = ${CCPATH}ar
+GCC = llvm-gcc
+GPP = llvm-g++
+AR  = llvm-ar
 
 SOURCEDIR = ./src
 LIBSRCDIR = ./src_lib
@@ -38,7 +30,7 @@ ifeq (debug,$(firstword $(MAKECMDGOALS)))
 	OPTIMIZEOPT :=
 	MOREOPT := -g
 else
-	OPTIMIZEOPT := -O3
+	OPTIMIZEOPT := -O3 -s
 	MOREOPT :=
 endif
 
@@ -67,3 +59,6 @@ $(LOBJ):
 $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ)
 	@echo "generating $@ ..."
 	@$(AR) -q $@ $(OBJDIR)/*.o
+	@echo "copying headers ..."
+	@cp src_lib/*.h $(OUTDIR)
+	@echo "done."
