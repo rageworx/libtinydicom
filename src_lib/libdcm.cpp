@@ -516,7 +516,7 @@ LIB_EXPORT WORD  GetVR(DWORD tagID)
 LIB_EXPORT wchar_t* GetDicomMeaning(DWORD tagID)
 {
     const char* refstr = DicomImageViewer::DicomDictionary::GetMean(tagID);
-    return DicomImageViewer::convertM2W( refstr );
+    return convertM2W( refstr );
 }
 
 LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
