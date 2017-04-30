@@ -3,6 +3,8 @@
 	#include <tchar.h>
 #endif /// of _WIN32
 
+#include <cstring>
+
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
 #include "dicomdecoder.h"
