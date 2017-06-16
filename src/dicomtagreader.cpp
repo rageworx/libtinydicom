@@ -280,10 +280,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
     {
         DWORD nCurReadPos = fileStream.tellg();
         char aSubTag[4] = {0};
-        char *pRead = new char[4];
-        readString(pRead,4);
-        strncpy(aSubTag,pRead,4);
-        delete[] pRead;
+        readString(aSubTag,4);
 
         WORD nVR = 0;
         WORD nCarrier = 0;
@@ -292,6 +289,18 @@ bool TagReader::readNextTag(TagElement *pTagElem)
 
         bool  bVRLenTested = true;
         DWORD nLen = getLength(&nVR,nCarrier);
+
+        bool bImageTag = false;
+
+        if ( ( aTag & 0xFF000000 ) == 0x7F000000 )
+        {
+            // Test Some Wrong/Bad DICOM contains Pixel datas in abnormal.
+            if ( aTag > 0x7FE00000 )
+            {
+                bImageTag = true;
+            }
+        }
+
 
         /***
         **  Testing VR and Length ...
@@ -309,19 +318,20 @@ bool TagReader::readNextTag(TagElement *pTagElem)
         {
             bVRLenTested = false;
         }
+
         if ( ( nLen + nCurReadPos ) > fileLength )
         {
             return false;
         }
 
-        if ( bVRLenTested == true )
+        if ( ( bVRLenTested == true ) || ( bImageTag == true ) )
         {
             pTagElem->id = aTag;
 
             // Handle BAD VR ...
             if ( nVR == 0  )
             {
-                if ( ( aTag & 0xFF000000 ) == 0x7F000000 )
+                if ( bImageTag == true )
                 {
                     // Test Some Wrong/Bad DICOM contains Pixel datas in abnormal.
                     if ( aTag == 0x7FE00000 )
@@ -338,6 +348,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                             nVR = OW;
                         }
                     }
+
                 }
                 else
                 {
@@ -408,6 +419,12 @@ void TagReader::readTags()
 
             if( bRead == true )
             {
+                #ifdef DEBUG
+                printf( "#DICOM TAG %08X : %s, (%d bytes)\n",
+                        pTagElem->id,
+                        pTagElem->VRtype,
+                        pTagElem->size );
+                #endif // DEBUG
                 TagElements.push_back(pTagElem);
             }
             else
