@@ -360,8 +360,11 @@ bool TagReader::readNextTag(TagElement *pTagElem)
             memcpy(pTagElem->VRtype,&nVR,2);
             pTagElem->size = nLen;
 
-            if ( nLen > 0 )
+            if ( ( nLen > 0 ) && ( nLen < 0xFFFFFFFF ) )
             {
+#ifdef DEBUG
+				printf(" ... alloc size : %u\n", nLen );
+#endif
                 char *pRead = new char[nLen];
                 memset(pRead,0,nLen);
                 if( pRead != NULL )
