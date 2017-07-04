@@ -1,6 +1,10 @@
 #ifdef _WIN32
     #include <windows.h>
     #include <tchar.h>
+#else
+	#include <cstdio>
+	#include <cstdlib>
+	#include <cstring>
 #endif /// of _WIN32
 
 #include "dicomtagreader.h"
