@@ -108,7 +108,7 @@ DWORD TagStore::AddTagElement(DWORD TagID,WORD wVR, char* data, DWORD size)
     pNewTag->size = size;
 
     // VR-"OB" need size padding.
-    if ( pNewTag->VRtype == OB )
+    if ( *(WORD*)pNewTag->VRtype == OB )
     {
         if ( size%2 > 0 )
         {

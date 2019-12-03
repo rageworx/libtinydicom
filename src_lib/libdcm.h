@@ -47,6 +47,9 @@ extern "C"
     #define TRUE 1
 #endif // TRUE
 
+// version is 0.5.0.140
+#define LIBTINYDCM_VERSION      0x0005008C
+
 typedef struct _DCMTagElement
 {
     DWORD   id;
