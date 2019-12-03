@@ -20,6 +20,11 @@
 
 ## Updated news
 
+### 2019-12-03
+ - Moved all Makeifles into makes directory.
+ - Moved all cbp project files into cbp directory.
+ - VR type OB fixed to has 2 bytes padding.
+
 ### 2017-03-10
  - Fixed read and processing some unrecognized DICOM tag related in Pixel Data.
 
