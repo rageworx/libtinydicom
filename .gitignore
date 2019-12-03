@@ -227,3 +227,4 @@ out/
 *.depend
 *.layout
 *.a
+Makefile

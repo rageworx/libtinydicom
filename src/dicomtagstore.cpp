@@ -99,19 +99,34 @@ DWORD TagStore::AddTagElement(DWORD TagID,WORD wVR, char* data, DWORD size)
     // erase it as NULL, first.
     memset(pNewTag,0,sizeof(TagElement));
 
+    // http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html
+    // 2 bytes align required at case of OB with NULL.
+
     pNewTag->id = TagID;
     memcpy(pNewTag->VRtype,&wVR,2);
+    DWORD rsize = size;
     pNewTag->size = size;
+
+    // VR-"OB" need size padding.
+    if ( pNewTag->VRtype == OB )
+    {
+        if ( size%2 > 0 )
+        {
+            size++;
+        }
+    }
+
     if(size)
     {
         if(size > MAX_STATICBUFFER_LENGTH)
         {
             pNewTag->dynamicbuffer = new char[size];
             pNewTag->alloced = true;
-            memcpy(pNewTag->dynamicbuffer,data,size);
+            memset(pNewTag->dynamicbuffer,0,size);
+            memcpy(pNewTag->dynamicbuffer,data,rsize);
         }else{
             memset(pNewTag->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
-            memcpy(pNewTag->staticbuffer,data,size);
+            memcpy(pNewTag->staticbuffer,data,rsize);
 			pNewTag->alloced = false;
         }
     }
