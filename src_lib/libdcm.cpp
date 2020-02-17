@@ -116,7 +116,6 @@ static DCMTagElement* FindPixelDataElement()
 ////////////////////////////////////////////////////////////////////////////////
 
 // New DCM is simple.
-// Just make an empty DCM and read it again !
 LIB_EXPORT bool NewDCMW( const wchar_t* pFilePath )
 {
     lastErrMsg.clear();
@@ -133,26 +132,13 @@ LIB_EXPORT bool NewDCMW( const wchar_t* pFilePath )
         pWriter = NULL;
     }
 
-    /*
-    pWriter = new DicomImageViewer::TagWriter( pFilePath );
-    if ( pWriter != NULL )
-    {
-        pWriter->Write();
-
-        delete pWriter;
-        pWriter = NULL;
-    }
-
-    CloseDCM();
-
-    return OpenDCM( pFilePath );
-    */
-
     pReader = new DicomImageViewer::TagReader( pFilePath );
     if ( pReader != NULL )
     {
         return true;
     }
+
+    lastErrMsg = TEXT("Cannot make a mew reader instance.");
 
     return false;
 }
@@ -178,6 +164,8 @@ LIB_EXPORT bool NewDCMA( const char* pFilePath )
     {
         return true;
     }
+
+    lastErrMsg = TEXT("Cannot make a new reader instance.");
 
     return false;
 }
@@ -208,6 +196,7 @@ LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
     }
 
     lastErrMsg = TEXT("Failed to open DCM file.");
+
     return false;
 }
 
@@ -237,6 +226,7 @@ LIB_EXPORT bool OpenDCMA( const char* pFilePath )
     }
 
     lastErrMsg = TEXT("Failed to open DCM file.");
+
     return false;
 }
 
