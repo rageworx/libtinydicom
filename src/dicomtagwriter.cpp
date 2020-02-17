@@ -25,7 +25,7 @@ TagWriter::TagWriter( const wchar_t* fileName )
     createInstance(convStr);
 }
 
-TagWriter::TagWriter( const char* fileName)
+TagWriter::TagWriter( const char* fileName )
 {
     wstring convStr = convertM2W(fileName);
     createInstance(convStr);

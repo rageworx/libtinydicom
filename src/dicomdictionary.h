@@ -6,7 +6,7 @@ namespace DicomImageViewer
     #define GET_GROUP_ID( _dwid_ )      (WORD)(( _dwid_ & 0xFFFF0000 ) >> 16 )
     #define GET_ELEMENT_ID( _dwid_ )    (WORD)( _dwid_ & 0x0000FFFF )
     #define MAKE_ID( _group_, _elem_ )  (DWORD)(( _group_ << 16 ) | ( _elem_ & 0x0000FFFF ))
-    #define VERSION_MAJORT( _wd_ )      (BYTE)(( _wd_ & 0xFF00 ) >> 8 )
+    #define VERSION_MAJOR( _wd_ )       (BYTE)(( _wd_ & 0xFF00 ) >> 8 )
     #define VERSION_MINOR( _wd_ )       (BYTE)( _wd & 0x00FF )
 
     /*

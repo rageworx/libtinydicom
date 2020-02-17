@@ -1,4 +1,7 @@
-#libtinydicom
+# libtinydicom
+
+## Version
+ - 0.5.0.140
 
 ## Introduce
  - A DICOM tag read/write library for using C++/STL
@@ -19,6 +22,11 @@
  - Still making it keep updated for latest version, but too many VR and dictionaries may need more time for only myself.
 
 ## Updated news
+
+### 2019-12-03
+ - Moved all Makeifles into makes directory.
+ - Moved all cbp project files into cbp directory.
+ - VR type OB fixed to has 2 bytes padding.
 
 ### 2017-03-10
  - Fixed read and processing some unrecognized DICOM tag related in Pixel Data.

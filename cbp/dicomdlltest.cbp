@@ -2,31 +2,29 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="DICOM_TEST" />
+		<Option title="DICOM_DLL_TEST" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin_test/dicomtest_d" prefix_auto="1" extension_auto="1" />
+				<Option output="../bin_test/dicomdlltest_d" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin_test" />
-				<Option object_output="obj/Debug_test/" />
+				<Option object_output="../obj/Debug_dll_test/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-DDEBUG" />
-					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="tinydicomd" />
+					<Add library="tinydicom_d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin_test/dicomtest" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin_test" />
-				<Option object_output="obj/Release_test/" />
+				<Option output="../bin_test/dicomdlltest" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../bin_test" />
+				<Option object_output="../obj/Release_dll_test/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
@@ -43,14 +41,13 @@
 		<Compiler>
 			<Add option="-DUNICODE" />
 			<Add option="-D_UNICODE" />
-			<Add directory="src_test" />
-			<Add directory="src_lib" />
+			<Add directory="../src_test" />
+			<Add directory="../src_dll" />
 		</Compiler>
 		<Linker>
-			<Add directory="bin" />
-			<Add directory="lib" />
+			<Add directory="../bin" />
 		</Linker>
-		<Unit filename="src_test/testmain.cpp" />
+		<Unit filename="../src_test/testmain.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
