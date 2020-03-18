@@ -1,7 +1,7 @@
 # libtinydicom
 
 ## Version
- - 0.5.0.140
+ - 0.1.7.55
 
 ## Introduce
  - A DICOM tag read/write library for using C++/STL

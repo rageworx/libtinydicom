@@ -64,7 +64,7 @@ $(LOBJ): $(LIBSRCDIR)/libdcm.cpp
     
 $(ROBJ): $(RESDIR)/winres.rc
 	@echo "building resource $@ ..."
-	$(WRC) $(CFLAGS) -i $< -o $@
+	@$(WRC) $(CFLAGS) -i $< -o $@
 
 $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ) $(ROBJ)
 	@echo "generating $@ ..."
