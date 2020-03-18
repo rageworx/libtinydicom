@@ -515,7 +515,7 @@ DLL_EXPORT wchar_t* GetDicomMeaning(DWORD tagID)
 {
 #if defined(UNICODE) || defined(_UNICODE)
     const char* refstr = DicomImageViewer::DicomDictionary::GetMean(tagID);
-    return DicomImageViewer::convertM2W( refstr );
+    return convertM2W( refstr );
 #else
     return DicomImageViewer::DicomDictionary::GetMean(tagID);
 #endif
