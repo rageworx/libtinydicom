@@ -41,8 +41,10 @@ typedef struct _ImageInformation
     void*       pixels;
 }ImageInformation;
 
-DLL_EXPORT bool         NewDCM( const wchar_t* pFilePath );
-DLL_EXPORT bool         OpenDCM( const wchar_t* pFilePath );
+DLL_EXPORT bool         NewDCMA( const char* pFilePath );
+DLL_EXPORT bool         OpenDCMA( const char* pFilePath );
+DLL_EXPORT bool         NewDCMW( const wchar_t* pFilePath );
+DLL_EXPORT bool         OpenDCMW( const wchar_t* pFilePath );
 DLL_EXPORT bool         CloseDCM(void);
 DLL_EXPORT bool         IsDCMOpened(void);
 DLL_EXPORT int          GetElementCount();

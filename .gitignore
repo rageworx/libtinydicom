@@ -224,7 +224,10 @@ pip-log.txt
 bin/
 obj/
 out/
+cert/
 *.depend
 *.layout
 *.a
+*.exe
+*.dll
 Makefile

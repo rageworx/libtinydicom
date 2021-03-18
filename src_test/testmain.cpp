@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
     wprintf( L"Open %S ... ", reffn );
 
-    if ( OpenDCM( reffn ) == true )
+    if ( OpenDCMW( reffn ) == true )
     {
         wprintf( L"OK.\n" );
         wprintf( L"\n" );
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
         }
     }
 
-    if ( NewDCM( newDCMn ) == true )
+    if ( NewDCMW( newDCMn ) == true )
     {
         wprintf( L"Ok !\n" );
         wprintf( L"Adding some tags ... \n" );
@@ -148,7 +148,7 @@ int main(int argc, char** argv)
             if ( AddImage( &imginfo ) == false )
             {
                 wprintf( L"Error: Failed to add an image.\n" );
-                delete[] imginfo.pixels;
+                delete[] (char*)imginfo.pixels;
 
                 return 0;
             }
