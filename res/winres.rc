@@ -1,12 +1,13 @@
 #include <windows.h>
+#include "version.h"
 
 //
 // Version Information resources
 //
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 1 VERSIONINFO
-    FILEVERSION     0,1,8,57
-    PRODUCTVERSION  0,1,8,57
+    FILEVERSION     LIB_VERSION
+    PRODUCTVERSION  LIB_VERSION
     FILEOS          VOS__WINDOWS32
     FILETYPE        VFT_DLL
     FILESUBTYPE     VFT2_UNKNOWN
@@ -17,13 +18,14 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
     {
         BLOCK "00000000"
         {
-            VALUE "Comments",        "Tiny DICOM Library for Win32 / UNICODE"
+            VALUE "Comments",        "Tiny DICOM Library for Windows/UNICODE"
             VALUE "CompanyName",     "(C)Copyright 2011-2021 Raphael Kim."
-            VALUE "FileDescription", "A DICOM tag read/write library for Windows32."
-            VALUE "InternalName",    "TINY.DICOM.LIB4GCC4.UNICODE"
+            VALUE "FileDescription", "A DICOM tag read/write library for Windows."
+            VALUE "InternalName",    "TINY.DICOM.LIB4GCC.UNICODE"
             VALUE "LegalCopyright",  "(C)Copyright 2011-2021 Raphael Kim."
             VALUE "LegalTrademarks", "(C)Copyright 2011-2021 Raphael Kim."
-            VALUE "ProductName",     "Tiny DICOM Library for Win32 / UNICODE"
+            VALUE "ProductName",     "Tiny DICOM Library for Windows/UNICODE"
+            VALUE "ProductVersion",  LIB_VERSION_STR
         }
     }
     BLOCK "VarFileInfo"

@@ -11,6 +11,8 @@ all: $(TARGET)
 
 clean:
 	@rm -f $(OBJ)
+	@rm -f *.dll
+	@rm -f *.DCM
 	@rm -f $(TARGET)
 
 $(OBJ): %.o: $(DIR_SRC)/%.cpp

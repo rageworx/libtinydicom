@@ -217,14 +217,15 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
-#############
-## CodeBlocks
-#############
+#Either -
 
 bin/
 obj/
 out/
 cert/
+publishing/
+testing/*.DCM
+testing/*.o
 *.depend
 *.layout
 *.a

@@ -9,7 +9,8 @@ AR  = ar
 WRC = windres
 
 SOURCEDIR = ./src
-LIBSRCDIR = ./src_dll
+LIBSRCDIR = ./src_lib
+DLLSRCDIR = ./src_dll
 OUTDIR    = ./lib
 RESDIR    = ./res
 INSTDIR   = /usr/local
@@ -23,6 +24,7 @@ OUTBIN := libtinydicom
 SRCS = $(wildcard $(SOURCEDIR)/*.cpp)
 OBJS = $(SRCS:$(SOURCEDIR)/%.cpp=$(OBJDIR)/%.o)
 LOBJ = $(OBJDIR)/libdcm.o
+DOBJ = $(OBJDIR)/dllmain.o
 ROBJ = $(OBJDIR)/winres.o
 
 DEFINEOPT  = -DBUILD_DLL
@@ -31,7 +33,7 @@ DEFINEOPT += -DUNICODE -D_UNICODE
 OPTIMIZEOPT := -O3 -s
 MOREOPT := -mwindows
 
-CFLAGS = -I$(SOURCEDIR) -I$(LIBSRCDIR) $(DEFINEOPT)
+CFLAGS = -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR) $(DEFINEOPT)
 LFLAGS = -static $(OPTIMIZEOPT) $(MOREOPT)
 
 all: prepare clean ${OUTDIR}/${OUTBIN}
@@ -42,6 +44,8 @@ prepare:
 
 clean:
 	@rm -rf ${OBJDIR}/*
+	@rm -rf ${OBJDIR}/libdcm.h
+	@rm -rf ${OUTDIR}/${OUTBIN}.lib
 	@rm -rf ${OUTDIR}/${OUTBIN}.dll
 
 install: $(OUTDIR)/$(OUTBIN)
@@ -59,16 +63,23 @@ $(OBJS): $(OBJDIR)/%.o: $(SOURCEDIR)/%.cpp
 	@$(GPP) $(CFLAGS) -c $< -o $@
 
 $(LOBJ): $(LIBSRCDIR)/libdcm.cpp
+	@$(GPP) $(CFLAGS) -c $< -o $@
+ 
+$(DOBJ): $(DLLSRCDIR)/dllmain.cpp
 	@echo "building export $@ ..."
-	@$(GPP) -I$(LIBSRCDIR) $(CFLAGS) -c $< -o $@
+	@$(GPP) $(CFLAGS) -I$(DLLSRCDIR) -c $< -o $@
     
 $(ROBJ): $(RESDIR)/winres.rc
 	@echo "building resource $@ ..."
 	@$(WRC) $(CFLAGS) -i $< -o $@
 
-$(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ) $(ROBJ)
+$(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ) $(DOBJ) $(ROBJ)
 	@echo "generating $@ ..."
-	@$(GPP) -shared $(OBJS) $(LOBJ) $(ROBJ) $(CFLAGS) $(LFLAGS) -o $@.dll
+	@$(GPP) -shared $(OBJS) $(LOBJ) $(DOBJ) $(ROBJ) $(CFLAGS) $(LFLAGS) -o $@.dll
 	@echo "copying headers ..."
-	@cp $(LIBSRCDIR)/libdcm.h $(OUTDIR)
+	@cp $(DLLSRCDIR)/libdcm.h $(OUTDIR)
+	@echo "exporting MSVC lib ..."
+	@cp makes/dll2lib.bat $(OUTDIR)
+	@cd $(OUTDIR);./dll2lib.bat 64 libtinydicom.dll
+	@rm -rf $(OUTDIR)/dll2lib.bat
 	@echo "done."

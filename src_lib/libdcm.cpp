@@ -7,12 +7,14 @@
 	#include <cstring>
 #endif /// of _WIN32
 
+#include "dicomtagconfig.h"
 #include "dicomtagreader.h"
 #include "dicomtagwriter.h"
 #include "dicomdictionary.h"
 
 #include "libdcm.h"
 #include "stdunicode.h"
+#include "version.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,9 +30,7 @@ static DicomImageViewer::TagWriter*   pWriter         = NULL;
 #if defined(UNICODE) || defined(_UNICODE)
     #define TSTRING wstring
     #ifndef _T
-        #ifndef TEXT
-            #define TEXT(x) L##x
-        #endif /// of TEXT
+        #define _T(x) L##x
     #endif /// of _T
 #else
     #define TSTRING string
@@ -115,6 +115,15 @@ static DCMTagElement* FindPixelDataElement()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+LIB_EXPORT void GetTinyDicomLibVersion( int* versions )
+{
+    if ( versions != NULL )
+    {
+        int verarrs[] = {LIB_VERSION};
+        memcpy( versions, verarrs, sizeof(int)*4 );
+    }
+}
+
 // New DCM is simple.
 LIB_EXPORT bool NewDCMW( const wchar_t* pFilePath )
 {
@@ -138,7 +147,7 @@ LIB_EXPORT bool NewDCMW( const wchar_t* pFilePath )
         return true;
     }
 
-    lastErrMsg = TEXT("Cannot make a mew reader instance.");
+    lastErrMsg = _T("Cannot make a mew reader instance.");
 
     return false;
 }
@@ -165,7 +174,7 @@ LIB_EXPORT bool NewDCMA( const char* pFilePath )
         return true;
     }
 
-    lastErrMsg = TEXT("Cannot make a new reader instance.");
+    lastErrMsg = _T("Cannot make a new reader instance.");
 
     return false;
 }
@@ -176,7 +185,7 @@ LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
 
     if(pReader)
     {
-        lastErrMsg = TEXT("File already open.");
+        lastErrMsg = _T("File already open.");
         return false;
     }
 
@@ -195,7 +204,7 @@ LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
         }
     }
 
-    lastErrMsg = TEXT("Failed to open DCM file.");
+    lastErrMsg = _T("Failed to open DCM file.");
 
     return false;
 }
@@ -206,7 +215,7 @@ LIB_EXPORT bool OpenDCMA( const char* pFilePath )
 
     if(pReader)
     {
-        lastErrMsg = TEXT("File already open.");
+        lastErrMsg = _T("File already open.");
         return false;
     }
 
@@ -225,7 +234,7 @@ LIB_EXPORT bool OpenDCMA( const char* pFilePath )
         }
     }
 
-    lastErrMsg = TEXT("Failed to open DCM file.");
+    lastErrMsg = _T("Failed to open DCM file.");
 
     return false;
 }
@@ -268,7 +277,7 @@ LIB_EXPORT int GetElementCount()
         return pReader->GetTagCount();
     }
 
-    lastErrMsg = TEXT("DICOM not open.");
+    lastErrMsg = _T("DICOM not open.");
 
     return -1;
 }
@@ -285,14 +294,14 @@ LIB_EXPORT int GetElement(int index, DCMTagElement** pElement)
             *pElement = (DCMTagElement*)pElem;
             if(!pElement)
             {
-                lastErrMsg = TEXT("DICOM tag not found");
+                lastErrMsg = _T("DICOM tag not found");
                 return -3;
             }
             return index;
         }
         else
         {
-            lastErrMsg = TEXT("Out of index");
+            lastErrMsg = _T("Out of index");
             return -2;
         }
     }
@@ -322,7 +331,7 @@ LIB_EXPORT int FindElementIndex(DWORD tagID)
         }
     }
 
-    lastErrMsg = TEXT("DICOM may not open, or could not find tag ID.");
+    lastErrMsg = _T("DICOM may not open, or could not find tag ID.");
 
     return -1;
 }
@@ -340,7 +349,7 @@ LIB_EXPORT DCMTagElement* FindElement(DWORD tagID)
         }
     }
 
-    lastErrMsg = TEXT("DICOM may not open, or could not find tag ID.");
+    lastErrMsg = _T("DICOM may not open, or could not find tag ID.");
 
     return NULL;
 }
@@ -351,7 +360,7 @@ LIB_EXPORT bool AddElement(DCMTagElement* pElement)
 
     if(!pElement)
     {
-        lastErrMsg = TEXT("DICOM tag element is NULL");
+        lastErrMsg = _T("DICOM tag element is NULL");
         return false;
     }
 
@@ -374,7 +383,7 @@ LIB_EXPORT bool AddElement(DCMTagElement* pElement)
 
     }
 
-    lastErrMsg = TEXT("DICOM not open");
+    lastErrMsg = _T("DICOM not open");
 
     return false;
 }
@@ -409,7 +418,7 @@ LIB_EXPORT bool AddElementEx(DWORD tagID, char *data, int dataSize)
         }
         delete pNewElem;
 
-        lastErrMsg = TEXT("Failed to adding new DICOM tag");
+        lastErrMsg = _T("Failed to adding new DICOM tag");
 
         return false;
     }
@@ -423,7 +432,7 @@ LIB_EXPORT bool SaveDCM( const wchar_t* newName )
 
     if( newName == NULL )
     {
-        lastErrMsg = TEXT("save file name not decided");
+        lastErrMsg = _T("save file name not decided");
         return false;
     }
 
@@ -441,7 +450,7 @@ LIB_EXPORT bool SaveDCM( const wchar_t* newName )
 
             if(!pWriter)
             {
-                lastErrMsg = TEXT("");
+                lastErrMsg = _T("");
                 return false;
             }
 
@@ -497,7 +506,7 @@ LIB_EXPORT bool SaveDCM( const wchar_t* newName )
         }
     }
 
-    lastErrMsg = TEXT("");
+    lastErrMsg = _T("");
 
     return FALSE;
 }
@@ -519,7 +528,7 @@ LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
 
     if( pReader == NULL )
     {
-        lastErrMsg = TEXT("Tag reader not loaded.");
+        lastErrMsg = _T("Tag reader not loaded.");
         return false;
     }
 
@@ -541,7 +550,7 @@ LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
         }
     }
 
-    lastErrMsg = TEXT("");
+    lastErrMsg.clear();
 
     return false;
 }
@@ -636,6 +645,7 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
 
     DCMTagElement* pTagRow = FindElement( 0x00280010 );    /// Rows
     DCMTagElement* pTagCol = FindElement( 0x00280011 );    /// Cols
+    DCMTagElement* pTagPln = FindElement( 0x00280012 );    /// Planes
     DCMTagElement* pTagBit = FindElement( 0x00280101 );    /// Using "bits stored"
     DCMTagElement* pTagPSp = FindElement( 0x00280030 );    /// Pixel spacing
     DCMTagElement* pTagPxs = FindPixelDataElement();       /// Find Pixel container.
@@ -685,6 +695,15 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
         pII->bpp    = ReadInt( pTagBit );
         pII->width  = ReadInt( pTagRow );
         pII->height = ReadInt( pTagCol );
+                
+        if ( pTagPln != NULL )
+        {
+            pII->planes = ReadInt( pTagPln );
+        }
+        else
+        {
+            pII->planes = 0; /// not availed.
+        }
 
         if ( pTagPxs != NULL )
         {
@@ -862,7 +881,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
         return false;
 
     // Write widht, height in Column and Rows.
-    if ( ( pII->width != 0 ) && ( pII->height != 0 ) )
+    if ( ( pII->width > 0 ) && ( pII->height > 0 ) )
     {
         DCMTagElement* tagCol = FindElement( 0x00280011 );
         if ( tagCol == NULL )
@@ -885,6 +904,22 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
         }
 
         WriteInt( tagRow, pII->height );
+        
+        DCMTagElement* tagPlanes = NULL;
+        
+        if ( pII->planes > 0 )
+        {
+            tagPlanes = FindElement( 0x00280012 );
+            if ( tagPlanes == NULL )
+            {
+                if ( NewElement( 0x00280012, &tagPlanes ) == false )
+                {
+                    return false;
+                }
+            }
+            
+            WriteInt( tagPlanes, pII->planes );
+        }
     }
 
     int bitsalloced = 0;
@@ -942,7 +977,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
 
         char mappedstr[64] = {0};
 
-        sprintf( mappedstr, "%.6f\\%0.6f ", pII->spacing_w, pII->spacing_h );
+        snprintf( mappedstr, 64, "%.6f\\%0.6f ", pII->spacing_w, pII->spacing_h );
 
         WriteAnsiString( tagPS, mappedstr );
     }

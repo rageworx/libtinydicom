@@ -35,12 +35,15 @@ typedef struct _ImageInformation
 {
     int         width;
     int         height;
+    int         planes;
     int         bpp;        /// bits per a pixel.
-    float       spacing_w;
+    float       spacing_w;  
     float       spacing_h;
+    float       spacing_d;
     void*       pixels;
 }ImageInformation;
 
+DLL_EXPORT void         GetTinyDicomLibVersion( int* versions /* must be int[4] */ );
 DLL_EXPORT bool         NewDCMA( const char* pFilePath );
 DLL_EXPORT bool         OpenDCMA( const char* pFilePath );
 DLL_EXPORT bool         NewDCMW( const wchar_t* pFilePath );
@@ -74,12 +77,16 @@ DLL_EXPORT int          WriteWideString( DCMTagElement* pElem, const wchar_t* ws
 
 // -- related in images.
 DLL_EXPORT bool         AddImage( ImageInformation* pII );
-
-////////////////////////////////////////////////////////////////////////////////
-// -- DLL MAIN
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
-
 #ifdef __cplusplus
+
+#ifdef UNICODE
+    #define     NewDCM( _s_ )   NewDCMW( _s_ )
+    #define     OpenDCM( _s_ )  OpenDCMW( _s_ )
+#else
+    #define     NewDCM( _s_ )   NewDCMA( _s_ )
+    #define     OpenDCM( _s_ )  OpenDCMA( _s_ )
+#endif /// of UNICODE
+
 }
 #endif
 

@@ -17,9 +17,16 @@ WORD GetElem2WORD( DCMTagElement* pElem )
 
 int main(int argc, char** argv)
 {
+    int libvers[4] = {0};
+    GetTinyDicomLibVersion( libvers );
+    
+    wprintf( L"libtinydicom version %d.%d.%d.%d testing \n",
+             libvers[0], libvers[1], libvers[2], libvers[3] );
+    wprintf( L"(C)2021 Raphael Kim, rageworx@gmail.com\n\n" );
+    
     wchar_t reffn[] = L"../dcm/TEST.DCM";
 
-    wprintf( L"Open %S ... ", reffn );
+    wprintf( L"Loading DCM [%S] ... ", reffn );
 
     if ( OpenDCMW( reffn ) == true )
     {
@@ -36,6 +43,7 @@ int main(int argc, char** argv)
         DCMTagElement* pTagPI  = FindElement( 0x00280004 );
         DCMTagElement* pTagRow = FindElement( 0x00280010 );
         DCMTagElement* pTagCol = FindElement( 0x00280011 );
+        DCMTagElement* pTagPln = FindElement( 0x00280012 );
         DCMTagElement* pTagPxS = FindElement( 0x00280030 );
 
         printf( "\n" );
@@ -85,6 +93,11 @@ int main(int argc, char** argv)
         {
             printf( "Colums                     : %d\n", GetElem2WORD( pTagCol ) );
         }
+        
+        if ( pTagPln != NULL )
+        {
+            printf( "Planes                     : %d\n", GetElem2WORD( pTagPln ) );
+        }
 
         if ( pTagPxS != NULL )
         {
@@ -96,15 +109,18 @@ int main(int argc, char** argv)
     else
     {
         wprintf( L"Failure !\n" );
+#ifdef DEBUG_W_PAUSE
         system("PAUSE");
-
+#endif /// of DEBUG_W_PAUSE
         return 0;
     }
+    
+    fflush( stdout );
 
     wchar_t newDCMn[] = L"NEW.DCM";
 
     wprintf( L"\n\n" );
-    wprintf( L"Creating %s ... ", newDCMn );
+    wprintf( L"Creating a new DCM [%S] ... ", newDCMn );
 
     if ( _waccess( newDCMn, F_OK) == 0 )
     {
@@ -184,7 +200,9 @@ int main(int argc, char** argv)
         printf("Failure !\n");
     }
 
+#ifdef DEBUG_W_PAUSE
     system("PAUSE");
+#endif /// of DEBUG_W_PAUSE
 
     return 0;
 }

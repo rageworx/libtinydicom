@@ -64,9 +64,11 @@ typedef struct _ImageInformation
 {
     int         width;
     int         height;
+    int         planes;
     int         bpp;        /// bits per a pixel.
-    float       spacing_w;
+    float       spacing_w;  
     float       spacing_h;
+    float       spacing_d;
     void*       pixels;
 }ImageInformation;
 
@@ -76,6 +78,7 @@ typedef struct _ImageInformation
     #define LIB_EXPORT
 #endif /// of LIB_EXPORT_ENABLE
 
+LIB_EXPORT void         GetTinyDicomLibVersion( int* versions /* must be int[4] */ );
 LIB_EXPORT bool         NewDCMW( const wchar_t* pFilePath );
 LIB_EXPORT bool         NewDCMA( const char* pFilePath );
 LIB_EXPORT bool         OpenDCMW( const wchar_t* pFilePath );
