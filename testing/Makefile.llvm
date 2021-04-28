@@ -1,0 +1,22 @@
+DIR_SRC=../src_test
+DIR_LIB=../lib
+SRC=$(DIR_SRC)/testmain.cpp
+OBJ=testmain.o
+TARGET=test
+CFLAGS=-I$(DIR_LIB)
+LFLAGS=-L$(DIR_LIB) -ltinydicom -O2
+
+all: $(TARGET)
+
+clean:
+	@rm -f $(OBJ)
+	@rm -f *.DCM
+	@rm -f $(TARGET)
+
+$(OBJ): %.o: $(DIR_SRC)/%.cpp
+	@echo "Compiling $< ..."
+	@g++ $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJ)
+	@echo "Linking $@ ..."
+	@g++ $< $(LFLAGS) -o $@
