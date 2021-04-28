@@ -1,11 +1,11 @@
 #ifdef _WIN32
     #include <windows.h>
     #include <tchar.h>
-#else
-	#include <cstdio>
-	#include <cstdlib>
-	#include <cstring>
 #endif /// of _WIN32
+	
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "dicomtagconfig.h"
 #include "dicomtagreader.h"
@@ -34,7 +34,10 @@ static DicomImageViewer::TagWriter*   pWriter         = NULL;
     #endif /// of _T
 #else
     #define TSTRING string
-#endif
+    #ifndef _T    
+        #define _T
+    #endif /// of _T
+#endif /// of defined, UNICODE or _UNICODE
 
 static TSTRING lastErrMsg;
 
