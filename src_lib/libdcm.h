@@ -106,7 +106,8 @@ LIB_EXPORT wchar_t*     GetLastErrMsg();
 
 // -- dictionaries
 LIB_EXPORT WORD         GetVR( DWORD tagID );
-LIB_EXPORT wchar_t*     GetDicomMeaning( DWORD tagID );
+LIB_EXPORT const wchar_t* GetDicomMeaningW( DWORD tagID );
+LIB_EXPORT const char*    GetDicomMeaningA( DWORD tagID );
 
 // -- tag create tool
 LIB_EXPORT bool         NewElement( DWORD tagID, DCMTagElement** pElement );

@@ -389,6 +389,23 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                     return false;
                 }
             }
+            else
+            if ( nLen == 0xFFFFFFFF )
+            {
+                // automatic size calculation ...
+                // maybe left file size maening of actual pixel data size ?
+                nLen =  fileLength - nCurReadPos;
+                if ( nLen > 0 )
+                {
+                    char* pRead = new char[nLen];
+                    memset(pRead,0,nLen);
+                    readString(pRead,nLen);
+                    pTagElem->dynamicbuffer = pRead;
+                    pTagElem->alloced = TRUE;
+                    pTagElem->size = nLen;
+                    fileStream.seekg(0,fstream::end);
+                }
+            }
 
             return true;
         }

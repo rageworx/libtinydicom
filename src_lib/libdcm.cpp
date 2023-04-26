@@ -606,13 +606,19 @@ LIB_EXPORT WORD  GetVR(DWORD tagID)
     return DicomImageViewer::DicomDictionary::GetVR(tagID);
 }
 
-LIB_EXPORT wchar_t* GetDicomMeaning(DWORD tagID)
+LIB_EXPORT const wchar_t* GetDicomMeaningW(DWORD tagID)
 {
     const char* refstr = DicomImageViewer::DicomDictionary::GetMean(tagID);
     if ( refstr != NULL )
         return convertM2W( refstr );
     return NULL;
 }
+
+LIB_EXPORT const char* GetDicomMeaningA(DWORD tagID)
+{
+    return DicomImageViewer::DicomDictionary::GetMean(tagID);
+}
+
 
 LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
 {
@@ -800,13 +806,7 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
         if ( pTagPxs != NULL )
         {
             pII->pixels_size = pTagPxs->size;
-            
-            // Need to handle -1 size here ...
-            if ( (int64_t)pII->pixels_size == -1 )
-            {
-                
-            }
-            
+
             if ( pTagPxs->alloced == true )
             {
                 pII->pixels = pTagPxs->dynamicbuffer;
