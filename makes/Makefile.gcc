@@ -17,6 +17,7 @@ AR  = ${CCPATH}ar
 
 SOURCEDIR = ./src
 LIBSRCDIR = ./src_lib
+RESDIR    = ./res
 OUTDIR    = ./lib
 INSTDIR   = /usr/local
 INSTDIRL  = $(INSTDIR)/lib
@@ -45,7 +46,8 @@ else
 	MOREOPT :=
 endif
 
-CFLAGS    = -I$(SOURCEDIR) -I$(LIBSRCDIR) $(DEFINEOPT) $(OPTIMIZEOPT) $(MOREOPT)
+CFLAGS += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR)
+CFLAGS += $(DEFINEOPT) $(OPTIMIZEOPT) $(MOREOPT)
 
 all: prepare clean ${OUTDIR}/${OUTBIN}
 
