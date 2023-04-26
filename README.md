@@ -1,7 +1,7 @@
 # libtinydicom
 
 ## Version
- - 0.1.7.55
+ - 0.5.1.141
 
 ## Introduce
  - A DICOM tag read/write library for using C++/STL
@@ -22,6 +22,10 @@
  - Still making it keep updated for latest version, but too many VR and dictionaries may need more time for only myself.
 
 ## Updated news
+
+### 2023-04-26
+ - Supporting -1 size of Pixel Data case, it guess actual size to left file size to actual pixel data length.
+ - Added some more MBCS support APIs.
 
 ### 2021-04-28
  - libtinydicom now supports MacOS 11 (Big Sur) in universal libraray on Apple Silicon (M1).
