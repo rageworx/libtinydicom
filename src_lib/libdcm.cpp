@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cstdint>
 
 #include "dicomtagconfig.h"
 #include "dicomtagreader.h"
@@ -798,6 +799,14 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
 
         if ( pTagPxs != NULL )
         {
+            pII->pixels_size = pTagPxs->size;
+            
+            // Need to handle -1 size here ...
+            if ( (int64_t)pII->pixels_size == -1 )
+            {
+                
+            }
+            
             if ( pTagPxs->alloced == true )
             {
                 pII->pixels = pTagPxs->dynamicbuffer;

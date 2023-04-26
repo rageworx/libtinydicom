@@ -1,6 +1,9 @@
 #ifndef __LIBDCM_H__
 #define __LIBDCM_H__
 
+// 2023: Raphael, Kim //
+// 1. Updated some more features by -1 sized pixel data.
+//
 // 2014: Raphael, Kim //
 // ------------------
 // 1. Added "new **" for  DCM and element.
@@ -47,8 +50,8 @@ extern "C"
     #define TRUE 1
 #endif // TRUE
 
-// version is 0.5.0.140
-#define LIBTINYDCM_VERSION      0x0005008C
+// version is 0.5.1.141
+#define LIBTINYDCM_VERSION      0x0005018D
 
 typedef struct _DCMTagElement
 {
@@ -62,13 +65,19 @@ typedef struct _DCMTagElement
 
 typedef struct _ImageInformation
 {
+    // default information
     int         width;
     int         height;
     int         planes;
     int         bpp;        /// bits per a pixel.
+    
+    // pixel spacing --
     float       spacing_w;  
     float       spacing_h;
     float       spacing_d;
+    
+    // pixel data
+    unsigned    pixels_size;
     void*       pixels;
 }ImageInformation;
 
