@@ -1,5 +1,21 @@
 #include "testmain.h"
 
+#if defined(UNICODE) || defined(_UNICODE)
+    #define _T##x   L##x
+    #define PRT     wprintf
+    #define CHAR_T  wchar_t
+    #define _S_     "%S"
+    #define ACCESS  _waccess
+    #define UNLINK  _wunlink
+#else
+    #define _T
+    #define PRT     printf
+    #define CHAR_T  char
+    #define _S_     "%s"
+    #define ACCESS  access
+    #define UNLINK  unlink
+#endif
+
 WORD GetElem2WORD( DCMTagElement* pElem )
 {
     WORD tmpUS = 0;
@@ -20,18 +36,18 @@ int main(int argc, char** argv)
     int libvers[4] = {0};
     GetTinyDicomLibVersion( libvers );
     
-    wprintf( L"libtinydicom version %d.%d.%d.%d testing \n",
+    PRT( _T"libtinydicom version %d.%d.%d.%d testing \n",
              libvers[0], libvers[1], libvers[2], libvers[3] );
-    wprintf( L"(C)2021 Raphael Kim, rageworx@gmail.com\n\n" );
+    PRT( _T"(C)2021 Raphael Kim, rageworx@gmail.com\n\n" );
     
-    wchar_t reffn[] = L"../dcm/TEST.DCM";
+    CHAR_T reffn[] = _T"../dcm/TEST.DCM";
 
-    wprintf( L"Loading DCM [%S] ... ", reffn );
+    PRT( _T"Loading DCM ["_S_"] ... ", reffn );
 
-    if ( OpenDCMW( reffn ) == true )
+    if ( OpenDCM( reffn ) == true )
     {
-        wprintf( L"OK.\n" );
-        wprintf( L"\n" );
+        PRT( _T"OK.\n" );
+        PRT( _T"\n" );
 
         DCMTagElement* pTagModal = FindElement( 0x00080060 );
         DCMTagElement* pTagKVP = FindElement( 0x00180060 );
@@ -108,7 +124,7 @@ int main(int argc, char** argv)
     }
     else
     {
-        wprintf( L"Failure !\n" );
+        PRT( _T"Failure !\n" );
 #ifdef DEBUG_W_PAUSE
         system("PAUSE");
 #endif /// of DEBUG_W_PAUSE
@@ -117,24 +133,24 @@ int main(int argc, char** argv)
     
     fflush( stdout );
 
-    wchar_t newDCMn[] = L"NEW.DCM";
+    CHAR_T newDCMn[] = _T"NEW.DCM";
 
-    wprintf( L"\n\n" );
-    wprintf( L"Creating a new DCM [%S] ... ", newDCMn );
+    PRT( _T"\n\n" );
+    PRT( _T"Creating a new DCM ["_S_"] ... ", newDCMn );
 
-    if ( _waccess( newDCMn, F_OK) == 0 )
+    if ( ACCESS( newDCMn, 0 ) == 0 )
     {
-        if ( _wunlink( newDCMn ) != 0 )
+        if ( UNLINK( newDCMn ) != 0 )
         {
-            wprintf( L"Failure\nFile existed and not be removed !\n" );
+            PRT( _T"Failure\nFile existed and not be removed !\n" );
             return 0;
         }
     }
 
-    if ( NewDCMW( newDCMn ) == true )
+    if ( NewDCM( newDCMn ) == true )
     {
-        wprintf( L"Ok !\n" );
-        wprintf( L"Adding some tags ... \n" );
+        PRT( _T"Ok !\n" );
+        PRT( _T"Adding some tags ... \n" );
 
         // Modality = CT
         DCMTagElement* newTagModal = NULL;
@@ -144,7 +160,7 @@ int main(int argc, char** argv)
         }
         else
         {
-            wprintf( L"Failed to create Modality tag.\n" );
+            PRT( _T"Failed to create Modality tag.\n" );
             CloseDCM();
             return 0;
         }
@@ -163,7 +179,7 @@ int main(int argc, char** argv)
             memset( imginfo.pixels, 0, 500*500*2 );
             if ( AddImage( &imginfo ) == false )
             {
-                wprintf( L"Error: Failed to add an image.\n" );
+                PRT( _T"Error: Failed to add an image.\n" );
                 delete[] (char*)imginfo.pixels;
 
                 return 0;
@@ -182,15 +198,15 @@ int main(int argc, char** argv)
             }
         }
 
-        wprintf( L"Writing ..." );
+        PRT( _T"Writing ..." );
 
         if( SaveDCM( newDCMn ) == true )
         {
-            wprintf( L"Ok.\n");
+            PRT( _T"Ok.\n");
         }
         else
         {
-            wprintf( L"Failed.\n");
+            PRT( _T"Failed.\n");
         }
 
         CloseDCM();

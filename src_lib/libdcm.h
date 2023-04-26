@@ -91,7 +91,8 @@ LIB_EXPORT int          FindElementIndex(DWORD tagID);
 LIB_EXPORT DCMTagElement* FindElement(DWORD tagID);
 LIB_EXPORT bool         AddElement(DCMTagElement* pElement);
 LIB_EXPORT bool         AddElementEx(DWORD tagID, char *data, int dataSize);
-LIB_EXPORT bool         SaveDCM( const wchar_t* newName);
+LIB_EXPORT bool         SaveDCMW( const wchar_t* newName);
+LIB_EXPORT bool         SaveDCMA( const char* newName);
 LIB_EXPORT wchar_t*     GetLastErrMsg();
 
 // -- dictionaries
@@ -118,9 +119,11 @@ LIB_EXPORT bool         AddImage( ImageInformation* pII );
 #ifdef UNICODE
     #define     NewDCM( _s_ )   NewDCMW( _s_ )
     #define     OpenDCM( _s_ )  OpenDCMW( _s_ )
+    #define     SaveDCM( _s_ )  SaveDCMW( _s_ )
 #else
     #define     NewDCM( _s_ )   NewDCMA( _s_ )
     #define     OpenDCM( _s_ )  OpenDCMA( _s_ )
+    #define     SaveDCM( _s_ )  SaveDCMA( _s_ )
 #endif /// of UNICODE
 #endif /// of LIB_EXPORT_ENABLE
 

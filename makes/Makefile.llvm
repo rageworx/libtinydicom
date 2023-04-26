@@ -1,15 +1,24 @@
-# Makefile for libtinydicom . LLVM or MACOSX
-# (C)2016 Raphael Kim / rageworx
+# Makefile for libtinydicom . LLVM or MacOS
+# (C)2016, 2021 Raphael Kim / rageworx
 #
 
 # Compiler configure.
 GCC = llvm-gcc
 GPP = llvm-g++
 AR  = ar
+RL  = ranlib
 
+RESDIR    = ./res
 SOURCEDIR = ./src
 LIBSRCDIR = ./src_lib
 OUTDIR    = ./lib
+ARCHOPT   =
+
+ARCH = $(shell uname -m)
+
+ifeq ($(ARCH),arm64)
+	ARCHOPT += -arch x86_64 -arch arm64
+endif
 
 ifeq (debug,$(firstword $(MAKECMDGOALS)))
 	OBJDIR := ./obj/Debug
@@ -24,17 +33,9 @@ SRCS = $(wildcard $(SOURCEDIR)/*.cpp)
 OBJS = $(SRCS:$(SOURCEDIR)/%.cpp=$(OBJDIR)/%.o)
 LOBJ = $(OBJDIR)/libdcm.o
 
-DEFINEOPT = -DLIB_EXPORT_ENABLE
-
-ifeq (debug,$(firstword $(MAKECMDGOALS)))
-	OPTIMIZEOPT :=
-	MOREOPT := -g
-else
-	OPTIMIZEOPT := -O3
-	MOREOPT :=
-endif
-
-CFLAGS    = -I$(SOURCEDIR) -I$(LIBSRCDIR) $(DEFINEOPT) $(OPTIMIZEOPT) $(MOREOPT)
+DEFINEOPT += -DLIB_EXPORT_ENABLE
+CFLAGS    += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR)
+CFLAGS    += $(DEFINEOPT) $(ARCHOPT) $(MOREOPT)
 
 all: prepare clean ${OUTDIR}/${OUTBIN}
 
@@ -54,11 +55,12 @@ $(OBJS): $(OBJDIR)/%.o: $(SOURCEDIR)/%.cpp
 
 $(LOBJ):
 	@echo "building export $@ ..."
-	@$(GPP) -I$(LIBSRCDIR) $(CFLAGS) -c $(LIBSRCDIR)/libdcm.cpp -o $@
+	@$(GPP) $(CFLAGS) -c $(LIBSRCDIR)/libdcm.cpp -o $@
 
 $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ)
 	@echo "generating $@ ..."
-	@$(AR) -q $@ $(OBJDIR)/*.o
+	@$(AR) -cr $@ $^
+	@$(RL) $@
 	@echo "copying headers ..."
 	@cp src_lib/*.h $(OUTDIR)
 	@echo "done."

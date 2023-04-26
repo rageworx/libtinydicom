@@ -226,6 +226,7 @@ cert/
 publishing/
 testing/*.DCM
 testing/*.o
+testing/test
 *.depend
 *.layout
 *.a

@@ -23,8 +23,11 @@
 
 ## Updated news
 
+### 2021-04-28
+ - libtinydicom now supports MacOS 11 (Big Sur) in universal libraray on Apple Silicon (M1).
+
 ### 2019-12-03
- - Moved all Makeifles into makes directory.
+ - Moved all Makefiles into makes directory.
  - Moved all cbp project files into cbp directory.
  - VR type OB fixed to has 2 bytes padding.
 

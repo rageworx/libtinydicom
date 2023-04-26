@@ -1,11 +1,11 @@
 #ifdef _WIN32
     #include <windows.h>
     #include <tchar.h>
-#else
-	#include <cstdio>
-	#include <cstdlib>
-	#include <cstring>
 #endif /// of _WIN32
+	
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "dicomtagconfig.h"
 #include "dicomtagreader.h"
@@ -34,7 +34,10 @@ static DicomImageViewer::TagWriter*   pWriter         = NULL;
     #endif /// of _T
 #else
     #define TSTRING string
-#endif
+    #ifndef _T    
+        #define _T
+    #endif /// of _T
+#endif /// of defined, UNICODE or _UNICODE
 
 static TSTRING lastErrMsg;
 
@@ -426,7 +429,7 @@ LIB_EXPORT bool AddElementEx(DWORD tagID, char *data, int dataSize)
     return true;
 }
 
-LIB_EXPORT bool SaveDCM( const wchar_t* newName )
+LIB_EXPORT bool SaveDCMW( const wchar_t* newName )
 {
     lastErrMsg.clear();
 
@@ -510,6 +513,92 @@ LIB_EXPORT bool SaveDCM( const wchar_t* newName )
 
     return FALSE;
 }
+
+LIB_EXPORT bool SaveDCMA( const char* newName )
+{
+    lastErrMsg.clear();
+
+    if( newName == NULL )
+    {
+        lastErrMsg = _T("save file name not decided");
+        return false;
+    }
+
+    if(pReader)
+    {
+        if (pWriter)
+        {
+            delete pWriter;
+            pWriter = NULL;
+        }
+
+        if(!pWriter)
+        {
+            pWriter = new DicomImageViewer::TagWriter(newName);
+
+            if(!pWriter)
+            {
+                lastErrMsg = _T("");
+                return false;
+            }
+
+            int tagCount = pReader->GetTagCount();
+
+            for(int cnt=0; cnt<tagCount; cnt++)
+            {
+                DicomImageViewer::TagElement* pSrcElem = pReader->GetTagElement( cnt );
+                if(pSrcElem)
+                {
+                    DicomImageViewer::TagElement *pNewElem = new DicomImageViewer::TagElement();
+
+                    if(pNewElem)
+                    {
+                        memset(pNewElem,0,sizeof(DicomImageViewer::TagElement));
+
+                        // copy it ..
+                        pNewElem->id = pSrcElem->id;
+                        memcpy(pNewElem->VRtype,pSrcElem->VRtype,2);
+                        pNewElem->alloced = pSrcElem->alloced;
+                        pNewElem->size = pSrcElem->size;
+
+                        if(pSrcElem->alloced)
+                        {
+                            if(pSrcElem->size > 0)
+                            {
+                                pNewElem->dynamicbuffer = malloc(pSrcElem->size);
+                                if(pNewElem->dynamicbuffer)
+                                    memcpy(pNewElem->dynamicbuffer, pSrcElem->dynamicbuffer, pSrcElem->size);
+                            }else{
+                                pNewElem->alloced = FALSE;
+                            }
+
+                        }else{
+                            memcpy(pNewElem->staticbuffer, pSrcElem->staticbuffer, MAX_STATICBUFFER_LENGTH);
+                        }
+
+                        pWriter->AddTagElement((DicomImageViewer::TagElement*)pNewElem);
+                    }
+                }
+            }
+
+            // New DICOM tag library added new function: Sort !
+            pWriter->Sort();
+
+            // Then write DICOM tags to disk.
+            pWriter->Write();
+
+            delete pWriter;
+            pWriter = NULL;
+
+            return TRUE;
+        }
+    }
+
+    lastErrMsg = _T("");
+
+    return FALSE;
+}
+
 
 LIB_EXPORT WORD  GetVR(DWORD tagID)
 {
