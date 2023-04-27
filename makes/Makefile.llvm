@@ -62,5 +62,5 @@ $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ)
 	@$(AR) -cr $@ $^
 	@$(RL) $@
 	@echo "copying headers ..."
-	@cp src_lib/*.h $(OUTDIR)
+	@cp include/*.h $(OUTDIR)
 	@echo "done."

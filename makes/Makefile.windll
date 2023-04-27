@@ -77,7 +77,7 @@ $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ) $(DOBJ) $(ROBJ)
 	@echo "generating $@ ..."
 	@$(GPP) -shared $(OBJS) $(LOBJ) $(DOBJ) $(ROBJ) $(CFLAGS) $(LFLAGS) -o $@.dll
 	@echo "copying headers ..."
-	@cp $(DLLSRCDIR)/libdcm.h $(OUTDIR)
+	@cp include/libdcm.h $(OUTDIR)
 	@echo "exporting MSVC lib ..."
 	@cp makes/dll2lib.bat $(OUTDIR)
 	@cd $(OUTDIR);./dll2lib.bat 64 libtinydicom.dll

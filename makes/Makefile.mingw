@@ -83,5 +83,5 @@ $(OUTDIR)/$(OUTBIN): $(OBJS) $(LOBJ)
 	@echo "generating $@ ..."
 	@$(AR) -q $@ $(OBJDIR)/*.o
 	@echo "copying headers ..."
-	@cp src_lib/libdcm.h $(OUTDIR)
+	@cp include/libdcm.h $(OUTDIR)
 	@echo "done."

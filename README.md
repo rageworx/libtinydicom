@@ -1,15 +1,15 @@
 # libtinydicom
 
 ## Version
- - 0.5.1.141
+ - 0.5.5.150
 
 ## Introduce
- - A DICOM tag read/write library for using C++/STL
+ - A DICOM tag read/write library for using standard C++.
  - Related in DICOM tag file (.DCM) read and write library is too far to get free in light size. So I made this to read and write DCM files for free and tiny ! It is still prototype and need to be enhanced.
 
 ## Project target
- - Basically this project targeted to has non-platform-dependency.
- - Just build it with your gcc or MinGW in shell (or MSYS) via make. Maybe there's no platform dependency.
+ - Basically this project targeted to has non-platform-dependency, designed for POSIX.
+ - Just build it with your gcc or MinGW-W64 in shell (or MSYS2) via make. Maybe there's no platform dependency.
 
 ## License
  - MIT License.
@@ -22,6 +22,12 @@
  - Still making it keep updated for latest version, but too many VR and dictionaries may need more time for only myself.
 
 ## Updated news
+
+### 2023-04-27
+ - Removed `BYTE`, `WORD`, `DWORD` types, and then replaced to cstdint types.
+ - `BYTE` to `uint8_t`, `WORD` to `uint16_t` and `DWORD` to `uint32_t`.
+ - Limit of reading size depends on platform `size_t` type size.
+ - More buffer allocation check rountines.
 
 ### 2023-04-26
  - Supporting -1 size of Pixel Data case, it guess actual size to left file size to actual pixel data length.
