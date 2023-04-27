@@ -86,12 +86,7 @@ int main( int argc, char** argv )
                 printf( "\n" );
             }
 
-            if ( pElem->alloced == true )
-            {
-                delete[] (uint8_t*)pElem->dynamicbuffer;
-            }
-
-            delete pElem;
+            DiscardElement( &pElem );
         }
         else
         {

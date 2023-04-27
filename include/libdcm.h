@@ -115,7 +115,7 @@ LIB_EXPORT int32_t          WriteAnsiString( DCMTagElement* pElem, const char* a
 LIB_EXPORT int32_t          WriteWideString( DCMTagElement* pElem, const wchar_t* ws );
 
 // -- related in images.
-LIB_EXPORT bool         AddImage( ImageInformation* pII );
+LIB_EXPORT bool             AddImage( ImageInformation* pII );
 
 #ifndef LIB_EXPORT_ENABLE
 #ifdef UNICODE
