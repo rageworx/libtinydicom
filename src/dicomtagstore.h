@@ -1,10 +1,10 @@
 /*******************************************************************************
 * STL , DicomImageViewer::DicomTagStore (on Memory)
 * - base class for DICOM tag read/write
-*                                                    last revision : 2011-09-05
+*                                                    last revision : 2023-04-27
 * =============================================================================
 *
-* * (C)Copyright 2011-2014 Raphael Kim (rage.kim)
+* * (C)Copyright 2011-2023 Raphael Kim (rageworx@gmail.com)
 * * Unicode Model.
 *
 *******************************************************************************/
@@ -36,12 +36,12 @@ namespace DicomImageViewer
             // public function methods ------------------------------------
             void        clearTags();
 
-            DWORD       GetTagCount();
-            TagElement* FindTagElement(DWORD TagID);
-            TagElement* GetTagElement(DWORD nIndex);
+            size_t      GetTagCount();
+            TagElement* FindTagElement(uint32_t TagID);
+            TagElement* GetTagElement(size_t nIndex);
 
-            DWORD       AddTagElement(DWORD TagID,WORD wVR, char* data, DWORD size);
-            int         AddTagElement(TagElement *pTag);
+            size_t      AddTagElement(uint32_t TagID, uint16_t wVR, const uint8_t* data, size_t size);
+            size_t      AddTagElement(TagElement *pTag);
 
             void        Sort();
 

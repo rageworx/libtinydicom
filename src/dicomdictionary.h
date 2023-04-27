@@ -3,11 +3,11 @@
 
 namespace DicomImageViewer
 {
-    #define GET_GROUP_ID( _dwid_ )      (WORD)(( _dwid_ & 0xFFFF0000 ) >> 16 )
-    #define GET_ELEMENT_ID( _dwid_ )    (WORD)( _dwid_ & 0x0000FFFF )
-    #define MAKE_ID( _group_, _elem_ )  (DWORD)(( _group_ << 16 ) | ( _elem_ & 0x0000FFFF ))
-    #define VERSION_MAJOR( _wd_ )       (BYTE)(( _wd_ & 0xFF00 ) >> 8 )
-    #define VERSION_MINOR( _wd_ )       (BYTE)( _wd & 0x00FF )
+    #define GET_GROUP_ID( _dwid_ )      (uint16_t)(( _dwid_ & 0xFFFF0000 ) >> 16 )
+    #define GET_ELEMENT_ID( _dwid_ )    (uint16_t)( _dwid_ & 0x0000FFFF )
+    #define MAKE_ID( _group_, _elem_ )  (uint32_t)(( _group_ << 16 ) | ( _elem_ & 0x0000FFFF ))
+    #define VERSION_MAJOR( _wd_ )       (uint8_t)(( _wd_ & 0xFF00 ) >> 8 )
+    #define VERSION_MINOR( _wd_ )       (uint8_t)( _wd & 0x00FF )
 
     /*
     "ELEM_STATE_RETIRED" is used to indicate that the corresponding Data Element,
@@ -30,24 +30,24 @@ namespace DicomImageViewer
 
     typedef struct _TDicomDictionary
     {
-        DWORD       id;
+        uint32_t    id;
         const char* vr;
         const char* mean;
-        int         state;
+        int32_t     state;
     }TDicomDictionary;
 
     class DicomDictionary
     {
         public:
-            static WORD GetVersion();
-            static const char* GetLastUpdateFlag();
-            static int FindKeyIndex(const DWORD id);
-            static int FindKeyIndexFrom(const DWORD id, int idx);
-            static const char* GetMean(const DWORD id);
-            static WORD GetVR(const DWORD id, bool* sameavailed = NULL );
-            static void GetVR(const DWORD id, void *pVR, bool* sameavailed = NULL );
-            static int GetElemState( const DWORD id );
-            static int GetVRarray( const DWORD id, WORD**pVRarray );
+            static uint16_t     GetVersion();
+            static const char*  GetLastUpdateFlag();
+            static int32_t      FindKeyIndex(const uint32_t id);
+            static int32_t      FindKeyIndexFrom(const uint32_t id, uint32_t idx);
+            static const char*  GetMean(const uint32_t id);
+            static uint16_t     GetVR(const uint32_t id, bool* sameavailed = NULL );
+            static void         GetVR(const uint32_t id, void *pVR, bool* sameavailed = NULL );
+            static int32_t      GetElemState( const uint32_t id );
+            static int32_t      GetVRarray( const uint32_t id, uint16_t**pVRarray );
     };
 }
 

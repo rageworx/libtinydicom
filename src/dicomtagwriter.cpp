@@ -4,6 +4,7 @@
 #endif // of _WIN32
 
 #include <cstring>
+#include <cstdint>
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
@@ -13,6 +14,7 @@
 #include "swap.h"
 
 using namespace DicomImageViewer;
+using namespace std;
 
 TagWriter::TagWriter( wstring &fileName )
 {
@@ -37,7 +39,7 @@ TagWriter::~TagWriter()
     fileStream.close();
 }
 
-void TagWriter::createInstance(wstring &fileName)
+void TagWriter::createInstance( wstring &fileName )
 {
     // configure me --
     bLittleEndian = DATA_ARRANGE_LITTLE_ENDIAN;
@@ -57,12 +59,12 @@ void TagWriter::createInstance(wstring &fileName)
         bFileCreated = true;
 }
 
-bool TagWriter::writeData( const char* pData, DWORD nLen )
+bool TagWriter::writeData( const uint8_t* pData, size_t nLen )
 {
     if(!bFileCreated)
         return false;
 
-    fileStream.write(pData,nLen);
+    fileStream.write( (char*)pData, nLen );
     fileLength = fileStream.tellg();
 
     return true;
@@ -90,7 +92,7 @@ bool TagWriter::writeBYTE(BYTE aByte)
     return false;
 }
 
-bool TagWriter::writeWORD(WORD aWord)
+bool TagWriter::writeWORD( uint16_t aWord)
 {
     if(!bFileCreated)
         return false;
@@ -101,7 +103,7 @@ bool TagWriter::writeWORD(WORD aWord)
     return false;
 }
 
-bool TagWriter::writeDWORD(DWORD aDWord)
+bool TagWriter::writeDWORD( uint32_t aDWord )
 {
     if(!bFileCreated)
         return false;
@@ -114,7 +116,8 @@ bool TagWriter::writeDWORD(DWORD aDWord)
 
 void TagWriter::clearTags()
 {
-    int nTagCount = TagElements.size();
+    size_t nTagCount = TagElements.size();
+
     if( nTagCount == 0)
         return;
 
@@ -125,7 +128,7 @@ void TagWriter::clearTags()
     {
         TagElement* pTE = *it;
 
-        if(pTE)
+        if( pTE != NULL )
         {
             if(pTE->alloced && (pTE->size > 0))
             {
@@ -150,7 +153,7 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
         return false;
 
     // check ID
-    DWORD nID = pTagElem->id;
+    uint32_t nID = pTagElem->id;
     if(bLittleEndian)
     {
         nID = SwapDWORD(pTagElem->id);
@@ -158,13 +161,13 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
     writeDWORD(nID);
 
     // check VR
-    WORD  nVR = 0;
+    uint16_t nVR = 0;
     memcpy(&nVR,pTagElem->VRtype,2);
 
     // check size
-    DWORD nSz = pTagElem->size;
+    uint32_t nSz = pTagElem->size;
 
-    WORD nCVR = nVR;
+    uint16_t nCVR = nVR;
     if(bLittleEndian)
     {
         nCVR = SwapWORD(nVR);
@@ -211,7 +214,7 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
             {
                 // Write WORD;
                 writeWORD(nVR);
-                writeWORD((WORD)nSz);
+                writeWORD((uint16_t)nSz);
             }
             break;
     }
@@ -220,21 +223,21 @@ bool TagWriter::writeNextTag(TagElement *pTagElem)
 	{
         if(pTagElem->alloced)
         {
-            writeData((char*)pTagElem->dynamicbuffer, nSz);
+            writeData((const uint8_t*)pTagElem->dynamicbuffer, nSz);
         }
-		else 
+		else
 		{
-            writeData((char*)pTagElem->staticbuffer, nSz);
+            writeData((const uint8_t*)pTagElem->staticbuffer, nSz);
         }
 	}
-	
+
     return true;
 }
 
 void TagWriter::writeTags()
 {
     // check file position.
-    DWORD nFpos = fileStream.tellg();
+    uint32_t nFpos = fileStream.tellg();
     if(nFpos != 0)
     {
         fileStream.seekg(0,ios::beg);
@@ -243,13 +246,13 @@ void TagWriter::writeTags()
 
     // first, wirte empty 128 bytes...
 
-    char *pEmpty = new char[ID_OFFSET];
+    uint8_t *pEmpty = new uint8_t[ID_OFFSET];
     memset(pEmpty,0,ID_OFFSET);
     writeData(pEmpty, ID_OFFSET);
     delete[] pEmpty;
 
     // write magic
-    char pMagic[4];
+    uint8_t pMagic[4];
     memcpy(pMagic,DICM,4);
     writeData(pMagic, 4);
 
@@ -276,7 +279,7 @@ bool TagWriter::Write()
     return true;
 }
 
-TagElement* TagWriter::FindTagElement(DWORD TagID)
+TagElement* TagWriter::FindTagElement( uint32_t TagID)
 {
     if (TagID == 0)
         return NULL;
@@ -296,12 +299,12 @@ TagElement* TagWriter::FindTagElement(DWORD TagID)
     return NULL;
 }
 
-TagElement* TagWriter::GetTagElement(DWORD nIndex)
+TagElement* TagWriter::GetTagElement( uint32_t nIndex)
 {
     if (nIndex > TagElements.size())
         return NULL;
 
-    DWORD nCnt = 0;
+    uint32_t nCnt = 0;
 
     list<TagElement*>::iterator  it;
 

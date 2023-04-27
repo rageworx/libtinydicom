@@ -2,7 +2,7 @@
     #include <windows.h>
     #include <tchar.h>
 #endif /// of _WIN32
-	
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -35,12 +35,19 @@ static DicomImageViewer::TagWriter*   pWriter         = NULL;
     #endif /// of _T
 #else
     #define TSTRING string
-    #ifndef _T    
+    #ifndef _T
         #define _T
     #endif /// of _T
 #endif /// of defined, UNICODE or _UNICODE
 
 static TSTRING lastErrMsg;
+
+#ifdef __cplusplus
+    #define LTDNMSPC tinydicom::
+    using namespace  tinydicom;
+#else
+    #define LTDNMSPC
+#endif /// of cplusplus
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,14 +66,14 @@ void tool_replace_element(DCMTagElement* pDst, DCMTagElement* pSrc)
 
     if(pDst->alloced)
     {
-        free(pDst->dynamicbuffer);
+        delete[] pDst->dynamicbuffer;
         pDst->dynamicbuffer = NULL;
         pDst->alloced = false;
     }
 
     if(pSrc->alloced)
     {
-        pDst->dynamicbuffer = malloc(pSrc->size);
+        pDst->dynamicbuffer = new uint8_t[pSrc->size];
         memcpy(pDst->dynamicbuffer, pSrc->dynamicbuffer, pSrc->size);
     }else{
         memset(pDst->staticbuffer, 0, MAX_STATICBUFFER_LENGTH);
@@ -92,8 +99,8 @@ static DCMTagElement* FindPixelDataElement()
                 if ( ( pRet->id & 0xFF00FFFF ) > 0x7F000000 )
                 {
                     // Check VR
-                    if ( ( strncmp( pRet->VRtype, "OW", 2 ) == 0 ) ||
-                         ( strncmp( pRet->VRtype, "OB", 2 ) == 0 ) )
+                    if ( ( strncmp( (const char*)pRet->VRtype, "OW", 2 ) == 0 ) ||
+                         ( strncmp( (const char*)pRet->VRtype, "OB", 2 ) == 0 ) )
                     {
                         return pRet;
                     }
@@ -119,7 +126,7 @@ static DCMTagElement* FindPixelDataElement()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-LIB_EXPORT void GetTinyDicomLibVersion( int* versions )
+LIB_EXPORT void LTDNMSPC GetTinyDicomLibVersion( int* versions )
 {
     if ( versions != NULL )
     {
@@ -129,7 +136,7 @@ LIB_EXPORT void GetTinyDicomLibVersion( int* versions )
 }
 
 // New DCM is simple.
-LIB_EXPORT bool NewDCMW( const wchar_t* pFilePath )
+LIB_EXPORT bool LTDNMSPC NewDCMW( const wchar_t* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -156,7 +163,7 @@ LIB_EXPORT bool NewDCMW( const wchar_t* pFilePath )
     return false;
 }
 
-LIB_EXPORT bool NewDCMA( const char* pFilePath )
+LIB_EXPORT bool LTDNMSPC NewDCMA( const char* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -183,7 +190,7 @@ LIB_EXPORT bool NewDCMA( const char* pFilePath )
     return false;
 }
 
-LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
+LIB_EXPORT bool LTDNMSPC OpenDCMW( const wchar_t* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -213,7 +220,7 @@ LIB_EXPORT bool OpenDCMW( const wchar_t* pFilePath )
     return false;
 }
 
-LIB_EXPORT bool OpenDCMA( const char* pFilePath )
+LIB_EXPORT bool LTDNMSPC OpenDCMA( const char* pFilePath )
 {
     lastErrMsg.clear();
 
@@ -243,7 +250,7 @@ LIB_EXPORT bool OpenDCMA( const char* pFilePath )
     return false;
 }
 
-LIB_EXPORT bool CloseDCM(void)
+LIB_EXPORT bool LTDNMSPC CloseDCM(void)
 {
     lastErrMsg.clear();
 
@@ -262,7 +269,7 @@ LIB_EXPORT bool CloseDCM(void)
     return true;
 }
 
-LIB_EXPORT bool IsDCMOpened(void)
+LIB_EXPORT bool LTDNMSPC IsDCMOpened(void)
 {
     if(pReader)
     {
@@ -272,7 +279,7 @@ LIB_EXPORT bool IsDCMOpened(void)
     return false;
 }
 
-LIB_EXPORT int GetElementCount()
+LIB_EXPORT int LTDNMSPC GetElementCount()
 {
     lastErrMsg.clear();
 
@@ -286,13 +293,13 @@ LIB_EXPORT int GetElementCount()
     return -1;
 }
 
-LIB_EXPORT int GetElement(int index, DCMTagElement** pElement)
+LIB_EXPORT int32_t LTDNMSPC GetElement(uint32_t index, DCMTagElement** pElement)
 {
     lastErrMsg.clear();
 
     if( pReader != NULL )
     {
-        if( (unsigned)index < pReader->GetTagCount() )
+        if( index < pReader->GetTagCount() )
         {
             DicomImageViewer::TagElement* pElem = pReader->GetTagElement((unsigned int)index);
             *pElement = (DCMTagElement*)pElem;
@@ -301,7 +308,7 @@ LIB_EXPORT int GetElement(int index, DCMTagElement** pElement)
                 lastErrMsg = _T("DICOM tag not found");
                 return -3;
             }
-            return index;
+            return (int32_t)index;
         }
         else
         {
@@ -313,23 +320,23 @@ LIB_EXPORT int GetElement(int index, DCMTagElement** pElement)
     return -1;
 }
 
-LIB_EXPORT int FindElementIndex(DWORD tagID)
+LIB_EXPORT int32_t LTDNMSPC FindElementIndex( uint32_t tagID )
 {
     lastErrMsg.clear();
 
     if( pReader != NULL )
     {
-        unsigned tagsz = pReader->GetTagCount();
+        uint32_t tagsz = pReader->GetTagCount();
         if ( tagsz > 0 )
         {
-            for( unsigned cnt=0; cnt<tagsz; cnt++ )
+            for( uint32_t cnt=0; cnt<tagsz; cnt++ )
             {
                 DCMTagElement* pRet = (DCMTagElement*)pReader->GetTagElement( cnt );
 
                 if ( pRet != NULL )
                 {
                     if ( pRet->id == tagID )
-                        return cnt;
+                        return (int32_t)cnt;
                 }
             }
         }
@@ -340,7 +347,7 @@ LIB_EXPORT int FindElementIndex(DWORD tagID)
     return -1;
 }
 
-LIB_EXPORT DCMTagElement* FindElement(DWORD tagID)
+LIB_EXPORT LTDNMSPC DCMTagElement* LTDNMSPC FindElement( uint32_t tagID )
 {
     lastErrMsg.clear();
 
@@ -358,7 +365,7 @@ LIB_EXPORT DCMTagElement* FindElement(DWORD tagID)
     return NULL;
 }
 
-LIB_EXPORT bool AddElement(DCMTagElement* pElement)
+LIB_EXPORT bool LTDNMSPC AddElement(DCMTagElement* pElement)
 {
     lastErrMsg.clear();
 
@@ -368,12 +375,12 @@ LIB_EXPORT bool AddElement(DCMTagElement* pElement)
         return false;
     }
 
-    DicomImageViewer::TagElement* pFoundElem      = NULL;
+    DicomImageViewer::TagElement* pFoundElem = NULL;
 
-    if(pReader)
+    if ( pReader != NULL )
     {
         pFoundElem = pReader->FindTagElement( pElement->id );
-        if(pFoundElem)
+        if( pFoundElem != NULL )
         {
             // if found same tag, replace it.
             tool_replace_element( (DCMTagElement*)pFoundElem, (DCMTagElement*)pElement);
@@ -384,7 +391,6 @@ LIB_EXPORT bool AddElement(DCMTagElement* pElement)
             pReader->AddTagElement((DicomImageViewer::TagElement*)pElement);
             return true;
         }
-
     }
 
     lastErrMsg = _T("DICOM not open");
@@ -392,35 +398,32 @@ LIB_EXPORT bool AddElement(DCMTagElement* pElement)
     return false;
 }
 
-LIB_EXPORT bool AddElementEx(DWORD tagID, char *data, int dataSize)
+LIB_EXPORT bool LTDNMSPC AddElementEx( uint32_t tagID, const uint8_t* data, size_t dataSize )
 {
     lastErrMsg.clear();
 
     DicomImageViewer::TagElement* pNewElem = new DicomImageViewer::TagElement();
 
-    memset(pNewElem, 0, sizeof(DicomImageViewer::TagElement));
+    memset( pNewElem, 0, sizeof(DicomImageViewer::TagElement) );
 
     pNewElem->id = tagID;
 
-    WORD newVR = DicomImageViewer::DicomDictionary::GetVR(tagID);
+    uint16_t newVR = DicomImageViewer::DicomDictionary::GetVR(tagID);
 
-    memcpy(pNewElem->VRtype, &newVR, 2);
-    if(dataSize >= MAX_STATICBUFFER_LENGTH)
+    memcpy( pNewElem->VRtype, &newVR, 2 );
+
+    if( dataSize >= MAX_STATICBUFFER_LENGTH )
     {
         pNewElem->alloced = TRUE;
-        pNewElem->dynamicbuffer = malloc(dataSize);
-        memcpy(pNewElem->dynamicbuffer, data, dataSize);
+        pNewElem->dynamicbuffer = new uint8_t[dataSize];
+        memcpy( pNewElem->dynamicbuffer, data, dataSize );
     }else{
-        memcpy(pNewElem->staticbuffer, data, dataSize);
+        memcpy( pNewElem->staticbuffer, data, dataSize );
     }
 
-    if(AddElement( (DCMTagElement*)pNewElem ) == false)
+    if( AddElement( (DCMTagElement*)pNewElem ) == false )
     {
-        if(pNewElem->alloced)
-        {
-            free(pNewElem->dynamicbuffer);
-        }
-        delete pNewElem;
+        DiscardElement( (DCMTagElement**)&pNewElem );
 
         lastErrMsg = _T("Failed to adding new DICOM tag");
 
@@ -430,7 +433,26 @@ LIB_EXPORT bool AddElementEx(DWORD tagID, char *data, int dataSize)
     return true;
 }
 
-LIB_EXPORT bool SaveDCMW( const wchar_t* newName )
+LIB_EXPORT void LTDNMSPC DiscardElement( DCMTagElement** pElement )
+{
+    if ( pElement != NULL )
+    {
+        DCMTagElement* pIE = *pElement;
+
+        if ( pIE->alloced == true )
+        {
+            if ( pIE->dynamicbuffer != NULL )
+            {
+                delete[] pIE->dynamicbuffer;
+            }
+
+            delete pIE;
+            *pElement = NULL;
+        }
+    }
+}
+
+LIB_EXPORT bool LTDNMSPC SaveDCMW( const wchar_t* newName )
 {
     lastErrMsg.clear();
 
@@ -481,7 +503,7 @@ LIB_EXPORT bool SaveDCMW( const wchar_t* newName )
                         {
                             if(pSrcElem->size > 0)
                             {
-                                pNewElem->dynamicbuffer = malloc(pSrcElem->size);
+                                pNewElem->dynamicbuffer = new uint8_t[pSrcElem->size];
                                 if(pNewElem->dynamicbuffer)
                                     memcpy(pNewElem->dynamicbuffer, pSrcElem->dynamicbuffer, pSrcElem->size);
                             }else{
@@ -515,7 +537,7 @@ LIB_EXPORT bool SaveDCMW( const wchar_t* newName )
     return FALSE;
 }
 
-LIB_EXPORT bool SaveDCMA( const char* newName )
+LIB_EXPORT bool LTDNMSPC SaveDCMA( const char* newName )
 {
     lastErrMsg.clear();
 
@@ -566,7 +588,7 @@ LIB_EXPORT bool SaveDCMA( const char* newName )
                         {
                             if(pSrcElem->size > 0)
                             {
-                                pNewElem->dynamicbuffer = malloc(pSrcElem->size);
+                                pNewElem->dynamicbuffer = new uint8_t[ pSrcElem->size ];
                                 if(pNewElem->dynamicbuffer)
                                     memcpy(pNewElem->dynamicbuffer, pSrcElem->dynamicbuffer, pSrcElem->size);
                             }else{
@@ -601,12 +623,12 @@ LIB_EXPORT bool SaveDCMA( const char* newName )
 }
 
 
-LIB_EXPORT WORD  GetVR(DWORD tagID)
+LIB_EXPORT uint16_t LTDNMSPC GetVR( uint32_t tagID )
 {
     return DicomImageViewer::DicomDictionary::GetVR(tagID);
 }
 
-LIB_EXPORT const wchar_t* GetDicomMeaningW(DWORD tagID)
+LIB_EXPORT const wchar_t* LTDNMSPC GetDicomMeaningW( uint32_t tagID )
 {
     const char* refstr = DicomImageViewer::DicomDictionary::GetMean(tagID);
     if ( refstr != NULL )
@@ -614,13 +636,12 @@ LIB_EXPORT const wchar_t* GetDicomMeaningW(DWORD tagID)
     return NULL;
 }
 
-LIB_EXPORT const char* GetDicomMeaningA(DWORD tagID)
+LIB_EXPORT const char* LTDNMSPC GetDicomMeaningA( uint32_t tagID )
 {
     return DicomImageViewer::DicomDictionary::GetMean(tagID);
 }
 
-
-LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
+LIB_EXPORT bool LTDNMSPC NewElement( uint32_t tagID, DCMTagElement** pElement )
 {
     lastErrMsg.clear();
 
@@ -637,7 +658,7 @@ LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
     if( newElem != NULL )
     {
         memset( newElem, 0, sizeof( DCMTagElement ) );
-        WORD wVR = GetVR( tagID );
+        uint16_t wVR = LTDNMSPC GetVR( tagID );
         newElem->id = tagID;
         memcpy( newElem->VRtype, &wVR, 2 );
 
@@ -653,39 +674,39 @@ LIB_EXPORT bool NewElement( DWORD tagID, DCMTagElement** pElement )
     return false;
 }
 
-LIB_EXPORT wchar_t* GetLastErrMsg()
+LIB_EXPORT wchar_t* LTDNMSPC GetLastErrMsg()
 {
     return (wchar_t*)lastErrMsg.c_str();
 }
 
-LIB_EXPORT int ReadInt( DCMTagElement* pElem )
+LIB_EXPORT int LTDNMSPC ReadInt( DCMTagElement* pElem )
 {
     int retInt = 0;
 
     if ( pElem != NULL )
     {
-        if ( strncmp( pElem->VRtype, "US", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "US", 2 ) == 0 )
         {
-            WORD tmpUS = 0;
+            uint16_t tmpUS = 0;
             memcpy( &tmpUS, pElem->staticbuffer, 2 );
             retInt = tmpUS;
         }
         else
-        if ( strncmp( pElem->VRtype, "SS", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "SS", 2 ) == 0 )
         {
             short tmpSS = 0;
             memcpy( &tmpSS, pElem->staticbuffer, 2 );
             retInt = tmpSS;
         }
         else
-        if ( strncmp( pElem->VRtype, "UL", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "UL", 2 ) == 0 )
         {
-            DWORD tmpDW = 0;
+            uint32_t tmpDW = 0;
             memcpy( &tmpDW, pElem->staticbuffer, 4 );
             retInt = (int)tmpDW;
         }
         else
-        if ( strncmp( pElem->VRtype, "SL", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "SL", 2 ) == 0 )
         {
             long tmpLG = 0;
             memcpy( &tmpLG, pElem->staticbuffer, 4 );
@@ -696,11 +717,11 @@ LIB_EXPORT int ReadInt( DCMTagElement* pElem )
     return retInt;
 }
 
-LIB_EXPORT char* ReadAnsiString( DCMTagElement* pElem )
+LIB_EXPORT const char* LTDNMSPC ReadAnsiString( DCMTagElement* pElem )
 {
     if ( pElem != NULL )
     {
-        if  ( strncmp( pElem->VRtype, "DS", 2 ) == 0 )
+        if  ( strncmp( (const char*)pElem->VRtype, "DS", 2 ) == 0 )
         {
             if ( pElem->alloced == true )
             {
@@ -716,11 +737,11 @@ LIB_EXPORT char* ReadAnsiString( DCMTagElement* pElem )
     return NULL;
 }
 
-LIB_EXPORT wchar_t* ReadWideString( DCMTagElement* pElem )
+LIB_EXPORT const wchar_t* LTDNMSPC ReadWideString( DCMTagElement* pElem )
 {
     if ( pElem != NULL )
     {
-        if  ( strncmp( pElem->VRtype, "DS", 2 ) == 0 )
+        if  ( strncmp( (const char*)pElem->VRtype, "DS", 2 ) == 0 )
         {
             if ( pElem->alloced == true )
             {
@@ -736,7 +757,7 @@ LIB_EXPORT wchar_t* ReadWideString( DCMTagElement* pElem )
     return NULL;
 }
 
-LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
+LIB_EXPORT bool LTDNMSPC ReadPixelData( ImageInformation* pII )
 {
     if ( pII == NULL )
         return false;
@@ -750,7 +771,7 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
 
     if ( pTagPSp != NULL )
     {
-        if ( strncmp( pTagPSp->VRtype, "DS", 2 ) == 0 )
+        if ( strncmp( (const char*)pTagPSp->VRtype, "DS", 2 ) == 0 )
         {
             char* refstr = (char*)pTagPSp->staticbuffer;
             if ( pTagPSp->alloced == true )
@@ -793,7 +814,7 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
         pII->bpp    = ReadInt( pTagBit );
         pII->width  = ReadInt( pTagRow );
         pII->height = ReadInt( pTagCol );
-                
+
         if ( pTagPln != NULL )
         {
             pII->planes = ReadInt( pTagPln );
@@ -824,21 +845,21 @@ LIB_EXPORT bool ReadPixelData( ImageInformation* pII )
     return false;
 }
 
-LIB_EXPORT int  WriteInt(  DCMTagElement* pElem, const int iv )
+LIB_EXPORT int LTDNMSPC WriteInt( DCMTagElement* pElem, const int iv )
 {
     int writeInt = 0;
 
     if ( pElem != NULL )
     {
-        if ( strncmp( pElem->VRtype, "US", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "US", 2 ) == 0 )
         {
-            WORD tmpUS = (WORD)iv;
+            uint16_t tmpUS = (uint16_t)iv;
             memcpy( pElem->staticbuffer, &tmpUS, 2 );
             pElem->size = 2;
             writeInt = tmpUS;
         }
         else
-        if ( strncmp( pElem->VRtype, "SS", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "SS", 2 ) == 0 )
         {
             short tmpSS = (short)iv;
             memcpy( pElem->staticbuffer, &tmpSS, 2 );
@@ -846,15 +867,15 @@ LIB_EXPORT int  WriteInt(  DCMTagElement* pElem, const int iv )
             writeInt = tmpSS;
         }
         else
-        if ( strncmp( pElem->VRtype, "UL", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "UL", 2 ) == 0 )
         {
-            DWORD tmpDW = (DWORD)iv;
+            uint32_t tmpDW = (uint32_t)iv;
             memcpy( pElem->staticbuffer, &tmpDW, 4 );
             pElem->size = 4;
             writeInt = (int)tmpDW;
         }
         else
-        if ( strncmp( pElem->VRtype, "SL", 2 ) == 0 )
+        if ( strncmp( (const char*)pElem->VRtype, "SL", 2 ) == 0 )
         {
             long tmpLG = (long)iv;
             memcpy( pElem->staticbuffer, &tmpLG, 4 );
@@ -866,7 +887,7 @@ LIB_EXPORT int  WriteInt(  DCMTagElement* pElem, const int iv )
     return writeInt;
 }
 
-LIB_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
+LIB_EXPORT int LTDNMSPC WriteAnsiString( DCMTagElement* pElem, const char* as )
 {
     int writeInt = 0;
 
@@ -883,7 +904,7 @@ LIB_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
                 pElem->alloced = false;
             }
 
-            pElem->dynamicbuffer = new char[ bLen + 1 ];
+            pElem->dynamicbuffer = new uint8_t[ bLen + 1 ];
             if ( pElem->dynamicbuffer != NULL )
             {
                 memset( pElem->dynamicbuffer, 0, bLen + 1 );
@@ -913,7 +934,7 @@ LIB_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
             memcpy( pElem->staticbuffer, as, wLen );
             if ( wLen != bLen )
             {
-                strcat( pElem->staticbuffer, " " );
+                strcat( (char*)pElem->staticbuffer, " " );
             }
 
             pElem->size = bLen;
@@ -925,7 +946,7 @@ LIB_EXPORT int  WriteAnsiString( DCMTagElement* pElem, const char* as )
     return writeInt;
 }
 
-LIB_EXPORT int  WriteWideString( DCMTagElement* pElem, const wchar_t* ws )
+LIB_EXPORT int LTDNMSPC WriteWideString( DCMTagElement* pElem, const wchar_t* ws )
 {
     int writeInt = 0;
 
@@ -941,15 +962,15 @@ LIB_EXPORT int  WriteWideString( DCMTagElement* pElem, const wchar_t* ws )
                 pElem->alloced = false;
             }
 
-            pElem->dynamicbuffer = new wchar_t[ wLen + 1 ];
+            pElem->dynamicbuffer = new uint8_t[ ( wLen + 1 ) * sizeof(wchar_t) ];
             if ( pElem->dynamicbuffer != NULL )
             {
-                memset( pElem->dynamicbuffer, 0, ( wLen + 1 ) * 2 );
-                memcpy( pElem->dynamicbuffer, ws, wLen * 2 );
-                pElem->size = wLen * 2;
+                memset( pElem->dynamicbuffer, 0, ( wLen + 1 ) * sizeof(wchar_t) );
+                memcpy( pElem->dynamicbuffer, ws, wLen * sizeof(wchar_t) );
+                pElem->size = wLen * sizeof(wchar_t);
                 pElem->alloced = true;
 
-                writeInt = wLen * 2;
+                writeInt = wLen * sizeof(wchar_t);
             }
         }
         else
@@ -972,7 +993,7 @@ LIB_EXPORT int  WriteWideString( DCMTagElement* pElem, const wchar_t* ws )
     return writeInt;
 }
 
-LIB_EXPORT bool AddImage( ImageInformation* pII )
+LIB_EXPORT bool LTDNMSPC AddImage( ImageInformation* pII )
 {
     if ( pII == NULL )
         return false;
@@ -1004,9 +1025,9 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
         }
 
         WriteInt( tagRow, pII->height );
-        
+
         DCMTagElement* tagPlanes = NULL;
-        
+
         if ( pII->planes > 0 )
         {
             tagPlanes = FindElement( 0x00280012 );
@@ -1017,7 +1038,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
                     return false;
                 }
             }
-            
+
             WriteInt( tagPlanes, pII->planes );
         }
     }
@@ -1097,7 +1118,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
 
         // Check VR is OW or OB.
         // OB may not working for many DICOM viewers.
-        if ( strncmp( tagPxs->VRtype, "OW", 2 ) != 0 )
+        if ( strncmp( (const char*)tagPxs->VRtype, "OW", 2 ) != 0 )
         {
             tagPxs->VRtype[0] = 'O';
             tagPxs->VRtype[1] = 'W';
@@ -1106,7 +1127,7 @@ LIB_EXPORT bool AddImage( ImageInformation* pII )
 
         if( tagPxs->size > 64 )
         {
-            tagPxs->dynamicbuffer = new char[ tagPxs->size ];
+            tagPxs->dynamicbuffer = new uint8_t[ tagPxs->size ];
             if ( tagPxs->dynamicbuffer != NULL )
             {
                 tagPxs->alloced = true;

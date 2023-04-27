@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cstdint>
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
@@ -98,14 +99,14 @@ void TagReader::createInstance( string &fileName )
     }
 }
 
-int TagReader::readString(char *pBuf, DWORD nLength)
+size_t TagReader::readString( char *pBuf, size_t nLength )
 {
-    DWORD nCurPos = fileStream.tellg();
+    size_t nCurPos = fileStream.tellg();
 
     if(nCurPos + nLength > fileLength)
         return 0;
 
-    if(pBuf)
+    if( pBuf != NULL )
     {
         memset(pBuf,0,4);
 
@@ -117,16 +118,16 @@ int TagReader::readString(char *pBuf, DWORD nLength)
     return 0;
 }
 
-DWORD TagReader::seekToNext()
+size_t TagReader::seekToNext()
 {
     while( true )
     {
-        BYTE nRet = readBYTE();
+        uint8_t nRet = readBYTE();
 
         if ( nRet == 0 )
             return fileStream.tellg();
 
-        DWORD nCurPos = fileStream.tellg();
+        size_t nCurPos = fileStream.tellg();
 
         if ( nCurPos == fileLength )
             break;
@@ -135,58 +136,54 @@ DWORD TagReader::seekToNext()
     return 0;
 }
 
-BYTE TagReader::readBYTE()
+uint8_t TagReader::readBYTE()
 {
-    BYTE    aByte   = 0;
-    DWORD   nCurPos = fileStream.tellg();
+    uint8_t aByte   = 0;
+    size_t  nCurPos = fileStream.tellg();
 
-    if(nCurPos + 1 < fileLength)
+    if( nCurPos + 1 < fileLength )
         fileStream.read((char*)&aByte,1);
 
     return aByte;
 }
 
-WORD    TagReader::readWORD()
+uint16_t TagReader::readWORD()
 {
-    WORD    aWord   = 0;
-    DWORD   nCurPos = fileStream.tellg();
+    uint16_t auint16_t = 0;
+    size_t   nCurPos = fileStream.tellg();
 
-    if(nCurPos + 2 < fileLength)
-        fileStream.read((char*)&aWord,2);
+    if( nCurPos + 2 < fileLength )
+        fileStream.read((char*)&auint16_t,2);
 
-    return aWord;
+    return auint16_t;
 }
 
-DWORD   TagReader::readDWORD()
+uint32_t  TagReader::readDWORD()
 {
-    DWORD   aDWord  = 0;
-    DWORD   nCurPos = fileStream.tellg();
+    uint32_t auint32_t  = 0;
+    size_t   nCurPos = fileStream.tellg();
 
-    if(nCurPos + 4 < fileLength)
-        fileStream.read((char*)&aDWord,4);
+    if( nCurPos + 4 < fileLength )
+        fileStream.read((char*)&auint32_t,4);
 
-    return aDWord;
+    return auint32_t;
 }
 
-DWORD TagReader::getLength(WORD* nVR,WORD nCarrier)
+size_t TagReader::getLength( uint16_t* nVR, uint16_t nCarrier )
 {
     if ( nVR == NULL )
         return 0;
 
-    WORD cVR = *nVR;
+    uint16_t cVR = *nVR;
 
     if( bLittleEndian == true )
     {
-        // Swap it !!
-        // BYTE *pA1 = (BYTE*)&nVR;
-        // BYTE *pA2 = pA1+1;
-        // cVR = (*pA1 << 8 ) + *pA2;
         cVR = SwapWORD( *nVR );
     }
 
     switch( cVR )
     {
-        // Case if carrier 0, need to next size for Double Word.
+        // Case if carrier 0, need to next size for Double uint16_t.
         // Related in strings ...
         case UC:
         case UN:
@@ -240,7 +237,7 @@ DWORD TagReader::getLength(WORD* nVR,WORD nCarrier)
             break;
     }
 
-    DWORD tmpDW = 0;
+    uint32_t tmpDW = 0;
 
     if ( bLittleEndian == true )
     {
@@ -253,23 +250,15 @@ DWORD TagReader::getLength(WORD* nVR,WORD nCarrier)
     return tmpDW;
 }
 
-bool TagReader::readNextTag(TagElement *pTagElem)
+bool TagReader::readNextTag( TagElement *pTagElem )
 {
-    DWORD   aTag    = 0;
-    bool    bDone   = false;
-    DWORD   nTemp   = readDWORD();
+    uint32_t aTag    = 0;
+    bool     bDone   = false;
+    uint32_t nTemp   = readDWORD();
 
     if ( bLittleEndian == true )
     {
-        // Swap it !!
-        BYTE *pA1 = (BYTE*)&nTemp;
-        BYTE *pA2 = pA1+1;
-        BYTE *pA3 = pA1+2;
-        BYTE *pA4 = pA1+3;
-        aTag = (*pA2 << 24 ) +
-               (*pA1 << 16 ) +
-               (*pA4 << 8  ) +
-                *pA3;
+        aTag = SwapDWORD( nTemp );
     }
     else
     {
@@ -278,17 +267,17 @@ bool TagReader::readNextTag(TagElement *pTagElem)
 
     if( aTag > 0 )
     {
-        DWORD nCurReadPos = fileStream.tellg();
+        uint32_t nCurReadPos = fileStream.tellg();
         char aSubTag[4] = {0};
         readString(aSubTag,4);
 
-        WORD nVR = 0;
-        WORD nCarrier = 0;
+        uint16_t nVR = 0;
+        uint16_t nCarrier = 0;
         memcpy(&nVR,aSubTag,2);
         memcpy(&nCarrier,&aSubTag[2],2);
 
         bool  bVRLenTested = true;
-        DWORD nLen = getLength(&nVR,nCarrier);
+        uint32_t nLen = getLength(&nVR,nCarrier);
 
         bool bImageTag = false;
 
@@ -300,7 +289,6 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                 bImageTag = true;
             }
         }
-
 
         /***
         **  Testing VR and Length ...
@@ -314,7 +302,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
             bVRLenTested = false;
         }
         else
-        if ( nLen == 0xFFFFFFFF )
+        if ( nLen == 0xFFFFFFFF ) /// == -1
         {
             bVRLenTested = false;
         }
@@ -344,7 +332,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                         // Check nVR.
                         if ( ( nVR != OB ) && ( nVR != OW ) && ( nVR != OL ) )
                         {
-                            // Assume it is WORD pixel data.
+                            // Assume it is uint16_t pixel data.
                             nVR = OW;
                         }
                     }
@@ -357,7 +345,7 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                 }
             }
 
-            memcpy(pTagElem->VRtype,&nVR,2);
+            memcpy( pTagElem->VRtype, &nVR, 2 );
             pTagElem->size = nLen;
 
             if ( ( nLen > 0 ) && ( nLen < 0xFFFFFFFF ) )
@@ -365,27 +353,28 @@ bool TagReader::readNextTag(TagElement *pTagElem)
 #ifdef DEBUG
 				printf(" ... alloc size : %u\n", nLen );
 #endif
-                char *pRead = new char[nLen];
-                memset(pRead,0,nLen);
-                if( pRead != NULL )
+                char* pRead = new char[nLen];
+                if ( pRead != NULL ) // prevent allocation failure.
                 {
+                    memset( pRead, 0, nLen );
                     readString(pRead,nLen);
-                    if(nLen > MAX_STATICBUFFER_LENGTH)
+                    if( nLen > MAX_STATICBUFFER_LENGTH )
                     {
-                        pTagElem->dynamicbuffer = pRead;
-                        pTagElem->alloced = TRUE;
+                        pTagElem->dynamicbuffer = (uint8_t*)pRead;
+                        pTagElem->alloced = true;
                     }
                     else
                     {
-                        memset(pTagElem->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
-                        memcpy(pTagElem->staticbuffer,pRead,nLen);
-                        pTagElem->alloced = FALSE;
+                        memset( pTagElem->staticbuffer, 0, MAX_STATICBUFFER_LENGTH );
+                        memcpy( pTagElem->staticbuffer, pRead,nLen );
+                        pTagElem->alloced = false;
                     }
-                }else
+                }
+                else
                 {
                     // it failed to read data !
                     pTagElem->dynamicbuffer = NULL;
-                    pTagElem->alloced = FALSE;
+                    pTagElem->alloced = false;
                     return false;
                 }
             }
@@ -398,12 +387,22 @@ bool TagReader::readNextTag(TagElement *pTagElem)
                 if ( nLen > 0 )
                 {
                     char* pRead = new char[nLen];
-                    memset(pRead,0,nLen);
-                    readString(pRead,nLen);
-                    pTagElem->dynamicbuffer = pRead;
-                    pTagElem->alloced = TRUE;
-                    pTagElem->size = nLen;
-                    fileStream.seekg(0,fstream::end);
+                    if ( pRead != NULL )
+                    {
+                        memset(pRead,0,nLen);
+                        readString(pRead,nLen);
+                        pTagElem->dynamicbuffer = (uint8_t*)pRead;
+                        pTagElem->alloced = true;
+                        pTagElem->size = nLen;
+                        fileStream.seekg(0,fstream::end);
+                    }
+                }
+                else
+                {
+                    memset( pTagElem->staticbuffer, 0, MAX_STATICBUFFER_LENGTH );
+                    pTagElem->alloced = false;
+                    pTagElem->size = 0;
+                    return false;
                 }
             }
 
@@ -434,24 +433,25 @@ void TagReader::readTags()
         pTagElem = new TagElement;
         if( pTagElem != NULL )
         {
-            memset(pTagElem,0,sizeof(TagElement));
+            memset( pTagElem, 0, sizeof(TagElement) );
             bool bRead = readNextTag(pTagElem);
 
             if( bRead == true )
             {
-                #ifdef DEBUG
+#ifdef DEBUG
                 printf( "#DICOM TAG %08X : %s, (%d bytes)\n",
                         pTagElem->id,
                         pTagElem->VRtype,
                         pTagElem->size );
-                #endif // DEBUG
+#endif // DEBUG
                 TagElements.push_back(pTagElem);
             }
             else
             {
                 delete pTagElem;
 
-                DWORD nCurReadPos = fileStream.tellg();
+                size_t nCurReadPos = fileStream.tellg();
+
                 if ( nCurReadPos >= fileLength )
                 {
                     bRepeat = false;
@@ -470,21 +470,21 @@ bool TagReader::IsLoaded()
     return bFileLoaded;
 }
 
-TagElement* TagReader::GetTagElementByID(DWORD TagID)
+TagElement* TagReader::GetTagElementByID( uint32_t TagID )
 {
     if (TagID == 0)
         return NULL;
 
-    DWORD nCnt = 0;
+    size_t nCnt = 0;
 
     list<TagElement*>::iterator  it;
 
-    for(it=TagElements.begin(); it!=TagElements.end(); advance(it,1))
+    for( it=TagElements.begin(); it!=TagElements.end(); advance(it,1) )
     {
-        TagElement *pE = *it;
-        if(pE)
+        TagElement* pE = *it;
+        if( pE != NULL )
         {
-            if(pE->id == TagID)
+            if( pE->id == TagID )
                 return pE;
         }
     }

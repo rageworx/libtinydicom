@@ -17,29 +17,27 @@
 #include "dicomtagelement.h"
 #include "dicomtagstore.h"
 
-using namespace std;
-
 namespace DicomImageViewer
 {
     class TagWriter: public TagStore
     {
         private:
             fstream     fileStream;
-            DWORD       fileLength;     // up to 3.2GB (32bit)
+            size_t      fileLength;
             bool        bFileCreated;
             bool        bLittleEndian;
 
             // private function methods -----------------------------------
-            void        createInstance( wstring &fileName );
+            void        createInstance( std::wstring &fileName );
 
-            bool        writeData( const char* pData, DWORD nLen );
-            bool        writeString(string &str);
-            bool        writeBYTE(BYTE aByte);
-            bool        writeWORD(WORD aWord);
-            bool        writeDWORD(DWORD aDWord);
+            bool        writeData( const uint8_t* pData, size_t nLen );
+            bool        writeString( std::string &str);
+            bool        writeBYTE( uint8_t aByte );
+            bool        writeWORD( uint16_t aWord );
+            bool        writeDWORD( uint32_t aDWord );
 
             void        clearTags();
-            bool        writeNextTag(TagElement *pTagElem);
+            bool        writeNextTag( TagElement *pTagElem );
             void        writeTags();
 
         public:
@@ -48,11 +46,11 @@ namespace DicomImageViewer
             bool        IsCreated();
             bool        Write();
 
-            TagElement* FindTagElement(DWORD TagID);
-            TagElement* GetTagElement(DWORD nIndex);
+            TagElement* FindTagElement( uint32_t TagID );
+            TagElement* GetTagElement( uint32_t nIndex );
 
             // constructor
-            TagWriter( wstring &fileName );
+            TagWriter( std::wstring &fileName );
             TagWriter( const wchar_t *fileName );
             TagWriter( const char *fileName );
 

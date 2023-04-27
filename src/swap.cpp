@@ -1,24 +1,25 @@
+#include <cstdint>
 #include "swap.h"
 
-unsigned short DicomImageViewer::SwapWORD(unsigned short nWord)
+uint16_t DicomImageViewer::SwapWORD(uint16_t nWord)
 {
-    unsigned short nRet = 0;
+    uint16_t nRet = 0;
 
-    unsigned char *pA1 = (unsigned char*)&nWord;
-    unsigned char *pA2 = pA1+1;
+    uint8_t* pA1 = (unsigned char*)&nWord;
+    uint8_t* pA2 = pA1+1;
     nRet = (*pA1 << 8 ) + *pA2;
 
     return nRet;
 }
 
-unsigned long DicomImageViewer::SwapDWORD(unsigned long nDWord)
+uint32_t DicomImageViewer::SwapDWORD(uint32_t nDWord)
 {
-    unsigned long nRet = 0;
+    uint32_t nRet = 0;
 
-    unsigned char *pA1 = (unsigned char*)&nDWord;
-    unsigned char *pA2 = pA1+1;
-    unsigned char *pA3 = pA1+2;
-    unsigned char *pA4 = pA1+3;
+    uint8_t* pA1 = (unsigned char*)&nDWord;
+    uint8_t* pA2 = pA1+1;
+    uint8_t* pA3 = pA1+2;
+    uint8_t* pA4 = pA1+3;
     nRet = (*pA2 << 24 ) +
            (*pA1 << 16 ) +
            (*pA4 << 8  ) +

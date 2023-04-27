@@ -4,6 +4,7 @@
 #endif /// of _WIN32
 
 #include <cstring>
+#include <cstdint>
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
@@ -32,28 +33,29 @@ TagStore::~TagStore()
 
 void TagStore::clearTags()
 {
-    int nTagCount = TagElements.size();
-    if( nTagCount == 0)
+    size_t nTagCount = TagElements.size();
+
+    if( nTagCount == 0 )
         return;
 
     // do iterator ...
     list<TagElement*>::iterator  it;
 
-    for(it=TagElements.begin(); it!=TagElements.end(); advance(it,1))
+    for( it=TagElements.begin(); it!=TagElements.end(); advance(it,1) )
     {
         TagElement* pTE = *it;
 
-        if(pTE)
+        if( pTE != NULL )
         {
-            if(pTE->size && pTE->dynamicbuffer && pTE->alloced)
+            if( pTE->size && pTE->dynamicbuffer && pTE->alloced )
             {
-                delete[] (char*)pTE->dynamicbuffer;
-                pTE->alloced = FALSE;
+                delete[] pTE->dynamicbuffer;
+                pTE->alloced = false;
             }
         }
     }
 
-    while(!TagElements.empty())
+    while( !TagElements.empty() )
     {
         delete TagElements.back();
         TagElements.pop_back();
@@ -65,26 +67,25 @@ bool TagStore::IsCreated()
     return true;
 }
 
-DWORD TagStore::GetTagCount()
+size_t TagStore::GetTagCount()
 {
     return TagElements.size();
 }
 
-TagElement* TagStore::FindTagElement(DWORD TagID)
+TagElement* TagStore::FindTagElement( uint32_t TagID)
 {
     if (TagID == 0)
         return NULL;
-
-    DWORD nCnt = 0;
 
     list<TagElement*>::iterator  it;
 
     for(it=TagElements.begin(); it!=TagElements.end(); advance(it,1))
     {
         TagElement *pE = *it;
-        if(pE)
+
+        if( pE != NULL )
         {
-            if(pE->id == TagID)
+            if( pE->id == TagID )
                 return pE;
         }
     }
@@ -92,38 +93,51 @@ TagElement* TagStore::FindTagElement(DWORD TagID)
     return NULL;
 }
 
-DWORD TagStore::AddTagElement(DWORD TagID,WORD wVR, char* data, DWORD size)
+size_t TagStore::AddTagElement( uint32_t TagID, uint16_t wVR, const uint8_t* data, size_t size )
 {
     TagElement *pNewTag = new TagElement;
 
+    if ( pNewTag == NULL )
+        return 0;
+
     // erase it as NULL, first.
-    memset(pNewTag,0,sizeof(TagElement));
+    memset( pNewTag, 0, sizeof(TagElement) );
 
     // http://dicom.nema.org/dicom/2013/output/chtml/part05/sect_6.2.html
     // 2 bytes align required at case of OB with NULL.
-
-    pNewTag->id = TagID;
-    memcpy(pNewTag->VRtype,&wVR,2);
-    DWORD rsize = size;
-    pNewTag->size = size;
+    pNewTag->id    = TagID;
+    memcpy( pNewTag->VRtype, &wVR, 2 );
+    uint32_t rsize = (uint32_t)size;
+    pNewTag->size  = rsize;
 
     // VR-"OB" need size padding.
-    if ( *(WORD*)pNewTag->VRtype == OB )
+    if ( *(uint16_t*)pNewTag->VRtype == OB )
     {
-        if ( size%2 > 0 )
+        if ( rsize%2 > 0 )
         {
-            size++;
+            rsize++;
         }
     }
 
-    if(size)
+    if( rsize > 0 )
     {
-        if(size > MAX_STATICBUFFER_LENGTH)
+        if( size > MAX_STATICBUFFER_LENGTH )
         {
-            pNewTag->dynamicbuffer = new char[size];
-            pNewTag->alloced = true;
-            memset(pNewTag->dynamicbuffer,0,size);
-            memcpy(pNewTag->dynamicbuffer,data,rsize);
+            pNewTag->dynamicbuffer = new uint8_t[size];
+            if ( pNewTag->dynamicbuffer != NULL )
+            {
+                pNewTag->alloced = true;
+                memset( pNewTag->dynamicbuffer,0,size);
+                memcpy( pNewTag->dynamicbuffer,data,rsize);
+            }
+            else
+            {
+                // memory allocation failure meaning failure.
+                pNewTag->alloced = false;
+                pNewTag->dynamicbuffer = NULL;
+                delete pNewTag;
+                return 0;
+            }
         }else{
             memset(pNewTag->staticbuffer,0,MAX_STATICBUFFER_LENGTH);
             memcpy(pNewTag->staticbuffer,data,rsize);
@@ -136,39 +150,30 @@ DWORD TagStore::AddTagElement(DWORD TagID,WORD wVR, char* data, DWORD size)
     return TagElements.size();
 }
 
-int  TagStore::AddTagElement(TagElement *pTag)
+size_t TagStore::AddTagElement( TagElement *pTag )
 {
     if(!pTag)
-        return -1;
+        return 0;
 
     // check same elements by ID.
-    if(FindTagElement(pTag->id))
-        return -2;
+    if( FindTagElement( pTag->id ) )
+        return 0;
 
     TagElements.push_back(pTag);
 
     return TagElements.size();
 }
 
-TagElement* TagStore::GetTagElement(DWORD nIndex)
+TagElement* TagStore::GetTagElement( size_t nIndex )
 {
-    if (nIndex > TagElements.size())
+    if ( nIndex >= TagElements.size() )
         return NULL;
 
-    DWORD nCnt = 0;
+    list<TagElement*>::iterator  it = TagElements.begin();
 
-    list<TagElement*>::iterator  it;
+    advance( it, nIndex );
 
-    for(it=TagElements.begin(); it!=TagElements.end(); advance(it,1))
-    {
-        if(nCnt == nIndex)
-        {
-            return *it;
-        }
-        nCnt++;
-    }
-
-    return NULL;
+    return *it;
 }
 
 void TagStore::Sort()

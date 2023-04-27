@@ -1,11 +1,14 @@
 /*******************************************************************************
 * STL , DicomImageViewer::DicomTagReader
-*                                                    last revision : 2017-02-08
+*                                                    last revision : 2023-04-27
 * =============================================================================
 *
 * * (C)Copyright 2011-2014 Raphael Kim (rage.kim)
 * *
 * * Unicode Model.
+*
+* Update in 2023-04-27
+*  : Using standard integer types.
 *
 * Update in 2017-02-08
 *  : Enhanced to handle bad VR, UUID DICOM file.
@@ -31,7 +34,7 @@ namespace DicomImageViewer
     {
         private:
             fstream     fileStream;
-            DWORD       fileLength;     // DICOM limited to 3.2GB.
+            size_t      fileLength;
             bool        bFileLoaded;
             bool        bLittleEndian;
 
@@ -39,13 +42,13 @@ namespace DicomImageViewer
             void        createInstance( wstring &fileName );
             void        createInstance( string &fileName );
 
-            int         readString(char *pBuf, DWORD nLength);
-            DWORD       seekToNext();
-            BYTE        readBYTE();
-            WORD        readWORD();
-            DWORD       readDWORD();
+            size_t      readString(char *pBuf, size_t nLength);
+            size_t      seekToNext();
+            uint8_t     readBYTE();
+            uint16_t    readWORD();
+            uint32_t    readDWORD();
 
-            DWORD       getLength(WORD* nVR,WORD nCarrier);
+            size_t      getLength(uint16_t* nVR, uint16_t nCarrier);
             bool        readNextTag(TagElement *pTagElem);
             void        readTags();
 
@@ -54,7 +57,7 @@ namespace DicomImageViewer
             // public function methods ------------------------------------
             bool        IsLoaded();
 
-            TagElement* GetTagElementByID(DWORD TagID);
+            TagElement* GetTagElementByID(uint32_t TagID);
 
             // constructor
             TagReader( wstring &fileName );

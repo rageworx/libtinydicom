@@ -39,22 +39,6 @@
     #define DICOMTAG_OPT_USING_INTERNALVOLUMEENGINE
 #endif
 
-#ifdef _WIN32
-    #ifndef BYTE
-        #define BYTE            unsigned char
-    #endif // BYTE
-    #ifndef  WORD
-        #define WORD            unsigned short
-    #endif // WORD
-    #ifndef DWORD
-        #define DWORD           unsigned int
-    #endif // DWORD
-#else
-    typedef unsigned char		BYTE;
-    typedef unsigned short		WORD;
-    typedef unsigned long		DWORD;
-#endif // _WIN32
-
 #ifndef NULL
     #ifdef __cplusplus
         #ifndef _WIN64

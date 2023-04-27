@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cstdint>
 
 #include "dicomtagconfig.h"
 #include "dicomdictionary.h"
@@ -11,7 +12,7 @@
 using namespace DicomImageViewer;
 
 static const
-TDicomDictionary dicom_dict[]=
+TDicomDictionary dicom_dict[] =
 {
     // -------------------------------------------------------------------------
     // Group tag 0002 ----------------------------------------------------------
@@ -1938,22 +1939,22 @@ TDicomDictionary dicom_dict[]=
     {0x002808D3, "AT", "Code Table Location", ELEM_STATE_RETIRED},
     {0x002808E3, "AT", "Code Table Location", ELEM_STATE_RETIRED},
     {0x002808F3, "AT", "Code Table Location", ELEM_STATE_RETIRED},
-    {0x00280804, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280814, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280824, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280834, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280844, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280854, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280864, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280874, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280884, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x00280894, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x002808A4, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x002808B4, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x002808C4, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x002808D4, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x002808E4, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
-    {0x002808F4, "US", "Bits For Code Word", ELEM_STATE_RETIRED},
+    {0x00280804, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280814, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280824, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280834, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280844, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280854, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280864, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280874, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280884, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x00280894, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x002808A4, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x002808B4, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x002808C4, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x002808D4, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x002808E4, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
+    {0x002808F4, "US", "Bits For Code uint16_t", ELEM_STATE_RETIRED},
     {0x00280808, "AT", "Image Data Location", ELEM_STATE_RETIRED},
     {0x00280818, "AT", "Image Data Location", ELEM_STATE_RETIRED},
     {0x00280828, "AT", "Image Data Location", ELEM_STATE_RETIRED},
@@ -4196,7 +4197,7 @@ TDicomDictionary dicom_dict[]=
     {0x60FF0800, "CS", "Overlay Code Label", ELEM_STATE_RETIRED},
     {0x60FF0802, "US", "Overlay Number of Tables", ELEM_STATE_RETIRED},
     {0x60FF0803, "AT", "Overlay Code Table Location", ELEM_STATE_RETIRED},
-    {0x60FF0804, "US", "Overlay Bits For Code Word", ELEM_STATE_RETIRED},
+    {0x60FF0804, "US", "Overlay Bits For Code uint16_t", ELEM_STATE_RETIRED},
     {0x60FF1001, "CS", "Overlay Activation Layer", ELEM_STATE_RETIRED},
     {0x60FF1100, "US", "Overlay Descriptor - Gray", ELEM_STATE_RETIRED},
     {0x60FF1101, "US", "Overlay Descriptor - Red", ELEM_STATE_RETIRED},
@@ -4249,7 +4250,7 @@ TDicomDictionary dicom_dict[]=
     {0x00000000, NULL, NULL }
 };
 
-WORD DicomDictionary::GetVersion()
+uint16_t DicomDictionary::GetVersion()
 {
     return DIC_VERSION;
 }
@@ -4259,7 +4260,7 @@ const char* DicomDictionary::GetLastUpdateFlag()
     return (char*)DIC_DATE;
 }
 
-int DicomDictionary::FindKeyIndex(const DWORD id)
+int32_t DicomDictionary::FindKeyIndex( const uint32_t id )
 {
     int     nCnt = 0;
 
@@ -4268,8 +4269,8 @@ int DicomDictionary::FindKeyIndex(const DWORD id)
         return -1;
     }
 
-    WORD    remasked = (id >> 16 ) & 0xFF00;
-    DWORD   rem_id   = id;
+    uint16_t remasked = ( id >> 16 ) & 0xFF00;
+    uint32_t rem_id   = id;
 
     if ( ( remasked == 0x5000 ) || ( remasked == 0x6000 ) )
     {
@@ -4287,9 +4288,9 @@ int DicomDictionary::FindKeyIndex(const DWORD id)
     return -1;
 }
 
-int DicomDictionary::FindKeyIndexFrom(const DWORD id, int idx)
+int32_t DicomDictionary::FindKeyIndexFrom(const uint32_t id, uint32_t idx )
 {
-    if( idx >= (int)sizeof ( dicom_dict ) )
+    if( idx >= (int)sizeof( dicom_dict ) )
         return -2;
 
     int nCnt = idx;
@@ -4310,9 +4311,9 @@ int DicomDictionary::FindKeyIndexFrom(const DWORD id, int idx)
     return -1;
 }
 
-WORD  DicomDictionary::GetVR(const DWORD id, bool* sameavailed )
+uint16_t  DicomDictionary::GetVR(const uint32_t id, bool* sameavailed )
 {
-    WORD   nRet    = 0;
+    uint16_t   nRet    = 0;
     int    nIndex  = FindKeyIndex(id);
 
     if( nIndex >= 0 )
@@ -4338,10 +4339,10 @@ WORD  DicomDictionary::GetVR(const DWORD id, bool* sameavailed )
     return nRet;
 }
 
-void DicomDictionary::GetVR(const DWORD id, void *pVR, bool* sameavailed)
+void DicomDictionary::GetVR(const uint32_t id, void *pVR, bool* sameavailed)
 {
     bool bRet = false;
-    WORD nRet = GetVR( id, &bRet );
+    uint16_t nRet = GetVR( id, &bRet );
 
     if( pVR != NULL )
     {
@@ -4354,9 +4355,9 @@ void DicomDictionary::GetVR(const DWORD id, void *pVR, bool* sameavailed)
     }
 }
 
-int DicomDictionary::GetElemState( const DWORD id )
+int32_t DicomDictionary::GetElemState( const uint32_t id )
 {
-    int     nIndex = FindKeyIndex(id);
+    int32_t nIndex = FindKeyIndex(id);
 
     if( nIndex >= 0 )
     {
@@ -4366,7 +4367,7 @@ int DicomDictionary::GetElemState( const DWORD id )
     return ELEM_STATE_UNKNWON;
 }
 
-int DicomDictionary::GetVRarray( const DWORD id, WORD**pVRarray )
+int DicomDictionary::GetVRarray( const uint32_t id, uint16_t**pVRarray )
 {
     if ( *pVRarray != NULL )
         return -1;
@@ -4376,7 +4377,7 @@ int DicomDictionary::GetVRarray( const DWORD id, WORD**pVRarray )
 
     while ( nIndex > 0 )
     {
-        *pVRarray = new WORD;
+        *pVRarray = new uint16_t;
         if ( *pVRarray != NULL )
         {
             if ( strlen ( dicom_dict[nIndex].vr ) > 0 )
@@ -4397,11 +4398,11 @@ int DicomDictionary::GetVRarray( const DWORD id, WORD**pVRarray )
     return nCount;
 }
 
-const char* DicomDictionary::GetMean(const DWORD id)
+const char* DicomDictionary::GetMean(const uint32_t id)
 {
-    int     nIndex = FindKeyIndex(id);
+    int32_t nIndex = FindKeyIndex( id );
 
-    if(nIndex >= 0)
+    if( nIndex >= 0 )
     {
         return dicom_dict[nIndex].mean;
     }

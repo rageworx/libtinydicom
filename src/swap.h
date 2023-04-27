@@ -4,8 +4,8 @@
 
 namespace DicomImageViewer
 {
-    unsigned short SwapWORD(unsigned short nWord);
-    unsigned long  SwapDWORD(unsigned long nDWord);
+    uint16_t SwapWORD(uint16_t nWord);
+    uint32_t SwapDWORD(uint32_t nDWord);
 }
 
 #endif /// of __SWAP_H__

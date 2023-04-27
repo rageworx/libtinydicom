@@ -9,12 +9,12 @@ namespace DicomImageViewer
 
     typedef struct _TagElement
     {
-        DWORD   id;
-        char    VRtype[2];
-        DWORD   size;
-        bool    alloced;
-        char    staticbuffer[MAX_STATICBUFFER_LENGTH];
-        void*   dynamicbuffer;
+        uint32_t   id;
+        uint8_t    VRtype[2];
+        uint32_t   size;
+        bool       alloced;
+        uint8_t    staticbuffer[MAX_STATICBUFFER_LENGTH];
+        uint8_t*   dynamicbuffer;
     }TagElement;
 }
 
