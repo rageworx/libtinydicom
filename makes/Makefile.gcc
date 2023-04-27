@@ -46,10 +46,10 @@ else
 	MOREOPT :=
 endif
 
-CFLAGS += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR)
+CFLAGS += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR) -Iinclude
 CFLAGS += $(DEFINEOPT) $(OPTIMIZEOPT) $(MOREOPT)
 
-all: prepare clean ${OUTDIR}/${OUTBIN}
+all: prepare ${OUTDIR}/${OUTBIN}
 
 debug: all
 

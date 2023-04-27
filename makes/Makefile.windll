@@ -33,10 +33,11 @@ DEFINEOPT += -DUNICODE -D_UNICODE
 OPTIMIZEOPT := -O3 -s
 MOREOPT := -mwindows
 
-CFLAGS = -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR) $(DEFINEOPT)
-LFLAGS = -static $(OPTIMIZEOPT) $(MOREOPT)
+CFLAGS += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR) -Iinclude
+CFLAGS += $(DEFINEOPT)
+LFLAGS += -static $(OPTIMIZEOPT) $(MOREOPT)
 
-all: prepare clean ${OUTDIR}/${OUTBIN}
+all: prepare ${OUTDIR}/${OUTBIN}
 
 prepare:
 	@mkdir -p ${OBJDIR}

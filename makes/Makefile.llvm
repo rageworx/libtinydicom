@@ -34,10 +34,10 @@ OBJS = $(SRCS:$(SOURCEDIR)/%.cpp=$(OBJDIR)/%.o)
 LOBJ = $(OBJDIR)/libdcm.o
 
 DEFINEOPT += -DLIB_EXPORT_ENABLE
-CFLAGS    += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR)
+CFLAGS    += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR) -Iinclude
 CFLAGS    += $(DEFINEOPT) $(ARCHOPT) $(MOREOPT)
 
-all: prepare clean ${OUTDIR}/${OUTBIN}
+all: prepare ${OUTDIR}/${OUTBIN}
 
 debug: all
 
