@@ -72,7 +72,7 @@ size_t TagStore::GetTagCount()
     return TagElements.size();
 }
 
-TagElement* TagStore::FindTagElement( uint32_t TagID)
+TagElement* TagStore::FindTagElement( uint32_t TagID )
 {
     if (TagID == 0)
         return NULL;
