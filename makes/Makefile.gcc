@@ -46,6 +46,7 @@ else
 	MOREOPT :=
 endif
 
+CFLAGS += -std=c++11
 CFLAGS += -I$(SOURCEDIR) -I$(LIBSRCDIR) -I$(RESDIR) -Iinclude
 CFLAGS += $(DEFINEOPT) $(OPTIMIZEOPT) $(MOREOPT)
 

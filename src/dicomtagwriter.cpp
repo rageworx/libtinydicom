@@ -81,7 +81,7 @@ bool TagWriter::writeString(string &str)
     return true;
 }
 
-bool TagWriter::writeBYTE(BYTE aByte)
+bool TagWriter::writeBYTE(uint8_t aByte)
 {
     if(!bFileCreated)
         return false;
