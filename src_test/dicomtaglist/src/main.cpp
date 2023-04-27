@@ -85,8 +85,6 @@ int main( int argc, char** argv )
                 }
                 printf( "\n" );
             }
-
-            DiscardElement( &pElem );
         }
         else
         {

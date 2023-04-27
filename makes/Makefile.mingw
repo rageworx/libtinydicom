@@ -25,7 +25,7 @@ INSTDIRH  = $(INSTDIR)/include
 
 ifeq (debug,$(firstword $(MAKECMDGOALS)))
 	OBJDIR := ./obj/Debug
-	OUTBIN := ./libtinydicomd.a
+	OUTBIN := libtinydicomd.a
 else
 	OBJDIR := ./obj/Release
 	OUTBIN := libtinydicom.a

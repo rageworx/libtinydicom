@@ -3,6 +3,8 @@ GXX=g++
 TARGET=dcmtlv
 
 CFLAGS += -std=c++11
+CFLAGS += -DDEBUG
+CFLAGS += -g3
 
 # Automatic detecting architecture.
 KRNL := $(shell uname -s)
@@ -29,7 +31,7 @@ else
     else
         LIBARCH = linux_$(ARCH)
     endif
-    OPTARCH += -fopenmp -s
+    OPTARCH += -fopenmp
 endif
 
 
@@ -39,7 +41,7 @@ CFLAGS += -DWIN_32_LEAN_AND_MEAN
 CFLAGS += -I$(TINYDICOM_PATH)
 
 LDFLAGS += -L$(TINYDICOM_PATH)
-LDFLAGS += -ltinydicom
+LDFLAGS += -ltinydicomd
 LDFLAGS += $(OPTLIBS)
 
 SRCS += src/main.cpp
