@@ -641,6 +641,19 @@ LIB_EXPORT const char* LTDNMSPC GetDicomMeaningA( uint32_t tagID )
     return DicomImageViewer::DicomDictionary::GetMean(tagID);
 }
 
+LIB_EXPORT const wchar_t* LTDNMSPC  GetMediaMimeW( const wchar_t* UID )
+{
+    const char* refstr = DicomImageViewer::DicomDictionary::GetMediaMimeFromUID( convertW2M(UID) );
+    if ( refstr != NULL )
+        return convertM2W( refstr );
+    return NULL;
+}
+
+LIB_EXPORT const char* LTDNMSPC GetMediaMimeA( const char* UID )
+{
+    return DicomImageViewer::DicomDictionary::GetMediaMimeFromUID( UID );
+}
+
 LIB_EXPORT bool LTDNMSPC NewElement( uint32_t tagID, DCMTagElement** pElement )
 {
     lastErrMsg.clear();

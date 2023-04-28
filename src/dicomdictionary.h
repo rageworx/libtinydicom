@@ -48,6 +48,7 @@ namespace DicomImageViewer
             static void         GetVR(const uint32_t id, void *pVR, bool* sameavailed = NULL );
             static int32_t      GetElemState( const uint32_t id );
             static int32_t      GetVRarray( const uint32_t id, uint16_t**pVRarray );
+            static const char*  GetMediaMimeFromUID( const char* UID );
     };
 }
 

@@ -5,6 +5,7 @@
 
 ## Introduce
  - A DICOM tag read/write library for using standard C++.
+ - Following DICOM stanadrd part of "Media Interchange/DICOM Basic File Service" of 2023b.
  - Related in DICOM tag file (.DCM) read and write library is too far to get free in light size. So I made this to read and write DCM files for free and tiny ! It is still prototype and need to be enhanced.
 
 ## Project target
@@ -22,6 +23,10 @@
  - Still making it keep updated for latest version, but too many VR and dictionaries may need more time for only myself.
 
 ## Updated news
+
+### 2023-04-28
+ - DICOM standard 2023b VR, Dictionary updated.
+ - DicomDictionary::GetMediaMimeFromUID() included.
 
 ### 2023-04-27
  - Removed `BYTE`, `WORD`, `DWORD` types, and then replaced to cstdint types.

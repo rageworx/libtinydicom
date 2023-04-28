@@ -100,6 +100,8 @@ LIB_EXPORT wchar_t*         GetLastErrMsg();
 LIB_EXPORT uint16_t         GetVR( uint32_t tagID );
 LIB_EXPORT const wchar_t*   GetDicomMeaningW( uint32_t tagID );
 LIB_EXPORT const char*      GetDicomMeaningA( uint32_t tagID );
+LIB_EXPORT const wchar_t*   GetMediaMimeW( const wchar_t* UID );
+LIB_EXPORT const char*      GetMediaMimeA( const char* UID );
 
 // -- tag create tool
 LIB_EXPORT bool             NewElement( uint32_t tagID, DCMTagElement** pElement );
