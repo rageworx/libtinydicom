@@ -88,7 +88,7 @@ int main( int argc, char** argv )
         }
         else
         {
-            printf( " * element [%03d] %S.\n", cnt+1, GetLastErrMsg() );
+            printf( "[%4d] error by %S.\n", cnt+1, GetLastErrMsg() );
         }
     }
 
