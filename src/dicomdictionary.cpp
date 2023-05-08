@@ -1626,8 +1626,7 @@ TDicomDictionary dicom_dict[] =
     {0x0018980D, "SQ", "Transducer Geometry Code Sequence"},
     {0x0018980E, "SQ", "Transducer Beam Steering Code Sequence"},
     {0x0018980F, "SQ", "Transducer Application Code Sequence"},
-    {0x00189810, "US", "Zero Velocity Pixel Value"}, /// US or SS
-    {0x00189810, "SS", "Zero Velocity Pixel Value"}, /// US or SS
+    {0x00189810, "US|SS", "Zero Velocity Pixel Value"}, /// US or SS
 
     {0x00189900, "LO", "Reference Location Label"},
     {0x00189901, "UT", "Reference Location Description"},
@@ -1960,8 +1959,7 @@ TDicomDictionary dicom_dict[] =
     {0x00221443, "SQ", "Ophthalmic Thickness Mapping Normals Sequence"},
     {0x00221445, "SQ", "Retinal Thickness Definition Code Sequence"},
     {0x00221450, "SQ", "Pixel Value Mapping toCoded Concept Sequence"},
-    {0x00221452, "US", "Mapped Pixel Value"}, /// US or SS
-    {0x00221452, "SS", "Mapped Pixel Value"}, /// US or SS
+    {0x00221452, "US|SS", "Mapped Pixel Value"}, /// US or SS
     {0x00221454, "LO", "Pixel Value Mapping Explanation"},
     {0x00221458, "SQ", "Ophthalmic Thickness MapQuality Threshold Sequence"},
     {0x00221460, "FL", "Ophthalmic Thickness MapThreshold Quality Rating"},
@@ -2145,8 +2143,7 @@ TDicomDictionary dicom_dict[] =
     {0x00280068, "US", "Repeat Interval", ELEM_STATE_RETIRED},
     {0x00280069, "US", "Bits Grouped", ELEM_STATE_RETIRED},
     {0x00280070, "US", "Perimeter Table", ELEM_STATE_RETIRED},
-    {0x00280071, "US", "Perimeter Value", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00280071, "SS", "Perimeter Value", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00280071, "US|SS", "Perimeter Value", ELEM_STATE_RETIRED}, /// US or SS
     {0x00280080, "US", "Predictor Rows", ELEM_STATE_RETIRED},
     {0x00280081, "US", "Predictor Columns", ELEM_STATE_RETIRED},
     {0x00280082, "US", "Predictor Constants", ELEM_STATE_RETIRED},
@@ -2159,26 +2156,16 @@ TDicomDictionary dicom_dict[] =
     {0x00280101, "US", "Bits Stored"},
     {0x00280102, "US", "High Bit"},
     {0x00280103, "US", "Pixel Representation"},
-    {0x00280104, "US", "Smallest Valid Pixel Value", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00280104, "SS", "Smallest Valid Pixel Value", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00280105, "US", "Largest Valid Pixel Value", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00280105, "SS", "Largest Valid Pixel Value", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00280106, "US", "Smallest Image Pixel Value"}, /// US or SS
-    {0x00280106, "SS", "Smallest Image Pixel Value"}, /// US or SS
-    {0x00280107, "US", "Largest Image Pixel Value"}, /// US or SS
-    {0x00280107, "SS", "Largest Image Pixel Value"}, /// US or SS
-    {0x00280108, "US", "Smallest Pixel Value in Series"}, /// US or SS
-    {0x00280108, "SS", "Smallest Pixel Value in Series"}, /// US or SS
-    {0x00280109, "US", "Largest Pixel Value in Series"}, /// US or SS
-    {0x00280109, "SS", "Largest Pixel Value in Series"}, /// US or SS
-    {0x00200110, "US", "Smallest Image Pixel Value in​ Plane​", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00200110, "SS", "Smallest Image Pixel Value in​ Plane​", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00200111, "US", "Largest Image Pixel Value in​ Plane​", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00200111, "SS", "Largest Image Pixel Value in​ Plane​", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00280120, "US", "Pixel Padding Value"}, /// US or SS
-    {0x00280120, "SS", "Pixel Padding Value"}, /// US or SS
-    {0x00280121, "US", "Pixel Padding Range Limit"}, /// US or SS
-    {0x00280121, "SS", "Pixel Padding Range Limit"}, /// US or SS
+    {0x00280104, "US|SS", "Smallest Valid Pixel Value", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00280105, "US|SS", "Largest Valid Pixel Value", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00280106, "US|SS", "Smallest Image Pixel Value"}, /// US or SS
+    {0x00280107, "US|SS", "Largest Image Pixel Value"}, /// US or SS
+    {0x00280108, "US|SS", "Smallest Pixel Value in Series"}, /// US or SS
+    {0x00280109, "US|SS", "Largest Pixel Value in Series"}, /// US or SS
+    {0x00200110, "US|SS", "Smallest Image Pixel Value in​ Plane​", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00200111, "US|SS", "Largest Image Pixel Value in​ Plane​", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00280120, "US|SS", "Pixel Padding Value"}, /// US or SS
+    {0x00280121, "US|SS", "Pixel Padding Range Limit"}, /// US or SS
     {0x00280122, "FL", "Float Pixel Padding Value"},
     {0x00280123, "FD", "Double Float Pixel PaddingValue"},
     {0x00280124, "FL", "Float Pixel Padding RangeLimit"},
@@ -2363,27 +2350,18 @@ TDicomDictionary dicom_dict[] =
     {0x00281080, "CS", "Gray Scale", ELEM_STATE_RETIRED},
     {0x00281090, "CS", "Recommended Viewing Mode"},
 
-    {0x00281100, "US", "Gray Lookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00281100, "SS", "Gray Lookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00281101, "US", "Red Palette Color Lookup Table Descriptor"}, /// US or SS
-    {0x00281101, "SS", "Red Palette Color Lookup Table Descriptor"}, /// US or SS
-    {0x00281102, "US", "Green Palette Color Lookup Table Descriptor"}, /// US or SS
-    {0x00281102, "SS", "Green Palette Color Lookup Table Descriptor"}, /// US or SS
-    {0x00281103, "US", "Blue Palette Color Lookup Table Descriptor"}, /// US or SS
-    {0x00281103, "SS", "Blue Palette Color Lookup Table Descriptor"}, /// US or SS
+    {0x00281100, "US|SS", "Gray Lookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00281101, "US|SS", "Red Palette Color Lookup Table Descriptor"}, /// US or SS
+    {0x00281102, "US|SS", "Green Palette Color Lookup Table Descriptor"}, /// US or SS
+    {0x00281103, "US|SS", "Blue Palette Color Lookup Table Descriptor"}, /// US or SS
     {0x00281104, "US", "Alpha Palette Color Lookup Table Descriptor"},
 
-    {0x00281111, "US", "Large Red Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00281111, "SS", "Large Red Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00281112, "US", "Large Green Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00281112, "SS", "Large Green Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00281113, "US", "Large Blue Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
-    {0x00281113, "SS", "Large Blue Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00281111, "US|SS", "Large Red Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00281112, "US|SS", "Large Green Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
+    {0x00281113, "US|SS", "Large Blue Palette ColorLookup Table Descriptor", ELEM_STATE_RETIRED}, /// US or SS
     {0x00281199, "UI", "Palette Color Lookup TableUID"},
 
-    {0x00281200, "US", "Gray Lookup Table Data", ELEM_STATE_RETIRED}, /// US or SS or OW
-    {0x00281200, "SS", "Gray Lookup Table Data", ELEM_STATE_RETIRED}, /// US or SS or OW
-    {0x00281200, "OW", "Gray Lookup Table Data", ELEM_STATE_RETIRED}, /// US or SS or OW
+    {0x00281200, "US|SS|OW", "Gray Lookup Table Data", ELEM_STATE_RETIRED}, /// US or SS or OW
     {0x00281201, "OW", "Red Palette Color Lookup Table Data"}, /// was VR==US
     {0x00281202, "OW", "Green Palette Color Lookup Table Data"}, /// was VR==US
     {0x00281203, "OW", "Blue Palette Color Lookup Table Data"}, /// was VR==US
@@ -2426,12 +2404,10 @@ TDicomDictionary dicom_dict[] =
 
     {0x00283000, "SQ", "Modality LUT Sequence"},
     {0x00283001, "SQ", "Variable Modality LUT Sequence"},
-    {0x00283002, "US", "LUT Descriptor"}, /// US or SS
-    {0x00283002, "SS", "LUT Descriptor"}, /// US or SS
+    {0x00283002, "US|SS", "LUT Descriptor"}, /// US or SS
     {0x00283003, "LO", "LUT Explanation"},
     {0x00283004, "LO", "Modality LUT Type"},
-    {0x00283006, "US", "LUT Data"}, /// US or OW
-    {0x00283006, "OW", "LUT Data"}, /// US or OW
+    {0x00283006, "US|OW", "LUT Data"}, /// US or OW
     {0x00283010, "SQ", "VOI LUT Sequence"},
 
     {0x00284000, "LT", "Image Presentation Comments", ELEM_STATE_RETIRED},
@@ -2882,13 +2858,11 @@ TDicomDictionary dicom_dict[] =
     {0x00409096, "SQ", "Real World Value Mapping​ Sequence​"},
     {0x00409098, "SQ", "Pixel Value Mapping Code​ Sequence​"},
     {0x00409210, "SH", "LUT Label"},
-    {0x00409211, "US", "Real World Value Last Value​ Mapped​"}, /// US or SS
-    {0x00409211, "SS", "Real World Value Last Value​ Mapped​"}, /// US or SS
+    {0x00409211, "US|SS", "Real World Value Last Value​ Mapped​"}, /// US or SS
     {0x00409212, "FD", "​Real World Value LUT Data"},
     {0x00409213, "FD", "Double Float Real World Value​ Last Value Mapped​"},
     {0x00409214, "FD", "Double Float Real World Value​ First Value Mapped​"},
-    {0x00409216, "US", "Real World Value First Value​ Mapped​"}, /// US or SS
-    {0x00409216, "SS", "​Real World Value First Value​ Mapped"}, /// US or SS
+    {0x00409216, "US|SS", "Real World Value First Value​ Mapped​"}, /// US or SS
     {0x00409220, "SQ", "Quantity Definition Sequence​"},
     {0x00409224, "FD", "Real World Value Intercept"},
     {0x00409225, "FD", "Real World Value Slope"},
@@ -3354,10 +3328,8 @@ TDicomDictionary dicom_dict[] =
     // Group Tag 0060 ----------------------------------------------------------
     {0x00603000, "SQ", "Histogram Sequence​"},
     {0x00603002, "US", "Histogram Number of Bins"},
-    {0x00603004, "US", "Histogram First Bin Value"}, /// US or SS
-    {0x00603004, "SS", "Histogram First Bin Value"}, /// US or SS
-    {0x00603006, "US", "Histogram Last Bin Value"}, /// US or SS
-    {0x00603006, "SS", "Histogram Last Bin Value"}, /// US or SS
+    {0x00603004, "US|SS", "Histogram First Bin Value"}, /// US or SS
+    {0x00603006, "US|SS", "Histogram Last Bin Value"}, /// US or SS
     {0x00603008, "US", "Histogram Bin Width"},
     {0x00603010, "LO", "Histogram Explanation"},
     {0x00603020, "UL", "Histogram Data​"},
@@ -3775,194 +3747,451 @@ TDicomDictionary dicom_dict[] =
 
     // -------------------------------------------------------------------------
     // Group Tag 0072 ----------------------------------------------------------
-    {0x00720002, "SH", ""},
-    {0x00720004, "LO", ""},
-    {0x00720006, "CS", ""},
-    {0x00720008, "LO", ""},
-    {0x0072000A, "DT", ""},
-    {0x0072000C, "SQ", ""},
-    {0x0072000E, "SQ", ""},
-    {0x00720010, "LO", ""},
-    {0x00720012, "SQ", ""},
-    {0x00720014, "US", ""},
-    {0x00720020, "SQ", ""},
-    {0x00720022, "SQ", ""},
-    {0x00720024, "CS", ""},
-    {0x00720026, "AT", ""},
-    {0x00720028, "US", ""},
-    {0x00720030, "SQ", ""},
-    {0x00720032, "US", ""},
-    {0x00720034, "CS", ""},
-    {0x00720038, "US", ""},
-    {0x0072003A, "CS", ""},
-    {0x0072003C, "SS", ""},
-    {0x0072003E, "SQ", ""},
-    {0x00720040, "LO", ""},
-    {0x00720050, "CS", ""},
-    {0x00720052, "AT", ""},
-    {0x00720054, "LO", ""},
-    {0x00720056, "LO", ""},
-    {0x0072005E, "AE", ""},
-    {0x0072005F, "AS", ""},
-    {0x00720060, "AT", ""},
-    {0x00720061, "DA", ""},
-    {0x00720062, "CS", ""},
-    {0x00720063, "DT", ""},
-    {0x00720064, "IS", ""},
-    {0x00720065, "OB", ""},
-    {0x00720066, "LO", ""},
-    {0x00720067, "OF", ""},
-    {0x00720068, "LT", ""},
-    {0x00720069, "OW", ""},
-    {0x0072006A, "PN", ""},
-    {0x0072006B, "TM", ""},
-    {0x0072006C, "SH", ""},
-    {0x0072006D, "UN", ""},
-    {0x0072006E, "ST", ""},
-    {0x0072006F, "UC", ""},
-    {0x00720070, "UT", ""},
-    {0x00720071, "UR", ""},
-    {0x00720072, "DS", ""},
-    {0x00720073, "OD", ""},
-    {0x00720074, "FD", ""},
-    {0x00720075, "OL", ""},
-    {0x00720076, "FL", ""},
-    {0x00720078, "UL", ""},
-    {0x0072007A, "US", ""},
-    {0x0072007C, "SL", ""},
-    {0x0072007E, "SS", ""},
-    {0x0072007F, "UI", ""},
-    {0x00720080, "SQ", ""},
+    {0x00720002, "SH", "Hanging Protocol Name"},
+    {0x00720004, "LO", "Hanging Protocol Description​ "},
+    {0x00720006, "CS", "Hanging Protocol Level"},
+    {0x00720008, "LO", "Hanging Protocol Creator​"},
+    {0x0072000A, "DT", "Hanging Protocol Creation Date Time​"},
+    {0x0072000C, "SQ", "Hanging Protocol Definition​ Sequence​"},
+    {0x0072000E, "SQ", "Hanging Protocol User​ Identification Code Sequence​"},
+    {0x00720010, "LO", "Hanging Protocol User Group​ Name​"},
+    {0x00720012, "SQ", "Source Hanging Protocol​ Sequence​"},
+    {0x00720014, "US", "Number of Priors Referenced​"},
+    {0x00720020, "SQ", "Image Sets Sequence​"},
+    {0x00720022, "SQ", "Image Set Selector Sequence​"},
+    {0x00720024, "CS", "Image Set Selector Usage Flag​"},
+    {0x00720026, "AT", "Selector Attribute​"},
+    {0x00720028, "US", "Selector Value Number"},
+    {0x00720030, "SQ", "Time Based Image Sets​ Sequence​"},
+    {0x00720032, "US", "Image Set Number​"},
+    {0x00720034, "CS", "​Image Set Selector Category"},
+    {0x00720038, "US", "Relative Time​"},
+    {0x0072003A, "CS", "Relative Time Units"},
+    {0x0072003C, "SS", "Abstract Prior Value​"},
+    {0x0072003E, "SQ", "Abstract Prior Code Sequence​"},
+    {0x00720040, "LO", "Image Set Label"},
+    {0x00720050, "CS", "Selector Attribute VR"},
+    {0x00720052, "AT", "Selector Sequence Pointer​"},
+    {0x00720054, "LO", "Selector Sequence Pointer​ Private Creator​"},
+    {0x00720056, "LO", "Selector Attribute Private Creator​"},
+    {0x0072005E, "AE", "Selector AE Value​"},
+    {0x0072005F, "AS", "Selector AS Value"},
+    {0x00720060, "AT", "Selector AT Value​"},
+    {0x00720061, "DA", "Selector DA Value​"},
+    {0x00720062, "CS", "Selector CS Value"},
+    {0x00720063, "DT", "Selector DT Value"},
+    {0x00720064, "IS", "Selector IS Value"},
+    {0x00720065, "OB", "Selector OB Value"},
+    {0x00720066, "LO", "Selector LO Value"},
+    {0x00720067, "OF", "Selector OF Value​"},
+    {0x00720068, "LT", "Selector LT Value"},
+    {0x00720069, "OW", "Selector OW Value"},
+    {0x0072006A, "PN", "Selector PN Value​"},
+    {0x0072006B, "TM", "Selector TM Value"},
+    {0x0072006C, "SH", "Selector SH Value"},
+    {0x0072006D, "UN", "Selector UN Value"},
+    {0x0072006E, "ST", "Selector ST Value"},
+    {0x0072006F, "UC", "Selector UC Value"},
+    {0x00720070, "UT", "Selector UT Value"},
+    {0x00720071, "UR", "Selector UR Value"},
+    {0x00720072, "DS", "Selector DS Value"},
+    {0x00720073, "OD", "Selector OD Value"},
+    {0x00720074, "FD", "Selector FD Value"},
+    {0x00720075, "OL", "Selector OL Value"},
+    {0x00720076, "FL", "Selector FL Value"},
+    {0x00720078, "UL", "Selector UL Value"},
+    {0x0072007A, "US", "Selector US Value"},
+    {0x0072007C, "SL", "Selector SL Value"},
+    {0x0072007E, "SS", "Selector SS Value"},
+    {0x0072007F, "UI", "Selector UI Value"},
+    {0x00720080, "SQ", "Selector Code Sequence Value"},
+    {0x00720081, "OV", "Selector OV Value"},
+    {0x00720082, "SV", "Selector SV Value"},
+    {0x00720083, "UV", "Selector UV Value"},
 
-    {0x00720100, "US", ""},
-    {0x00720102, "SQ", ""},
-    {0x00720104, "US", ""},
-    {0x00720106, "US", ""},
-    {0x00720108, "FD", ""},
-    {0x0072010A, "US", ""},
-    {0x0072010C, "US", ""},
-    {0x0072010E, "US", ""},
+    {0x00720100, "US", "Number of Screens"},
+    {0x00720102, "SQ", "Nominal Screen Definition​ Sequence​"},
+    {0x00720104, "US", "Number of Vertical Pixels"},
+    {0x00720106, "US", "Number of Horizontal Pixels"},
+    {0x00720108, "FD", "Display Environment Spatial​ Position​"},
+    {0x0072010A, "US", "Screen Minimum Grayscale Bit​ Depth​"},
+    {0x0072010C, "US", "Screen Minimum Color Bit Depth​"},
+    {0x0072010E, "US", "Application Maximum Repaint​ Time​"},
 
-    {0x00720200, "SQ", ""},
-    {0x00720202, "US", ""},
-    {0x00720203, "LO", ""},
-    {0x00720204, "US", ""},
-    {0x00720206, "LO", ""},
-    {0x00720208, "CS", ""},
-    {0x00720210, "SQ", ""},
+    {0x00720200, "SQ", "Display Sets Sequence"},
+    {0x00720202, "US", "Display Set Number"},
+    {0x00720203, "LO", "Display Set Label​"},
+    {0x00720204, "US", "Display Set Presentation Group"},
+    {0x00720206, "LO", "Display Set Presentation Group Description​"},
+    {0x00720208, "CS", "Partial Data Display Handling"},
+    {0x00720210, "SQ", "Synchronized Scrolling​ Sequence​"},
+    {0x00720212, "US", "Display Set Scrolling Group​ "},
+    {0x00720214, "SQ", "Navigation Indicator Sequence​"},
+    {0x00720216, "US", "Navigation Display Set"},
+    {0x00720218, "US", "Reference Display Sets"},
+
+    {0x00720300, "SQ", "Image Boxes Sequence" },
+    {0x00720302, "US", "Image Box Number" },
+    {0x00720304, "CS", "Image Box Layout Type" },
+    {0x00720306, "US", "Image Box Tile Horizontal​ Dimension​" },
+    {0x00720308, "US", "Image Box Tile Vertical​ Dimension​" },
+    {0x00720310, "CS", "Image Box Scroll Direction" },
+    {0x00720312, "CS", "Image Box Small Scroll Type​" },
+    {0x00720314, "US", "Image Box Small Scroll Amount​" },
+    {0x00720316, "CS", "Image Box Large Scroll Type​" },
+    {0x00720318, "US", "Image Box Large Scroll Amount​" },
+    {0x00720320, "US", "Image Box Overlap Priority" },
+    {0x00720330, "FD", "Cine Relative to Real-Time" },
+
+    {0x00720400, "SQ", "Filter Operations Sequence" },
+    {0x00720402, "CS", "Filter-by Category​" },
+    {0x00720404, "CS", "Filter-by Attribute Presence" },
+    {0x00720406, "CS", "Filter-by Operator​" },
+    {0x00720420, "US", "Structured Display Background CIELab Value​" },
+    {0x00720421, "US", "Empty Image Box CIELab Value​" },
+    {0x00720422, "SQ", "Structured Display Image Box​ Sequence​" },
+    {0x00720424, "SQ", "Structured Display Text Box​ Sequence​" },
+    {0x00720427, "SQ", "Referenced First Frame​ Sequence​" },
+    {0x00720430, "SQ", "Image Box Synchronization​ Sequence​" },
+    {0x00720432, "US", "Synchronized Image Box List​" },
+    {0x00720432, "CS", "Type of Synchronization​ " },
+
+    {0x00720500, "CS", "Blending Operation Type" },
+    {0x00720510, "CS", "Reformatting Operation Type" },
+    {0x00720512, "FD", "Reformatting Thickness" },
+    {0x00720514, "FD", "Reformatting Interval" },
+    {0x00720516, "CS", "Reformatting Operation Initial​ View Direction​" },
+    {0x00720520, "CS", "3D Rendering Type​" },
+
+    {0x00720600, "SQ", "Sorting Operations Sequence" },
+    {0x00720602, "CS", "Sort-by Category" },
+    {0x00720604, "CS", "Sorting Direction​" },
+
+    {0x00720700, "CS", "Display Set Patient Orientation​" },
+    {0x00720702, "CS", "VOI Type​" },
+    {0x00720704, "CS", "Pseudo-Color Type" },
+    {0x00720705, "CS", "Pseudo-Color Palette Instance​ Reference Sequence​" },
+    {0x00720706, "CS", "Show Grayscale Inverted​" },
+    {0x00720710, "CS", "Show Image True Size Flag" },
+    {0x00720712, "CS", "Show Graphic Annotation Flag​" },
+    {0x00720714, "CS", "Show Patient Demographics Flag" },
+    {0x00720716, "CS", "Show Acquisition Techniques​ Flag​" },
+    {0x00720717, "CS", "Display Set Horizontal​ Justification​" },
+    {0x00720718, "CS", "Display Set Vertical Justification​" },
+    {0x00720720, "FD", "Continuation Start Meterset" },
+    {0x00720721, "FD", "Continuation End Meterset" },
 
     // -------------------------------------------------------------------------
     // Group Tag 0074 ----------------------------------------------------------
-    {0x00740120, "FD", ""},
-    {0x00740121, "FD", ""},
+    {0x00740120, "FD", "Continuation Start Meterset"},
+    {0x00740121, "FD", "Continuation End Meterset"},
 
-    {0x00741000, "CS", ""},
-    {0x00741002, "SQ", ""},
-    {0x00741004, "DS", ""},
-    {0x00741006, "ST", ""},
-    {0x00741007, "SQ", ""},
-    {0x00741008, "SQ", ""},
-    {0x0074100A, "UR", ""},
-    {0x0074100C, "LO", ""},
-    {0x0074100E, "SQ", ""},
-    {0x00741020, "SQ", ""},
-    {0x00741022, "CS", ""},
-    {0x00741024, "IS", "", ELEM_STATE_RETIRED},
-    {0x00741025, "CS", ""},
-    {0x00741026, "FD", ""},
-    {0x00741027, "FD", ""},
-    {0x00741028, "FD", ""},
-    {0x0074102A, "FD", ""},
-    {0x0074102B, "FD", ""},
-    {0x0074102C, "FD", ""},
-    {0x0074102D, "FD", ""},
-    {0x00741030, "SQ", ""},
-    {0x00741032, "CS", ""},
-    {0x00741034, "CS", ""},
-    {0x00741036, "CS", ""},
-    {0x00741038, "DS", "", ELEM_STATE_RETIRED},
-    {0x0074103A, "DS", "", ELEM_STATE_RETIRED},
-    {0x00741040, "SQ", ""},
-    {0x00741042, "SQ", ""},
-    {0x00741044, "SQ", ""},
-    {0x00741046, "SQ", ""},
-    {0x00741048, "SQ", ""},
-    {0x0074104A, "SQ", ""},
-    {0x0074104C, "SQ", ""},
-    {0x0074104E, "SQ", ""},
-    {0x00741050, "SQ", ""},
-    {0x00741052, "AT", ""},
-    {0x00741054, "UL", ""},
-    {0x00741056, "LO", ""},
-    {0x00741057, "IS", ""},
+    {0x00741000, "CS", "Procedure Step State"},
+    {0x00741002, "SQ", "Procedure Step Progress​ Information Sequence​"},
+    {0x00741004, "DS", "Procedure Step Progress​"},
+    {0x00741006, "ST", "Procedure Step Progress​ Description​"},
+    {0x00741007, "SQ", "Procedure Step Progress​ Parameters Sequence​"},
+    {0x00741008, "SQ", "Procedure Step Communications URI Sequence​"},
+    {0x0074100A, "UR", "Contact URI"},
+    {0x0074100C, "LO", "Contact Display Name"},
+    {0x0074100E, "SQ", "Procedure Step Discontinuation​ Reason Code Sequence​"},
+    {0x00741020, "SQ", "Beam Task Sequence​"},
+    {0x00741022, "CS", "Beam Task Type​"},
+    {0x00741024, "IS", "Beam Order Index (Trial)", ELEM_STATE_RETIRED},
+    {0x00741025, "CS", "Autosequence Flag"},
+    {0x00741026, "FD", "Table Top Vertical Adjusted​ Position​"},
+    {0x00741027, "FD", "Table Top Longitudinal Adjusted Position​"},
+    {0x00741028, "FD", "Table Top Lateral Adjusted​ Position​"},
+    {0x0074102A, "FD", "Patient Support Adjusted Angle​"},
+    {0x0074102B, "FD", "Table Top Eccentric Adjusted​ Angle​"},
+    {0x0074102C, "FD", "Table Top Pitch Adjusted Angle​"},
+    {0x0074102D, "FD", "Table Top Roll Adjusted Angle​"},
+    {0x00741030, "SQ", "Delivery Verification Image​ Sequence​"},
+    {0x00741032, "CS", "Verification Image Timing"},
+    {0x00741034, "CS", "Double Exposure Flag"},
+    {0x00741036, "CS", "Double Exposure Ordering"},
+    {0x00741038, "DS", "Double Exposure Meterset (Trial)", ELEM_STATE_RETIRED},
+    {0x0074103A, "DS", "Double Exposure Field Delta​ (Trial)​", ELEM_STATE_RETIRED},
+    {0x00741040, "SQ", "Related Reference RT Image​ Sequence​"},
+    {0x00741042, "SQ", "General Machine Verification​ Sequence​"},
+    {0x00741044, "SQ", "Conventional Machine​ Verification Sequence​"},
+    {0x00741046, "SQ", "Ion Machine Verification​ Sequence​"},
+    {0x00741048, "SQ", "Failed Attributes Sequence"},
+    {0x0074104A, "SQ", "Overridden Attributes Sequence​"},
+    {0x0074104C, "SQ", "Conventional Control Point​ Verification Sequence​"},
+    {0x0074104E, "SQ", "Ion Control Point Verification​ Sequence​"},
+    {0x00741050, "SQ", "Attribute Occurrence Sequence​"},
+    {0x00741052, "AT", "Attribute Occurrence Pointer"},
+    {0x00741054, "UL", "Attribute Item Selector​"},
+    {0x00741056, "LO", "Attribute Occurrence Private​ Creator​"},
+    {0x00741057, "IS", "Selector Sequence Pointer Items​"},
 
-    {0x00741200, "CS", ""},
-    {0x00741202, "LO", ""},
-    {0x00741204, "LO", ""},
-    {0x00741210, "SQ", ""},
-    {0x00741212, "SQ", ""},
-    {0x00741216, "SQ", ""},
-    {0x00741220, "SQ", "", ELEM_STATE_RETIRED},
-    {0x00741222, "LO", "", ELEM_STATE_RETIRED},
-    {0x00741224, "SQ", ""},
-    {0x00741230, "LO", ""},
-    {0x00741234, "AE", ""},
-    {0x00741236, "AE", ""},
-    {0x00741238, "LT", ""},
-    {0x00741242, "CS", ""},
-    {0x00741244, "CS", ""},
-    {0x00741246, "CS", ""},
+    {0x00741200, "CS", "Scheduled Procedure Step​ Priority​"},
+    {0x00741202, "LO", "Worklist Label"},
+    {0x00741204, "LO", "Procedure Step Label"},
+    {0x00741210, "SQ", "Scheduled Processing​ Parameters Sequence​"},
+    {0x00741212, "SQ", "Performed Processing​ Parameters Sequence​"},
+    {0x00741216, "SQ", "Unified Procedure Step​ Performed Procedure Sequence"},
+    {0x00741220, "SQ", "Related Procedure Step​ Sequence​", ELEM_STATE_RETIRED},
+    {0x00741222, "LO", "Procedure Step Relationship​ Type​", ELEM_STATE_RETIRED},
+    {0x00741224, "SQ", "Replaced Procedure Step​ Sequence​"},
+    {0x00741230, "LO", "Deletion Lock"},
+    {0x00741234, "AE", "Receiving AE"},
+    {0x00741236, "AE", "Requesting AE"},
+    {0x00741238, "LT", "Reason for Cancellation"},
+    {0x00741242, "CS", "SCP Status"},
+    {0x00741244, "CS", "Subscription List Status"},
+    {0x00741246, "CS", "Unified Procedure Step List​ Status​"},
 
-    {0x00741324, "UL", ""},
-    {0x00741338, "FD", ""},
-    {0x0074133A, "FD", ""},
+    {0x00741324, "UL", "Beam Order Index"},
+    {0x00741338, "FD", "Double Exposure Meterset"},
+    {0x0074133A, "FD", "Double Exposure Field Delta"},
 
-    {0x00741401, "SQ", ""},
-    {0x00741402, "DS", ""},
-    {0x00741403, "DS", ""},
-    {0x00741404, "IS", ""},
-    {0x00741405, "SQ", ""},
-    {0x00741406, "IS", ""},
-    {0x00741407, "DS", ""},
-    {0x00741408, "DS", ""},
-    {0x00741409, "SQ", ""},
-    {0x0074140A, "CS", ""},
-    {0x0074140B, "LO", ""},
-    {0x0074140C, "IS", ""},
-    {0x0074140D, "SQ", ""},
-    {0x0074140E, "SQ", ""},
+    {0x00741401, "SQ", "Brachy Task Sequence"},
+    {0x00741402, "DS", "Continuation Start Total​ Reference Air Kerma​"},
+    {0x00741403, "DS", "Continuation End Total​ Reference Air Kerma​"},
+    {0x00741404, "IS", "Continuation Pulse Number"},
+    {0x00741405, "SQ", "Channel Delivery Order​ Sequence​"},
+    {0x00741406, "IS", "Referenced Channel Number​"},
+    {0x00741407, "DS", "Start Cumulative Time Weight​"},
+    {0x00741408, "DS", "End Cumulative Time Weight"},
+    {0x00741409, "SQ", "Omitted Channel Sequence"},
+    {0x0074140A, "CS", "Reason for Channel Omission​"},
+    {0x0074140B, "LO", "Reason for Channel Omission Description​"},
+    {0x0074140C, "IS", "Channel Delivery Order Index​"},
+    {0x0074140D, "SQ", "Channel Delivery Continuation​ Sequence​"},
+    {0x0074140E, "SQ", "Omitted Application Setup​ Sequence​"},
 
     // -------------------------------------------------------------------------
     // Group Tag 0076 ----------------------------------------------------------
 
-    {0x00760001, "LO", ""},
+    {0x00760001, "LO", "Implant Assembly Template​ Name​"},
+    {0x00760003, "LO", "Implant Assembly Template​ Issuer​"},
+    {0x00760006, "LO", "Implant Assembly Template​ Version​"},
+    {0x00760008, "SQ", "Replaced Implant Assembly​ Template Sequence​"},
+    {0x0076000A, "CS", "Implant Assembly Template Type​"},
+    {0x0076000C, "SQ", "Original Implant Assembly​ Template Sequence​"},
+    {0x0076000E, "SQ", "Derivation Implant Assembly​ Template Sequence​"},
+    {0x00760010, "SQ", "Implant Assembly Template​ Target Anatomy Sequence​"},
+    {0x00760020, "SQ", "Procedure Type Code Sequence​"},
+    {0x00760030, "LO", "Surgical Technique​"},
+    {0x00760032, "SQ", "Component Types Sequence​"},
+    {0x00760034, "SQ", "Component Type Code​ Sequence​"},
+    {0x00760036, "CS", "Exclusive Component Type"},
+    {0x00760038, "CS", "Mandatory Component Type"},
+    {0x00760040, "SQ", "Component Sequence"},
+    {0x00760055, "US", "Component ID​"},
+    {0x00760060, "SQ", "Component Assembly Sequence"},
+    {0x00760070, "US", "Component 1 Referenced ID"},
+    {0x00760080, "US", "Component 1 Referenced Mating Feature Set ID​"},
+    {0x00760090, "US", "Component 1 Referenced Mating Feature ID​"},
+    {0x007600A0, "US", "Component 2 Referenced ID"},
+    {0x007600B0, "US", "Component 2 Referenced Mating Feature Set ID​"},
+    {0x007600C0, "US", "Component 2 Referenced Mating Feature ID​"},
 
     // -------------------------------------------------------------------------
     // Group Tag 0078 ----------------------------------------------------------
+    {0x00780001, "LO", "Implant Template Group Name​"},
+    {0x00780010, "ST", "Implant Template Group​ Description​"},
+    {0x00780020, "LO", "Implant Template Group Issuer​"},
+    {0x00780024, "LO", "Implant Template Group Version​"},
+    {0x00780026, "SQ", "Replaced Implant Template​ Group Sequence​"},
+    {0x00780028, "SQ", "Implant Template Group Target Anatomy Sequence​"},
+    {0x0078002A, "SQ", "Implant Template Group​ Members Sequence​"},
+    {0x0078002E, "US", "Implant Template Group Member​ ID​"},
+    {0x00780050, "FD", "3D Implant Template Group​ Member Matching Point​"},
+    {0x00780060, "FD", "3D Implant Template Group​ Member Matching Axes​"},
+    {0x00780070, "SQ", "Implant Template Group Member Matching 2D Coordinates​ Sequence​"},
+    {0x00780090, "FD", "2D Implant Template Group​ Member Matching Point​"},
+    {0x007800A0, "FD", "2D Implant Template Group​ Member Matching Axes​"},
+    {0x007800B0, "SQ", "Implant Template Group​ Variation Dimension Sequence"},
+    {0x007800B2, "LO", "Implant Template Group​ Variation Dimension Name​"},
+    {0x007800B4, "SQ", "Implant Template Group​ Variation Dimension Rank​ Sequence​"},
+    {0x007800B6, "US", "Referenced Implant Template​ Group Member ID​"},
+    {0x007800B8, "US", "Implant Template Group​ Variation Dimension Rank​"},
 
     // -------------------------------------------------------------------------
     // Group Tag 0080 ----------------------------------------------------------
+    {0x00800001, "SQ", "Surface Scan Acquisition Type​ Code Sequence​"},
+    {0x00800002, "SQ", "Surface Scan Mode Code​ Sequence​"},
+    {0x00800003, "SQ", "Registration Method Code​ Sequence​"},
+    {0x00800004, "FD", "Shot Duration Time"},
+    {0x00800005, "FD", "Shot Offset Time"},
+    {0x00800006, "US", "Surface Point Presentation Value​ Data​"},
+    {0x00800007, "US", "Surface Point Color CIELab​ Value Data​"},
+    {0x00800008, "SQ", "UV Mapping Sequence"},
+    {0x00800009, "SH", "Texture Label"},
+    {0x00800010, "OF", "U Value Data​"},
+    {0x00800011, "OF", "V Value Data"},
+    {0x00800012, "SQ", "Referenced Texture Sequence​"},
+    {0x00800013, "SQ", "Referenced Surface Data​ Sequence​"},
 
     // -------------------------------------------------------------------------
     // Group Tag 0082 ----------------------------------------------------------
+    {0x00820001, "CS", "Assessment Summary"},
+    {0x00820003, "UT", "Assessment Summary​ Description​"},
+    {0x00820004, "SQ", "Assessed SOP Instance​ Sequence​"},
+    {0x00820005, "SQ", "Referenced Comparison SOP​ Instance Sequence​"},
+    {0x00820006, "UL", "Number of Assessment​ Observations​"},
+    {0x00820007, "SQ", "Assessment Observations​ Sequence​"},
+    {0x00820008, "CS", "Observation Significance"},
+    {0x0082000A, "UT", "Observation Description"},
+    {0x0082000C, "SQ", "Structured Constraint​ Observation Sequence​"},
+    {0x00820010, "SQ", "Assessed Attribute Value​ Sequence​"},
+    {0x00820016, "LO", "Assessment Set ID​"},
+    {0x00820017, "SQ", "Assessment Requester​ Sequence​"},
+    {0x00820018, "LO", "Selector Attribute Name"},
+    {0x00820019, "LO", "Selector Attribute Keyword"},
+    {0x00820021, "SQ", "Assessment Type Code​ Sequence​"},
+    {0x00820022, "SQ", "Observation Basis Code​ Sequence​"},
+    {0x00820023, "LO", "Assessment Label"},
+    {0x00820032, "CS", "Constraint Type​"},
+    {0x00820033, "UT", "Specification Selection Guidance​"},
+    {0x00820034, "SQ", "Constraint Value Sequence"},
+    {0x00820035, "SQ", "Recommended Default Value​ Sequence​"},
+    {0x00820036, "CS", "Constraint Violation Significance"},
+    {0x00820037, "UT", "Constraint Violation Condition"},
+    {0x00820038, "CS", "Modifiable Constraint Flag"},
+
+    // -------------------------------------------------------------------------
+    // Group Tag 0088 ----------------------------------------------------------
+    {0x00880130, "SH", "Storage Media File-set ID"},
+    {0x00880140, "UI", "Storage Media File-set UID"},
+
+    {0x00880200, "SQ", "Icon Image Sequence"},
+
+    {0x00820904, "LO", "Topic Title​", ELEM_STATE_RETIRED},
+    {0x00820906, "ST", "Topic Subject", ELEM_STATE_RETIRED},
+    {0x00820910, "LO", "Topic Author", ELEM_STATE_RETIRED},
+    {0x00820912, "LO", "Topic Keywords", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group Tag 0100 ----------------------------------------------------------
+    {0x01000410, "CS", "SOP Instance Status"},
+    {0x01000420, "DT", "SOP Authorization DateTime"},
+    {0x01000424, "LT", "SOP Authorization Comment"},
+    {0x01000426, "LO", "Authorization Equipment​ Certification Number​"},
 
     // -------------------------------------------------------------------------
     // Group Tag 0400 ----------------------------------------------------------
+    {0x04000005, "US", "MAC ID Number​"},
+    {0x04000010, "UI", "MAC Calculation Transfer Syntax UID​"},
+    {0x04000015, "CS", "MAC Algorithm"},
+    {0x04000020, "AT", "Data Elements Signed"},
+
+    {0x04000100, "UI", "Digital Signature UID"},
+    {0x04000105, "DT", "Digital Signature DateTime"},
+    {0x04000110, "CS", "Certificate Type​"},
+    {0x04000115, "OB", "Certificate of Signer"},
+    {0x04000120, "OB", "Signature"},
+
+    {0x04000305, "CS", "Certified Timestamp Type"},
+    {0x04000310, "OB", "Certified Timestamp"},
+    {0x04000315, "FL", "", ELEM_STATE_RETIRED},
+
+    {0x04000401, "SQ", "Digital Signature Purpose Code​ Sequence​" },
+    {0x04000402, "SQ", "Referenced Digital Signature​ Sequence​" },
+    {0x04000403, "SQ", "Referenced SOP Instance MAC Sequence​" },
+    {0x04000404, "OB", "MAC​" },
+
+    {0x04000500, "SQ", "Encrypted Attributes Sequence​" },
+    {0x04000510, "UI", "Encrypted Content Transfer​ Syntax UID​" },
+    {0x04000520, "OB", "Encrypted Content" },
+    {0x04000550, "SQ", "Modified Attributes Sequence​" },
+    {0x04000551, "SQ", "Nonconforming Modified​ Attributes Sequence​" },
+    {0x04000552, "OB", "Nonconforming Data Element​ Value​" },
+    {0x04000561, "SQ", "Original Attributes Sequence" },
+    {0x04000562, "LO", "Attribute Modification DateTime" },
+    {0x04000563, "LO", "Modifying System" },
+    {0x04000564, "CS", "Source of Previous Values" },
+    {0x04000500, "CS", "Reason for the Attribute​ Modification​" },
+
+    {0x04000600, "CS", "Instance Origin Status" },
 
     // -------------------------------------------------------------------------
     // Group Tag 1000 ----------------------------------------------------------
+    {0x1000FFF0, "US", "Escape Triplet", ELEM_STATE_RETIRED},
+    {0x1000FFF1, "US", "Run Length Triplet", ELEM_STATE_RETIRED},
+    {0x1000FFF2, "US", "Huffman Table Size", ELEM_STATE_RETIRED},
+    {0x1000FFF3, "US", "Huffman Table Triplet", ELEM_STATE_RETIRED},
+    {0x1000FFF4, "US", "Shift Table Size", ELEM_STATE_RETIRED},
+    {0x1000FFF5, "US", "Shift Table Triplet​", ELEM_STATE_RETIRED},
+
+    // -------------------------------------------------------------------------
+    // Group Tag 1010 ----------------------------------------------------------
+    {0x1000FFFF, "US", "Zonal Map​", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group Tag 2000 ----------------------------------------------------------
+    {0x20000010, "IS", "Number of Copies"},
+    {0x2000001E, "SQ", "Printer Configuration Sequence"},
+    {0x20000020, "CS", "Print Priority​"},
+    {0x20000030, "CS", "Medium Type​"},
+    {0x20000040, "CS", "Film Destination"},
+    {0x20000050, "LO", "Film Session Label​"},
+    {0x20000060, "IS", "Memory Allocation​"},
+    {0x20000061, "IS", "Maximum Memory Allocation​"},
+    {0x20000062, "CS", "Color Image Printing Flag", ELEM_STATE_RETIRED},
+    {0x20000063, "CS", "Collation Flag​", ELEM_STATE_RETIRED},
+    {0x20000065, "CS", "Annotation Flag​", ELEM_STATE_RETIRED},
+    {0x20000067, "CS", "Image Overlay Flag", ELEM_STATE_RETIRED},
+    {0x20000069, "CS", "Presentation LUT Flag", ELEM_STATE_RETIRED},
+    {0x2000006A, "CS", "Image Box Presentation LUT​ Flag​", ELEM_STATE_RETIRED},
+    {0x200000A0, "US", "Memory Bit Depth"},
+    {0x200000A1, "US", "Printing Bit Depth"},
+    {0x200000A2, "SQ", "Media Installed Sequence"},
+    {0x200000A4, "SQ", "Other Media Available Sequence​"},
+    {0x200000A8, "SQ", "Supported Image Display​ Formats Sequence​"},
+
+    {0x20000500, "SQ", "Referenced Film Box Sequence"},
+    {0x20000510, "SQ", "Referenced Stored Print​ Sequence​", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group Tag 2010 ----------------------------------------------------------
+    {0x20100010, "ST", "Image Display Format"},
+    {0x20100030, "CS", "Annotation Display Format ID"},
+    {0x20100040, "CS", "Film Orientation​"},
+    {0x20100050, "CS", "Film Size ID​"},
+    {0x20100052, "CS", "Printer Resolution ID"},
+    {0x20100054, "CS", "Default Printer Resolution ID"},
+    {0x20100060, "CS", "Magnification Type"},
+    {0x20100080, "CS", "Smoothing Type"},
+    {0x201000A6, "CS", "Default Magnification Type"},
+    {0x201000A7, "CS", "Other Magnification Types​ Available​"},
+    {0x201000A8, "CS", "Default Smoothing Type"},
+    {0x201000A9, "CS", "Other Smoothing Types​ Available​"},
+
+    {0x20100100, "CS", "Border Density"},
+    {0x20100110, "CS", "Empty Image Density​"},
+    {0x20100120, "US", "Min Density"},
+    {0x20100130, "US", "Max Density"},
+    {0x20100140, "CS", "Trim​"},
+    {0x20100150, "ST", "Configuration Information"},
+    {0x20100152, "LT", "Configuration Information​ Description​"},
+    {0x20100154, "IS", "Maximum Collated Films​"},
+    {0x2010015E, "US", "Illumination"},
+    {0x20100160, "US", "Reflected Ambient Light"},
+
+    {0x20100376, "DS", "Printer Pixel Spacing"},
+
+    {0x20100500, "SQ", "Referenced Film Session​ Sequence​"},
+    {0x20100510, "SQ", "Referenced Image Box​ Sequence​"},
+    {0x20100520, "SQ", "Referenced Basic Annotation​ Box Sequence​"},
 
     // -------------------------------------------------------------------------
     // Group Tag 2020 ----------------------------------------------------------
+    {0x20200010, "US", "Image Box Position"},
+    {0x20200020, "CS", "Polarity"},
+    {0x20200030, "DS", "Requested Image Size"},
+    {0x20200040, "CS", "Requested Decimate/Crop​ Behavior​"},
+    {0x20200050, "CS", "Requested Resolution ID"},
+    {0x202000A0, "CS", "Requested Image Size Flag"},
+    {0x202000A2, "CS", "Decimate/Crop Result"},
+
+    {0x20200110, "SQ", "Basic Grayscale Image​ Sequence​"},
+    {0x20200111, "SQ", "Basic Color Image Sequence"},
+    {0x20200130, "SQ", "Referenced Image Overlay Box Sequence​", ELEM_STATE_RETIRED},
+    {0x20200140, "SQ", "Referenced VOI LUT Box​ Sequence​", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group Tag 2030 ----------------------------------------------------------
@@ -3971,6 +4200,19 @@ TDicomDictionary dicom_dict[] =
 
     // -------------------------------------------------------------------------
     // Group Tag 2040 ----------------------------------------------------------
+    {0x20400010, "SQ", "Referenced Overlay Plane​ Sequence​", ELEM_STATE_RETIRED},
+    {0x20400011, "US", "Referenced Overlay Plane​ Groups​", ELEM_STATE_RETIRED},
+    {0x20400020, "SQ", "Overlay Pixel Data Sequence", ELEM_STATE_RETIRED},
+    {0x20400060, "CS", "Overlay Magnification Type", ELEM_STATE_RETIRED},
+    {0x20400070, "CS", "Overlay Smoothing Type", ELEM_STATE_RETIRED},
+    {0x20400072, "CS", "Overlay or Image Magnification​", ELEM_STATE_RETIRED},
+    {0x20400074, "US", "Magnify to Number of Columns​", ELEM_STATE_RETIRED},
+    {0x20400080, "CS", "Overlay Foreground Density", ELEM_STATE_RETIRED},
+    {0x20400082, "CS", "Overlay Background Density", ELEM_STATE_RETIRED},
+    {0x20400090, "CS", "Overlay Mode", ELEM_STATE_RETIRED},
+
+    {0x20400100, "CS", "Threshold Density​", ELEM_STATE_RETIRED},
+    {0x20400500, "SQ", "Referenced Image Box​ Sequence (Retired)​", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group tag 2050
@@ -3980,18 +4222,61 @@ TDicomDictionary dicom_dict[] =
 
     // -------------------------------------------------------------------------
     // Group Tag 2100 ----------------------------------------------------------
+    {0x21000010, "SH", "Print Job ID​", ELEM_STATE_RETIRED},
+    {0x21000020, "CS", "Execution Status​"},
+    {0x21000030, "CS", "Execution Status Info"},
+    {0x21000040, "DA", "Creation Date​"},
+    {0x21000050, "TM", "Creation Time"},
+    {0x21000070, "AE", "Originator"},
+    {0x21000140, "AE", "Destination AE​"},
+    {0x21000160, "SH", "Owner ID"},
+    {0x21000170, "IS", "Number of Films"},
+
+    {0x21000500, "SQ", "Referenced Print Job Sequence Pull Stored Print)​", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group Tag 2110 ----------------------------------------------------------
+    {0x21100010, "CS", "Printer Status​"},
+    {0x21100020, "CS", "Printer Status Info"},
+    {0x21100030, "LO", "Printer Name​"},
+    {0x21100099, "SH", "Print Queue ID", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group Tag 2120 ----------------------------------------------------------
+    {0x21200010, "CS", "Queue Status", ELEM_STATE_RETIRED},
+    {0x21200050, "SQ", "​Print Job Description Sequence​", ELEM_STATE_RETIRED},
+    {0x21200070, "SQ", "Referenced Print Job Sequence​", ELEM_STATE_RETIRED},
 
     // -------------------------------------------------------------------------
     // Group Tag 2130 ----------------------------------------------------------
+    {0x21300010, "SQ", "Print Management Capabilities​ Sequence​", ELEM_STATE_RETIRED},
+    {0x21300015, "SQ", "Printer Characteristics Sequence​", ELEM_STATE_RETIRED},
+    {0x21300030, "SQ", "Film Box Content Sequence", ELEM_STATE_RETIRED},
+    {0x21300040, "SQ", "Image Box Content Sequence​", ELEM_STATE_RETIRED},
+    {0x21300050, "SQ", "Annotation Content Sequence​", ELEM_STATE_RETIRED},
+    {0x21300060, "SQ", "Image Overlay Box Content​ Sequence​", ELEM_STATE_RETIRED},
+    {0x21300080, "SQ", "Presentation LUT Content​ Sequence​", ELEM_STATE_RETIRED},
+    {0x213000A0, "SQ", "Proposed Study Sequence",},
+    {0x213000C0, "SQ", "Original Image Sequence",},
 
     // -------------------------------------------------------------------------
     // Group Tag 2200 ----------------------------------------------------------
+    {0x22000001, "CS", "Label Using Information​ Extracted From Instances​"},
+    {0x22000002, "UT", "Label Text"},
+    {0x22000003, "CS", "Label Style Selection"},
+    {0x22000004, "LT", "Media Disposition"},
+    {0x22000005, "LT", "Barcode Value"},
+    {0x22000006, "CS", "Barcode Symbology"},
+    {0x22000007, "CS", "Allow Media Splitting​"},
+    {0x22000008, "CS", "Include Non-DICOM Objects"},
+    {0x22000009, "CS", "Include Display Application"},
+    {0x2200000A, "CS", "Preserve Composite Instances After Media Creation​"},
+    {0x2200000B, "US", "Total Number of Pieces of Media Created​"},
+    {0x2200000C, "LO", "Requested Media Application​ Profile​"},
+    {0x2200000D, "SQ", "Referenced Storage Media​ Sequence​"},
+    {0x2200000E, "AT", "Failure Attributes"},
+    {0x2200000F, "CS", "Allow Lossy Compression"},
+    {0x22000020, "SH", "Request Priority"},
 
     // -------------------------------------------------------------------------
     // Group Tag 3002 ----------------------------------------------------------
@@ -4017,6 +4302,64 @@ TDicomDictionary dicom_dict[] =
     {0x30020040, "SQ", "Fluence Map Sequence"},
     {0x30020041, "CS", "Fluence Data Source"},
     {0x30020042, "DS", "Fluence Data Scale"},
+    {0x30020050, "SQ", "Primary Fluence Mode Sequence​"},
+    {0x30020051, "CS", "Fluence Mode"},
+    {0x30020052, "SH", "Fluence Mode ID"},
+
+    {0x30020100, "IS", "Selected Frame Number"},
+    {0x30020101, "SQ", "Selected Frame Functional​ Groups Sequence​"},
+    {0x30020102, "SQ", "RT Image Frame General​ Content Sequence​"},
+    {0x30020103, "SQ", "RT Image Frame Context​ Sequence​"},
+    {0x30020104, "SQ", "RT Image Scope Sequence​ "},
+    {0x30020105, "CS", "Beam Modifier Coordinates​ Presence Flag​"},
+    {0x30020106, "FD", "Start Cumulative Meterset"},
+    {0x30020107, "FD", "Stop Cumulative Meterset"},
+    {0x30020108, "SQ", "RT Acquisition Patient Position​ Sequence​"},
+    {0x30020109, "SQ", "RT Image Frame Imaging Device Position Sequence​"},
+    {0x3002010A, "SQ", "RT Image Frame kV Radiation​ Acquisition Sequence​"},
+    {0x3002010B, "SQ", "RT Image Frame MV Radiation Acquisition Sequence​"},
+    {0x3002010C, "SQ", "RT Image Frame Radiation​ Acquisition Sequence​"},
+    {0x3002010D, "SQ", "Imaging Source Position​ Sequence​"},
+    {0x3002010E, "SQ", "Image Receptor Position​ Sequence​"},
+    {0x3002010F, "FD", "Device Position to Equipment​ Mapping Matrix​"},
+    {0x30020110, "SQ", "Device Position Parameter​ Sequence​"},
+    {0x30020111, "CS", "Imaging Source Location​ Specification Type​"},
+    {0x30020112, "SQ", "maging Device Location Matrix Sequence​"},
+    {0x30020113, "SQ", "Imaging Device Location​ Parameter Sequence​"},
+    {0x30020114, "SQ", "​Imaging Aperture Sequence​"},
+    {0x30020115, "CS", "Imaging Aperture Specification​ Type​"},
+    {0x30020116, "US", "Number of Acquisition Devices​"},
+    {0x30020117, "SQ", "Acquisition Device Sequence"},
+    {0x30020118, "SQ", "Acquisition Task Sequence"},
+    {0x30020119, "SQ", "Acquisition Task Workitem Code Sequence​"},
+    {0x3002011A, "SQ", "Acquisition Subtask Sequence​"},
+    {0x3002011B, "SQ", "Subtask Workitem Code​ Sequence​"},
+    {0x3002011C, "US", "Acquisition Task Index​"},
+    {0x3002011D, "US", "Acquisition Subtask Index"},
+    {0x3002011E, "SQ", "Referenced Baseline Parameters​ RT Radiation Instance Sequence"},
+    {0x3002011F, "SQ", "Position Acquisition Template​ Identification Sequence​"},
+    {0x30020120, "ST", "Position Acquisition Template ID"},
+    {0x30020121, "LO", "Position Acquisition Template​ Name​"},
+    {0x30020122, "SQ", "Position Acquisition Template​ Code Sequence​"},
+    {0x30020123, "LT", "Position Acquisition Template​ Description​"},
+    {0x30020124, "SQ", "Acquisition Task Applicability​ Sequence​"},
+    {0x30020125, "SQ", "Projection Imaging Acquisition​ Parameter Sequence​"},
+    {0x30020126, "SQ", "CT Imaging Acquisition​ Parameter Sequence​"},
+    {0x30020127, "SQ", "KV Imaging Generation​ Parameters Sequence​"},
+    {0x30020128, "SQ", "MV Imaging Generation​ Parameters Sequence​"},
+    {0x30020129, "CS", "Acquisition Signal Type"},
+    {0x3002012A, "CS", "Acquisition Method​"},
+    {0x3002012B, "SQ", "Scan Start Position Sequence​"},
+    {0x3002012C, "SQ", "Scan Stop Position Sequence​"},
+    {0x3002012D, "FD", "Imaging Source to Beam Modifie Definition Plane Distance​"},
+    {0x3002012E, "CS", "Scan Arc Type​"},
+    {0x3002012F, "CS", "Detector Positioning Type​"},
+    {0x30020130, "SQ", "Additional RT Accessory Device Sequence​"},
+    {0x30020131, "SQ", "Device-Specific Acquisition​ Parameter Sequence​"},
+    {0x30020132, "SQ", "Referenced Position Reference Instance Sequence​"},
+    {0x30020133, "SQ", "Energy Derivation Code​ Sequence​"},
+    {0x30020134, "SQ", "Maximum Cumulative Meterset​ Exposure​"},
+    {0x30020135, "FD", "Acquisition Initiation Sequence​"},
 
     // -------------------------------------------------------------------------
     // Group Tag 3004 ----------------------------------------------------------
@@ -4028,8 +4371,8 @@ TDicomDictionary dicom_dict[] =
     {0x3004000A, "CS", "Dose Summation Type"},
     {0x3004000C, "DS", "Grid Frame Offset Vector"},
     {0x3004000E, "DS", "Dose Grid Scaling"},
-    {0x30040010, "SQ", "RT Dose ROI Sequence"},
-    {0x30040012, "DS", "Dose Value"},
+    {0x30040010, "SQ", "RT Dose ROI Sequence", ELEM_STATE_RETIRED},
+    {0x30040012, "DS", "Dose Value", ELEM_STATE_RETIRED},
     {0x30040014, "CS", "Tissue Heterogeneity Correction"},
     {0x30040040, "DS", "DVH Normalization Point"},
     {0x30040042, "DS", "DVH Normalization Dose Value"},
@@ -4069,18 +4412,18 @@ TDicomDictionary dicom_dict[] =
     {0x30060039, "SQ", "ROI Contour Sequence"},
     {0x30060040, "SQ", "Contour Sequence"},
     {0x30060042, "CS", "Contour Geometric Type"},
-    {0x30060044, "DS", "Contour Slab Thickness"},
-    {0x30060045, "DS", "Contour Offset Vector"},
+    {0x30060044, "DS", "Contour Slab Thickness", ELEM_STATE_RETIRED},
+    {0x30060045, "DS", "Contour Offset Vector", ELEM_STATE_RETIRED},
     {0x30060046, "IS", "Number of Contour Points"},
     {0x30060048, "IS", "Contour Number"},
-    {0x30060049, "IS", "Attached Contours"},
+    {0x30060049, "IS", "Attached Contours", ELEM_STATE_RETIRED},
     {0x30060050, "DS", "Contour Data"},
     {0x30060080, "SQ", "RT ROI Observations Sequence"},
     {0x30060082, "IS", "Obervation Number"},
     {0x30060084, "IS", "Referebced ROI Number"},
-    {0x30060085, "SH", "ROI Observation Label"},
+    {0x30060085, "SH", "ROI Observation Label", ELEM_STATE_RETIRED},
     {0x30060086, "SQ", "RT ROI Identification Code Sequence"},
-    {0x30060088, "ST", "ROI Observation Description"},
+    {0x30060088, "ST", "ROI Observation Description", ELEM_STATE_RETIRED},
     {0x300600A0, "SQ", "Related RT ROI Observations Sequence"},
     {0x300600A4, "CS", "RT ROI Interpreted Type"},
     {0x300600A6, "PN", "ROI Interpreter"},
@@ -4090,11 +4433,15 @@ TDicomDictionary dicom_dict[] =
     {0x300600B6, "SQ", "ROI Elemental Composition Sequence"},
     {0x300600B7, "US", "ROI Elemental Composition Atomic"},
     {0x300600B8, "FL", "ROI Elemental Composition Atomic Mass Fraction"},
-    {0x300600C0, "SQ", "Frame of Reference Relationship Sequence"},
-    {0x300600C2, "UI", "Related Frame of Reference UID"},
-    {0x300600C4, "CS", "Frame of Reference Transformation"},
+    {0x300600B9, "SQ", "Additional RT ROI Identification Code Sequence​", ELEM_STATE_RETIRED},
+    {0x300600C0, "SQ", "Frame of Reference Relationship Sequence", ELEM_STATE_RETIRED},
+    {0x300600C2, "UI", "Related Frame of Reference UID", ELEM_STATE_RETIRED},
+    {0x300600C4, "CS", "Frame of Reference Transformation", ELEM_STATE_RETIRED},
     {0x300600C6, "DS", "Frame of Reference Transformation Matrix"},
     {0x300600C8, "LO", "Frame of Reference Transformation Comment"},
+    {0x300600C9, "SQ", "Patient Location Coordinates​ Sequence​"},
+    {0x300600CA, "SQ", "Patient Location Coordinates​ Code Sequence​"},
+    {0x300600CB, "SQ", "Patient Support Position​ Sequence​"},
 
     // -------------------------------------------------------------------------
     // Group tag 3008
@@ -4964,12 +5311,12 @@ uint16_t DicomDictionary::GetVersion()
 
 const char* DicomDictionary::GetLastUpdateFlag()
 {
-    return (char*)DIC_DATE;
+    return (const char*)DIC_DATE;
 }
 
 int32_t DicomDictionary::FindKeyIndex( const uint32_t id )
 {
-    int     nCnt = 0;
+    int32_t nCnt = 0;
 
     if( id == 0x00000000 )
     {
@@ -5000,7 +5347,7 @@ int32_t DicomDictionary::FindKeyIndexFrom(const uint32_t id, uint32_t idx )
     if( idx >= (int)sizeof( dicom_dict ) )
         return -2;
 
-    int nCnt = idx;
+    int32_t nCnt = idx;
 
     if( id == 0x00000000 )
     {
@@ -5031,18 +5378,19 @@ int32_t DicomDictionary::FindKeyIndexFrom(const uint32_t id, uint32_t idx )
 
 uint16_t  DicomDictionary::GetVR(const uint32_t id, bool* sameavailed )
 {
-    uint16_t   nRet    = 0;
-    int    nIndex  = FindKeyIndex(id);
+    uint16_t nRet = 0;
+    int32_t  nIndex = FindKeyIndex(id);
 
     if( nIndex >= 0 )
     {
-        if ( strlen( dicom_dict[nIndex].vr ) > 0 )
+        size_t vrlen = strlen( dicom_dict[nIndex].vr );
+        if ( vrlen > 0 )
         {
             memcpy( &nRet, dicom_dict[nIndex].vr, 2 );
 
             if ( sameavailed != NULL)
             {
-                if ( FindKeyIndexFrom( id, nIndex ) > 0 )
+                if ( vrlen > 3 )
                 {
                     *sameavailed = true;
                 }
@@ -5055,6 +5403,42 @@ uint16_t  DicomDictionary::GetVR(const uint32_t id, bool* sameavailed )
     }
 
     return nRet;
+}
+
+size_t DicomDictionary::GetVRarrayLength(const uint32_t id)
+{
+    int32_t  nIndex = FindKeyIndex(id);
+
+    if ( nIndex >= 0 )
+    {
+        size_t vrlen = strlen( dicom_dict[nIndex].vr );
+        if ( vrlen > 1 )
+        {
+            return ( vrlen / 3 ) + 1;
+        }
+    }
+
+    return 0;
+}
+
+size_t DicomDictionary::GetVRarray( const uint32_t id, uint16_t** pVRarray )
+{
+    int32_t  nIndex = FindKeyIndex(id);
+
+    if ( nIndex >= 0 )
+    {
+        const char* pVR = dicom_dict[nIndex].vr;
+        size_t vrlen = strlen( pVR );
+        size_t arlen = ( vrlen / 3 ) + 1;
+        *pVRarray = new uint16_t[arlen];
+        for ( size_t cnt=0; cnt<arlen; cnt++ )
+        {
+            memcpy( pVRarray[cnt], &pVR[cnt*3], 2 );
+        }
+        return arlen;
+    }
+
+    return 0;
 }
 
 void DicomDictionary::GetVR(const uint32_t id, void *pVR, bool* sameavailed)
@@ -5083,37 +5467,6 @@ int32_t DicomDictionary::GetElemState( const uint32_t id )
     }
 
     return ELEM_STATE_UNKNWON;
-}
-
-int32_t DicomDictionary::GetVRarray( const uint32_t id, uint16_t**pVRarray )
-{
-    if ( *pVRarray != NULL )
-        return -1;
-
-    size_t nIndex = FindKeyIndex(id);
-    size_t nCount = 0;
-
-    while ( nIndex > 0 )
-    {
-        *pVRarray = new uint16_t;
-        if ( *pVRarray != NULL )
-        {
-            if ( strlen ( dicom_dict[nIndex].vr ) > 0 )
-            {
-                memcpy( *pVRarray, dicom_dict[nIndex].vr, 2 );
-                nCount++;
-
-                nIndex = FindKeyIndexFrom( id, nIndex );
-
-                if ( nIndex > 0 )
-                {
-                    pVRarray++;
-                }
-            }
-        }
-    }
-
-    return nCount;
 }
 
 const char* DicomDictionary::GetMean(const uint32_t id)

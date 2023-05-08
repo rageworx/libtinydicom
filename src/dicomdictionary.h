@@ -41,13 +41,14 @@ namespace DicomImageViewer
         public:
             static uint16_t     GetVersion();
             static const char*  GetLastUpdateFlag();
-            static int32_t      FindKeyIndex(const uint32_t id);
-            static int32_t      FindKeyIndexFrom(const uint32_t id, uint32_t idx);
-            static const char*  GetMean(const uint32_t id);
-            static uint16_t     GetVR(const uint32_t id, bool* sameavailed = NULL );
-            static void         GetVR(const uint32_t id, void *pVR, bool* sameavailed = NULL );
+            static int32_t      FindKeyIndex( const uint32_t id );
+            static int32_t      FindKeyIndexFrom( const uint32_t id, uint32_t idx );
+            static const char*  GetMean( const uint32_t id );
+            static uint16_t     GetVR( const uint32_t id, bool* sameavailed = NULL );
+            static void         GetVR( const uint32_t id, void* pVR, bool* sameavailed = NULL );
+            static size_t       GetVRarrayLength( const uint32_t id );
+            static size_t       GetVRarray( const uint32_t id, uint16_t**pVRarray );
             static int32_t      GetElemState( const uint32_t id );
-            static int32_t      GetVRarray( const uint32_t id, uint16_t**pVRarray );
             static const char*  GetMediaMimeFromUID( const char* UID );
     };
 }
