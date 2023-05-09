@@ -28,7 +28,7 @@ bool isStringType( const uint8_t* sVR, const uint8_t* dt )
             if ( ( sVR[1] == 'S' ) || ( sVR[1] == 'A' ) )
                 return true;
         }
-        
+
         // kind of TM
         if ( sVR[0] == 'T' )
         {
@@ -56,6 +56,14 @@ bool isStringType( const uint8_t* sVR, const uint8_t* dt )
             if ( ( sVR[1] =='H' ) || ( sVR[1] == 'T' ) )
                 return true;
         }
+
+        // kind of PN,
+        if ( sVR[0] == 'P' )
+        {
+            if ( ( sVR[1] =='N' ) )
+                return true;
+        }
+
     }
 
     return false;
@@ -116,18 +124,19 @@ int main( int argc, char** argv )
             {
                 printf( "      -- VR = (none)\n" );
             }
-            printf( "      -- size = %u\n", pElem->size );
-            printf( "      -- data = " );
-
-            uint8_t* pDt = NULL;
-            if ( pElem->alloced == false )
-                pDt = (uint8_t*)pElem->staticbuffer;
-            else
-            if ( pElem->dynamicbuffer != NULL )
-                pDt = (uint8_t*)pElem->dynamicbuffer;
 
             if ( ( pDt != NULL ) && ( pElem->size > 0 ) )
             {
+                printf( "      -- size = %u\n", pElem->size );
+                printf( "      -- data = " );
+
+                uint8_t* pDt = NULL;
+                if ( pElem->alloced == false )
+                    pDt = (uint8_t*)pElem->staticbuffer;
+                else
+                if ( pElem->dynamicbuffer != NULL )
+                    pDt = (uint8_t*)pElem->dynamicbuffer;
+
                 if ( isStringType( pElem->VRtype, pDt ) == true )
                 {
                     char pStr[80] = {0};
