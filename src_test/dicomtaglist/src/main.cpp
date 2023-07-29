@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <wchar.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -161,12 +162,16 @@ int main( int argc, char** argv )
             }
             else
             {
-                printf( "(nodata)\n" );
+                printf( "      -- no additional data\n" );
             }
         }
         else
         {
-            printf( "[%4d] error by %S.\n", cnt+1, GetLastErrMsg() );
+            const wchar_t* errstr = GetLastErrMsg();
+            if ( wcslen( errstr ) > 0 )
+                printf( "[%4d] error by %S.\n", cnt+1, GetLastErrMsg() );
+            else
+                printf( "[%4d] (no data)\n", cnt+1 );
         }
     }
 
