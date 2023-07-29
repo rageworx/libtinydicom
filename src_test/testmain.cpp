@@ -1,3 +1,9 @@
+#include <unistd.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdint>
+#include <cstring>
+
 #include "testmain.h"
 
 #if defined(UNICODE) || defined(_UNICODE)
@@ -16,13 +22,20 @@
     #define UNLINK  unlink
 #endif
 
+#ifndef WORD
+    #define WORD    uint16_t
+#endif /// of WORD
+
+using namespace tinydicom;
+using namespace std;
+
 WORD GetElem2WORD( DCMTagElement* pElem )
 {
     WORD tmpUS = 0;
 
     if ( pElem != NULL )
     {
-        if ( strncmp( pElem->VRtype, "US", 2 ) == 0 )
+        if ( memcmp( &pElem->VRtype, "US", 2 ) == 0 )
         {
             memcpy( &tmpUS, pElem->staticbuffer, 2 );
         }
@@ -172,7 +185,7 @@ int main(int argc, char** argv)
         imginfo.spacing_w = 0.25f;
         imginfo.spacing_h = 0.25f;
         imginfo.bpp    = 16;
-        imginfo.pixels = new char[ 500*500*2 ];
+        imginfo.pixels = new uint8_t[ 500*500*2 ];
 
         if ( imginfo.pixels != NULL )
         {
