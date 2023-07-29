@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <wchar.h>
+#include <getopt.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -8,9 +9,18 @@
 
 #include <libdcm.h>
 
-#define DEF_PRINT_HEX_LIMIT     12
+#define DEF_PRINT_HEX_LIMIT     ( 12 )
 
 using namespace tinydicom;
+
+static struct option long_opts[] = {
+    { "help",           no_argument,        0, 'h' },
+    { "exportraw",      required_argument,  0, 'e' },
+    { NULL, 0, 0, 0 }
+};
+
+char* idcmfile = NULL;
+char* orawfile = NULL;
 
 bool isStringType( const uint8_t* sVR, const uint8_t* dt )
 {
@@ -64,10 +74,17 @@ bool isStringType( const uint8_t* sVR, const uint8_t* dt )
             if ( ( sVR[1] =='N' ) )
                 return true;
         }
-
     }
 
     return false;
+}
+
+void showHelp()
+{
+    printf( "_options_\n" );
+    printf( " h/help                    = show this help.\n" );
+    printf( " e/exportraw {file prefix} = exports raw image and information as named file prefix.\n" );
+    printf( "\n" );
 }
 
 int main( int argc, char** argv )
@@ -79,13 +96,53 @@ int main( int argc, char** argv )
             "(C)Copyrighted 2023 Raphael Kim, rageworx@gmail.com\n",
             libdcmv[0], libdcmv[1], libdcmv[2], libdcmv[3] );
 
-    if ( argc <= 1 )
+    for(;;)
+    {
+        int optidx = 0;
+        int opt = getopt_long( argc, argv,
+                               " :e:h",
+                               long_opts, &optidx );
+        if ( opt >= 0 )
+        {
+            switch( (char)opt )
+            {
+                default:
+                case 'h':
+                case '?':
+                    showHelp();
+                    return 0;
+
+                case 'e':
+                    if ( optarg != NULL )
+                    {
+                        orawfile = strdup( optarg );
+                    }
+                    break;
+            }
+        }
+        else
+            break;
+    }
+
+    // get non-optioned file name ...
+    for( ; optind<argc; optind++ )
+    {
+        const char* tmp = argv[optind];
+        
+        if ( ( tmp != NULL) && ( idcmfile == NULL ) )
+        {
+            idcmfile = strdup( tmp );
+            break;
+        }
+    }
+
+    if ( idcmfile == NULL )
     {
         printf( "\n * no parameter to open a file.\n" );
         return 0;
     }
 
-    const char* fname = argv[1];
+    const char* fname = idcmfile;
 
     if ( OpenDCMA( fname ) == false )
     {
@@ -159,6 +216,33 @@ int main( int argc, char** argv )
                     }
                 }
                 printf( "\n" );
+
+                // Handle image ...
+                if ( ( lID == 0x7FE0 ) & ( hID == 0x0010 ) &&
+                     ( pElem->size > 0 ) )
+                {
+                    if ( orawfile != NULL )
+                    {
+                        char outfn[512] = {0};
+                        snprintf( outfn, 512,
+                                  "%s.raw",
+                                  orawfile );
+                        FILE* fp = fopen( outfn, "wb" );
+                        if ( fp != NULL )
+                        {
+                            fwrite( pDt, pElem->size, 1, fp );
+                            fclose( fp );
+                            printf( " ... file %s written.\n",
+                                    outfn );
+                        }
+                        else
+                        {
+                            printf( " ... file %s write failure.\n",
+                                    outfn );
+
+                        }
+                    }
+                }
             }
             else
             {
