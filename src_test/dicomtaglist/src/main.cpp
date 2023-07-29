@@ -125,7 +125,7 @@ int main( int argc, char** argv )
                 printf( "      -- VR = (none)\n" );
             }
 
-            if ( ( pDt != NULL ) && ( pElem->size > 0 ) )
+            if ( ( pElem != NULL ) && ( pElem->size > 0 ) )
             {
                 printf( "      -- size = %u\n", pElem->size );
                 printf( "      -- data = " );
