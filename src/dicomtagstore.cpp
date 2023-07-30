@@ -95,6 +95,10 @@ TagElement* TagStore::FindTagElement( uint32_t TagID )
 
 size_t TagStore::AddTagElement( uint32_t TagID, uint16_t wVR, const uint8_t* data, size_t size )
 {
+    // prevent empty tag insertion.
+    if ( TagID == 0 )
+        return 0;
+
     TagElement *pNewTag = new TagElement;
 
     if ( pNewTag == NULL )
@@ -153,6 +157,9 @@ size_t TagStore::AddTagElement( uint32_t TagID, uint16_t wVR, const uint8_t* dat
 size_t TagStore::AddTagElement( TagElement *pTag )
 {
     if(!pTag)
+        return 0;
+
+    if( pTag->id == 0 )
         return 0;
 
     // check same elements by ID.

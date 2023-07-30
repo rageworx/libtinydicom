@@ -51,9 +51,10 @@ int main(int argc, char** argv)
     
     PRT( _T"libtinydicom version %d.%d.%d.%d testing \n",
              libvers[0], libvers[1], libvers[2], libvers[3] );
-    PRT( _T"(C)2021 Raphael Kim, rageworx@gmail.com\n\n" );
+    PRT( _T"(C)2023 Raphael Kim, rageworx@gmail.com\n\n" );
     
     CHAR_T reffn[] = _T"../dcm/TEST.DCM";
+    //CHAR_T reffn[] = _T"../dcm/SIMFIT.DCM";
 
     PRT( _T"Loading DCM ["_S_"] ... ", reffn );
 

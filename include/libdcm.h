@@ -41,8 +41,8 @@ namespace tinydicom
     #define TRUE    true
 #endif // TRUE
 
-// version is 0.5.5.150
-#define LIBTINYDCM_VERSION      0x00050596
+// version is 0.5.5.153
+#define LIBTINYDCM_VERSION      0x00050599
 
 typedef struct _DCMTagElement
 {

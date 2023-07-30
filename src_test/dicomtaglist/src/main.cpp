@@ -255,7 +255,7 @@ int main( int argc, char** argv )
     for( int cnt=0; cnt<elems; cnt++ )
     {
         DCMTagElement* pElem = NULL;
-        if ( GetElement( cnt, &pElem ) > 0 )
+        if ( GetElement( cnt, &pElem ) == cnt )
         {
             uint16_t lID = ( pElem->id >> 16 );
             uint16_t hID = ( pElem->id & 0x0000FFFF);
