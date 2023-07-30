@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+// A DICOM tag list & exporting tool example                           //
+// ==================================================================  //
+// (C)Copyright 2023, Raphael Kim, libtinydcm author                   //
+//                                                                     //
+// * Disclaim *                                                        //
+//  This example is not provides standard examination for medical      //
+// result.                                                             //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
+
 #include <unistd.h>
 #include <wchar.h>
 #include <getopt.h>
@@ -13,14 +25,98 @@
 
 using namespace tinydicom;
 
+typedef struct _metainfo_t {
+    float       spacing_w;
+    float       spacing_h;
+    size_t      width;
+    size_t      height;
+    char*       coltype;
+    size_t      window_w;
+    size_t      window_wd;
+    size_t      window_c;
+    size_t      window_cd;
+    uint32_t    compression;
+    char*       comp_method;
+}metainfo_t;
+
 static struct option long_opts[] = {
     { "help",           no_argument,        0, 'h' },
     { "exportraw",      required_argument,  0, 'e' },
     { NULL, 0, 0, 0 }
 };
 
-char* idcmfile = NULL;
-char* orawfile = NULL;
+static char*        idcmfile = NULL;
+static char*        orawprefix = NULL;
+static metainfo_t   metainfo = {0};     
+
+bool write_raw( const char* r, const uint8_t* d, size_t l )
+{
+    char outfn[512] = {0};
+    snprintf( outfn, 512, "%s.raw", r );
+            
+    FILE* fp = fopen( outfn, "wb" );
+    if ( fp != NULL )
+    {
+        fwrite( d, l, 1, fp );
+        fclose( fp );
+        return true;
+    }
+
+    return false;
+}
+
+bool write_meta( const char* r )
+{
+    char outfn[512] = {0};
+    snprintf( outfn, 512, "%s.meta", r );
+
+    FILE* fp = fopen( outfn, "w" );
+    if ( fp != NULL )
+    {
+        fprintf( fp, "[METAINFO]\n" );
+        fprintf( fp, "FILE=%s.raw\n", r );
+        fprintf( fp, "[PIXEL_SPACING]\n" );
+        fprintf( fp, "WIDTH=%f\n", metainfo.spacing_w );
+        fprintf( fp, "HEIGHT=%f\n", metainfo.spacing_h );
+        fprintf( fp, "[RESOLUTION]\n" );
+        fprintf( fp, "WIDTH=%zu\n", metainfo.width );
+        fprintf( fp, "HEIGHT=%zu\n", metainfo.height );
+        fprintf( fp, "TYPE=" );
+        if ( metainfo.coltype == NULL )
+        {
+            fprintf( fp, "UNKNOWN\n" );
+        }
+        else
+        {
+            fprintf( fp, "%s\n", metainfo.coltype );
+        }
+        // some DCM not have window width and center 
+        if ( ( metainfo.window_w > 0 ) || ( metainfo.window_c ) )
+        {
+            fprintf( fp, "[WINDOW]\n" );
+            fprintf( fp, "WIDTH=%zu\n", metainfo.window_w );
+            fprintf( fp, "WIDTHDIV=%zu\n", metainfo.window_wd );
+            fprintf( fp, "CENTER=%zu\n", metainfo.window_c );
+            fprintf( fp, "CENTERDIV=%zu\n", metainfo.window_cd );
+        }
+        fprintf( fp, "[COMRESSION]\n" );
+        fprintf( fp, "TYPE=%u\n", metainfo.compression );
+        fprintf( fp, "STANDARD=" );
+        if ( metainfo.comp_method == NULL )
+        {
+            fprintf( fp, "NONE\n" );
+        }
+        else
+        {
+            fprintf( fp, "%s\n", metainfo.comp_method );
+        }
+
+        fclose( fp );
+        return true;
+    }
+
+    return false;
+}
 
 bool isStringType( const uint8_t* sVR, const uint8_t* dt )
 {
@@ -115,7 +211,7 @@ int main( int argc, char** argv )
                 case 'e':
                     if ( optarg != NULL )
                     {
-                        orawfile = strdup( optarg );
+                        orawprefix = strdup( optarg );
                     }
                     break;
             }
@@ -217,29 +313,129 @@ int main( int argc, char** argv )
                 }
                 printf( "\n" );
 
-                // Handle image ...
+                // handle image related --
+                if ( lID == 0x0028 )
+                {
+                    switch( hID )
+                    {
+                        case 0x0004: /// type of data -
+                            if ( pElem->size > 0 )
+                                metainfo.coltype = strdup( (const char*)pDt );
+                            break;
+
+                        case 0x0010: /// rows 
+                            if ( pElem->size == 2 )
+                                metainfo.height = *(uint16_t*)pDt;
+                            else
+                            if ( pElem->size == 4 )
+                                metainfo.height = *(uint32_t*)pDt;
+                            break;
+
+                        case 0x0011: /// colums
+                            if ( pElem->size == 2 )
+                                metainfo.width = *(uint16_t*)pDt;
+                            else
+                            if ( pElem->size == 4 )
+                                metainfo.width = *(uint32_t*)pDt;
+                            break;
+
+                        case 0x0030: /// pixel spacing 
+                            if ( pDt != NULL )
+                            {
+                                // seperate by "\".
+                                char* pSrc = strdup( (const char*)pDt );
+                                char* pTok = strtok( pSrc, "\\" );
+                                float cv = atof( pTok );
+                                metainfo.spacing_h = cv;
+                                pTok = strtok( NULL, "\\" );
+                                cv = atof( pTok );
+                                metainfo.spacing_w = cv;
+                                delete[] pSrc;
+                            }
+                            break;
+
+                        case 0x1050: /// window center
+                            if ( pDt != NULL )
+                            {
+                                // seperate by "\".
+                                char* pSrc = strdup( (const char*)pDt );
+                                char* pTok = strtok( pSrc, "\\" );
+                                if ( pTok != NULL )
+                                {
+                                    metainfo.window_c = atof( pTok );
+                                    pTok = strtok( NULL, "\\" );
+                                    metainfo.window_cd = atof( pTok );
+                                }
+                                else
+                                {
+                                    metainfo.window_c = atoi( pSrc );
+                                }
+                                delete[] pSrc;
+                            }
+                            break;
+
+                        case 0x1051: // window width
+                            if ( pDt != NULL )
+                            {
+                                // seperate by "\".
+                                char* pSrc = strdup( (const char*)pDt );
+                                char* pTok = strtok( pSrc, "\\" );
+                                if ( pTok != NULL )
+                                {
+                                    metainfo.window_w = atof( pTok );
+                                    pTok = strtok( NULL, "\\" );
+                                    metainfo.window_wd = atof( pTok );
+                                }
+                                else
+                                {
+                                    metainfo.window_w = atoi( pSrc );
+                                }
+                                delete[] pSrc;
+                            }
+                            break;
+
+                        case 0x2110:
+                            if ( pDt != NULL )
+                            {
+                                int cv = atoi( (const char*)pDt );
+                                metainfo.compression = cv;
+                            }
+                            break;
+
+                        case 0x2114:
+                            if ( pElem->size > 0 )
+                                metainfo.comp_method = strdup( (const char*)pDt );
+                        break;
+                    }
+                }
+
+                // Handle data --
                 if ( ( lID == 0x7FE0 ) & ( hID == 0x0010 ) &&
                      ( pElem->size > 0 ) )
                 {
-                    if ( orawfile != NULL )
+                    if ( orawprefix != NULL )
                     {
-                        char outfn[512] = {0};
-                        snprintf( outfn, 512,
-                                  "%s.raw",
-                                  orawfile );
-                        FILE* fp = fopen( outfn, "wb" );
-                        if ( fp != NULL )
+                        if ( write_raw( orawprefix, pDt, pElem->size ) == true )
                         {
-                            fwrite( pDt, pElem->size, 1, fp );
-                            fclose( fp );
-                            printf( " ... file %s written.\n",
-                                    outfn );
+                            printf( " ... file %s.raw written.\n",
+                                    orawprefix );
                         }
                         else
                         {
-                            printf( " ... file %s write failure.\n",
-                                    outfn );
+                            printf( " ... file %s.raw write failure.\n",
+                                    orawprefix );
 
+                        }
+
+                        if ( write_meta( orawprefix ) == true )
+                        {
+                            printf( " ... file %s.meta written.\n",
+                                    orawprefix );
+                        }
+                        else
+                        {
+                            printf( " ... file %s.meta write failure.\n",
+                                    orawprefix );
                         }
                     }
                 }
@@ -260,6 +456,13 @@ int main( int argc, char** argv )
     }
 
     CloseDCM();
+
+    // release memories
+    if ( metainfo.coltype != NULL )
+        delete metainfo.coltype;
+
+    if ( metainfo.comp_method != NULL )
+        delete metainfo.comp_method;
 
     return 0;
 }
