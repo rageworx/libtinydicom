@@ -364,7 +364,8 @@ int main( int argc, char** argv )
                                 {
                                     metainfo.window_c = atof( pTok );
                                     pTok = strtok( NULL, "\\" );
-                                    metainfo.window_cd = atof( pTok );
+                                    if ( pTok != NULL )
+                                        metainfo.window_cd = atof( pTok );
                                 }
                                 else
                                 {
@@ -384,7 +385,8 @@ int main( int argc, char** argv )
                                 {
                                     metainfo.window_w = atof( pTok );
                                     pTok = strtok( NULL, "\\" );
-                                    metainfo.window_wd = atof( pTok );
+                                    if ( pTok != NULL )
+                                        metainfo.window_wd = atof( pTok );
                                 }
                                 else
                                 {
