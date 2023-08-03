@@ -2254,23 +2254,14 @@ TDicomDictionary dicom_dict[] =
     {0x00280722, "US", "Zonal Map Format", ELEM_STATE_RETIRED},
     {0x00280730, "US", "Adaptive Map Format", ELEM_STATE_RETIRED},
     {0x00280740, "US", "Code Number Format", ELEM_STATE_RETIRED},
-    {0x00280800, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280810, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280820, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280830, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280840, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280850, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280860, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280870, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280880, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x00280890, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x002808A0, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x002808B0, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x002808C0, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x002808D0, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x002808E0, "CS", "Code Label", ELEM_STATE_RETIRED},
-    {0x002808F0, "CS", "Code Label", ELEM_STATE_RETIRED},
+    // Code label series 0x00280800 to 0x002808F0
+    {0x00280800, "CS", "Code Label", ELEM_STATE_RETIRED 
+                                     | ELEM_STATE_SERMASK },
+    {0x002808F0, "CS", "Code Label", ELEM_STATE_RETIRED 
+                                     | ELEM_STATE_SERMASKE },
+    // Number of Tables series 0x00280802 to 0x002808F2
     {0x00280802, "US", "Number of Tables", ELEM_STATE_RETIRED},
+    {0x002808F2, "US", "Number of Tables", ELEM_STATE_RETIRED},
     {0x00280812, "US", "Number of Tables", ELEM_STATE_RETIRED},
     {0x00280822, "US", "Number of Tables", ELEM_STATE_RETIRED},
     {0x00280832, "US", "Number of Tables", ELEM_STATE_RETIRED},
@@ -5368,6 +5359,7 @@ int32_t DicomDictionary::FindKeyIndexFrom(const uint32_t id, uint32_t idx )
     {
         // check masked group ?
         uint32_t masked_group = dicom_dict[nCnt].id & 0x00FF0000;
+        uint32_t state_chk    = dicom_dict[nCnt].state & ELEM_STATE_SERMASKE;
         if ( masked_group == 0x00FF0000 )
         {
             masked_group = dicom_dict[nCnt].id & 0xFF00FFFF;
@@ -5377,6 +5369,29 @@ int32_t DicomDictionary::FindKeyIndexFrom(const uint32_t id, uint32_t idx )
                 return nCnt;
         }
         else
+        if ( state_chk > 0 )
+        {
+            // is it start of series ?
+            if ( state_chk == ELEM_STATE_SERMASK )
+            {
+                // get end of mask
+                uint32_t ref_id = dicom_dict[nCnt + 1].id;
+                if ( ( id >= dicom_dict[nCnt].id ) && ( id <= ref_id ) )
+                {
+                    return nCnt;
+                }
+                nCnt++;
+            }
+            else
+            if ( nCnt > 0 )
+            {
+                uint32_t ref_id = dicom_dict[nCnt - 1].id;
+                if ( ( id >= ref_id ) && ( dicom_dict[nCnt].id ) )
+                {
+                    return nCnt;
+                }
+            }
+        }
         if( dicom_dict[nCnt].id == id )
             return nCnt;
 

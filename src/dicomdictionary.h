@@ -17,6 +17,9 @@ namespace DicomImageViewer
     the retired element has commented, or "ELEM_STATE_TRIAL " in
     the cases in which the Data Element was used in a Draft For Trial Implementation
     but not standardized.
+
+    new "ELEM_STATE_SERMASK" is a series mask for same group ID,
+    it ends by "ELEM_STATE_SERMASKE" from "ELEM_STATE_SERMASK".
     */
     enum EDicomDictionaryState
     {
@@ -26,6 +29,8 @@ namespace DicomImageViewer
         ELEM_STATE_DICOS    = 0x00000004,
         ELEM_STATE_DICONDE  = 0x00000008,
         ELEM_STATE_RETIRED  = 0x00000010,
+        ELEM_STATE_SERMASK  = 0x08000000,
+        ELEM_STATE_SERMASKE = 0x18000000
     };
 
     typedef struct _TDicomDictionary
@@ -33,7 +38,7 @@ namespace DicomImageViewer
         uint32_t    id;
         const char* vr;
         const char* mean;
-        int32_t     state;
+        uint32_t    state;
     }TDicomDictionary;
 
     class DicomDictionary
