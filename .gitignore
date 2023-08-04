@@ -1,0 +1,17 @@
+cert/
+lib/
+obj/
+publishing/
+src_test/dicomtaglist/obj/
+src_test/dicomtaglist/testdcm/
+src_test/dicomtaglist/bin/
+testing/.o
+testing/*.DCM
+testing/*.dll
+testing/*.so
+testing/*.dylib
+testing/*.exe
+*.o
+*.lz4
+*.raw
+*.meta
